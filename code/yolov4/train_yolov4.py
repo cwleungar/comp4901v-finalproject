@@ -13,9 +13,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Define hyperparameters
 batch_size = 16
-num_epochs = 50
+num_epochs = 100
 learning_rate = 0.001
-num_classes = 80
+num_classes = 3
 
 # Create dataset and data loaders
 train_dataset = Dataset.ObjectDetectionDataset('path/to/train/dataset',split='train', val_split=0.1, transform=T.Compose([
