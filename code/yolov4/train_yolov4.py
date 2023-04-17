@@ -37,11 +37,11 @@ def train(args):
 
     # Create YOLOv4 model and optimizer
     model = yolov4.YOLOv4(num_classes=num_classes).to(device)
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=args.weight_decay)
 
     # Create loss function
     criterion = nn.MSELoss()
-    logger = tb.SummaryWriter(path.join(args.log_dir, f'yolov4-lr-{args.lr}-wd--{args.weight_decay}-dp1--{args.dropout1}-dp2--{args.dropout2}-{current_GMT}'), flush_secs=1)
+    logger = tb.SummaryWriter(path.join(args.log_dir, f'yolov4-lr-{args.learning_rate}-wd--{args.weight_decay}-dp1--{args.dropout1}-dp2--{args.dropout2}-{current_GMT}'), flush_secs=1)
 
     # Create TensorBoard writer
 
@@ -141,6 +141,7 @@ if __name__ == "__main__":
     parser.add_argument('--data_path', type=str, default='data', help='Path to dataset')
     parser.add_argument('--label_path', type=str, default='label', help='Path to label')
     parser.add_argument('--log_dir', type=str, default='logs', help='Path to logs')
+    parser.add_argument('--weight_decay', type=float, default=0.0005, help='Weight decay')
     args = parser.parse_args()
     print("train start")
     train(args)
