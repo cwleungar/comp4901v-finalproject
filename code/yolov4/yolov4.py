@@ -155,37 +155,55 @@ class YOLOv4Loss(nn.Module):
         self.noobj_scale = 100
         self.reg_scale = 0.1
         self.class_scale = 10
+
     def forward(self, pred, target):
         # Split the output tensor into bounding box coordinates, objectness scores, and class probabilities
         pred_boxes = pred[..., :4]
         pred_obj = pred[..., 4:5]
         pred_class = pred[..., 5:]
-        
+
         # Split the target tensor into bounding box coordinates, objectness masks, and class masks
         target_boxes = target[..., :4]
         target_obj = target[..., 4:5]
         target_class = target[..., 5:]
-        
-        # Calculate the loss for the bounding box coordinates
-        loss_x = self.mse_loss(pred_boxes[..., 0:1], target_boxes[..., 0:1])
-        loss_y = self.mse_loss(pred_boxes[..., 1:2], target_boxes[..., 1:2])
-        loss_w = self.mse_loss(torch.sqrt(pred_boxes[..., 2:3]), torch.sqrt(target_boxes[..., 2:3]))
-        loss_h = self.mse_loss(torch.sqrt(pred_boxes[..., 3:4]), torch.sqrt(target_boxes[..., 3:4]))
-        loss_coord = loss_x + loss_y + loss_w + loss_h
-        
-        # Calculate the loss for the objectness scores
-        loss_obj = self.cn_loss(pred_obj, target_obj)
-        
-        # Calculate the loss for the class probabilities
-        loss_class = self.cn_loss(pred_class, target_class)
+
+        # Compute the IoU between each predicted box and each ground truth box
         iou = bbox_iou(pred_boxes, target_boxes)
-        obj_mask = target[..., 5].view(-1)
-        noobj_mask = (iou < self.ignore_thresh).float() * (1 - obj_mask)
-        noobj_loss = F.binary_cross_entropy_with_logits(pred_obj, noobj_mask, reduction='none')
-        noobj_loss = noobj_loss.view(self.batch_size, -1).sum(dim=1).mean()
-        # Calculate the total loss
-        loss = self.obj_scale * loss_obj + self.reg_scale * loss_coord + loss_class*self.class_scale + self.noobj_scale * noobj_loss
-        
+
+        # Find the ground truth box with the highest IoU for each predicted box
+        max_iou, max_idx = iou.max(dim=-1)
+
+        # Create a mask indicating which ground truth boxes are assigned to a predicted box
+        assigned_mask = max_iou >= self.ignore_thresh
+
+        # Create a mask indicating which predicted boxes have no assigned ground truth boxes
+        noobj_mask = ~assigned_mask
+
+        # Create a mask indicating which predicted boxes have an assigned ground truth box
+        obj_mask = assigned_mask * target_obj.view(-1)
+
+        # Create a one-hot encoding of the class labels
+        target_class_onehot = F.one_hot(target_class.view(-1), num_classes=pred_class.shape[-1])
+
+        # Compute the loss for the bounding box coordinates
+        loss_x = self.mse_loss(pred_boxes[..., 0:1][assigned_mask], target_boxes[..., 0:1][max_idx][assigned_mask])
+        loss_y = self.mse_loss(pred_boxes[..., 1:2][assigned_mask], target_boxes[..., 1:2][max_idx][assigned_mask])
+        loss_w = self.mse_loss(torch.sqrt(pred_boxes[..., 2:3][assigned_mask]), torch.sqrt(target_boxes[..., 2:3][max_idx][assigned_mask]))
+        loss_h = self.mse_loss(torch.sqrt(pred_boxes[..., 3:4][assigned_mask]), torch.sqrt(target_boxes[..., 3:4][max_idx][assigned_mask]))
+        loss_coord = loss_x + loss_y + loss_w + loss_h
+
+        # Compute the loss for the objectness scores
+        loss_obj = self.mse_loss(pred_obj[obj_mask], target_obj[obj_mask])
+
+        # Compute the loss for the class probabilities
+        loss_class = self.cn_loss(pred_class[assigned_mask], target_class[assigned_mask])
+
+        # Compute the loss for the no-objectness scores
+        noobj_loss = self.mse_loss(pred_obj[noobj_mask], target_obj[noobj_mask])
+
+        # Compute the total loss
+        loss = (self.obj_scale * loss_obj + self.reg_scale * loss_coord + self.class_scale * loss_class + self.noobj_scale * noobj_loss)
+
         return loss
 def get_anchors():
     anchors = np.array([[10, 13], [16, 30], [33, 23], [30, 61], [62, 45], [59, 119], [116, 90], [156, 198], [373, 326]])
