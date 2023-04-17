@@ -132,7 +132,7 @@ def train(args):
     # Close TensorBoard writer
     logger.close()
 
-def __main__():
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='YOLOv4 Training')
     parser.add_argument('--batch_size', type=int, default=16, help='Batch size')
     parser.add_argument('--num_epochs', type=int, default=100, help='Number of epochs')
