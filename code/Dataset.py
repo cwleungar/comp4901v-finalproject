@@ -114,7 +114,7 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
             img, boxes = self.transform(img, boxes)
     
         labels = torch.zeros((len(boxes), 5 + len(classmap) // 2))
-        labels[:, :4] = torch.from_numpy(boxes) / 416
+        labels[:, :4] = boxes.float() / 416
         labels[:, 4] = 1.0  # objectness
         class_onehot = torch.zeros((len(boxes), len(classmap) // 2))
         class_onehot[torch.arange(len(boxes)), class_labels.long()] = 1.0
