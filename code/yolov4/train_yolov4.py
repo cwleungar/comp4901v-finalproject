@@ -14,6 +14,7 @@ import time
 current_GMT = time.time()
 
 def train(args):
+    print("inside train")
     # Set device for training
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -129,7 +130,7 @@ def train(args):
         torch.save(model.state_dict(), f'model_checkpoint_{epoch}.pt')
 
     # Close TensorBoard writer
-    writer.close()
+    logger.close()
 
 def __main__():
     parser = argparse.ArgumentParser(description='YOLOv4 Training')
@@ -141,4 +142,5 @@ def __main__():
     parser.add_argument('--label_path', type=str, default='label', help='Path to label')
     parser.add_argument('--log_dir', type=str, default='logs', help='Path to logs')
     args = parser.parse_args()
+    print("train start")
     train(args)
