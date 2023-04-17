@@ -74,10 +74,11 @@ class YOLOv4(nn.Module):
         self.backbone = Darknet53()
 
         # Define the feature pyramid network
-        self.fpn = nn.Sequential(
+        self.fpn0 = nn.Sequential(
             ConvBlock(512, 256, 1),
-            nn.Upsample(scale_factor=2, mode='nearest'),
-            ConcatBlock(),
+            nn.Upsample(scale_factor=2, mode='nearest'))
+        self.fpn1=ConcatBlock()
+        self.fpn2 = nn.Sequential(
             ConvBlock(768, 256, 1),
             ConvBlock(256, 512, 3, padding=1),
             ConvBlock(512, 256, 1),
@@ -127,7 +128,10 @@ class YOLOv4(nn.Module):
             split_sizes[1] += diff
         x0, x1, x2 = torch.split(x, split_sizes, dim=1)
         
-        x = self.fpn(x2,x2)
+        x = self.fpn0(x2)
+        x = self.fpn1(x, x2)
+        x = self.fpn2(x)
+
 
         # Pass the features through the detection layers
         x = torch.cat([x, x1], dim=1)
