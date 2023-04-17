@@ -131,19 +131,14 @@ class YOLOv4(nn.Module):
         return x
     
 class YOLOv4Loss(nn.Module):
-    def __init__(self,batchsize, anchors, num_classes, img_size, ignore_thresh=0.5):
+    def __init__(self, ignore_thresh=0.5):
         super(YOLOv4Loss, self).__init__()
-        self.anchors = anchors
-        self.num_anchors = len(anchors)
-        self.num_classes = num_classes
-        self.img_size = img_size
         self.ignore_thresh = ignore_thresh
         self.mse_loss = nn.MSELoss()
-        self.bce_loss = nn.BCELoss()
+        self.cn_loss = nn.CrossEntropyLoss(ignore_index=-1)
         self.obj_scale = 1
         self.noobj_scale = 100
         self.reg_scale = 0.1
-        self.batchsize = batchsize
         self.class_scale = 10
     def forward(self, pred, target):
         # Split the output tensor into bounding box coordinates, objectness scores, and class probabilities
@@ -164,10 +159,10 @@ class YOLOv4Loss(nn.Module):
         loss_coord = loss_x + loss_y + loss_w + loss_h
         
         # Calculate the loss for the objectness scores
-        loss_obj = self.bce_loss(pred_obj, target_obj)
+        loss_obj = self.cn_loss(pred_obj, target_obj)
         
         # Calculate the loss for the class probabilities
-        loss_class = self.bce_loss(pred_class, target_class)
+        loss_class = self.cn_loss(pred_class, target_class)
         iou = bbox_iou(pred_boxes, target_boxes)
         obj_mask = target[..., 5].view(-1)
         noobj_mask = (iou < self.ignore_thresh).float() * (1 - obj_mask)
