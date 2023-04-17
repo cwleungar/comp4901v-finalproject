@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torch.utils.tensorboard import SummaryWriter
 import torchvision.models.detection as detection
-from .. import Dataset   # Import your custom dataset module
+from ..Dataset import ObjectDetectionDataset   # Import your custom dataset module
 import yolov4             # Import your YOLOv4 module
 import torchvision.transforms as T
 import argparse
@@ -21,12 +21,12 @@ def train(args):
     data_path=args.path
     label_path=args.label_path
     # Create dataset and data loaders
-    train_dataset = Dataset.ObjectDetectionDataset(data_path,label_path,split='train', val_split=0.1, transform=T.Compose([
+    train_dataset = ObjectDetectionDataset(data_path,label_path,split='train', val_split=0.1, transform=T.Compose([
         T.RandomHorizontalFlip(p=0.5),
         T.RandomCrop(size=(224, 224)),
         T.ToTensor()
     ]))
-    val_dataset = Dataset.ObjectDetectionDataset(data_path,label_path,split='val', val_split=0.1, transform=None)
+    val_dataset = ObjectDetectionDataset(data_path,label_path,split='val', val_split=0.1, transform=None)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
