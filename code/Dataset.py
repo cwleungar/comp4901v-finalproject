@@ -98,7 +98,7 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         img_filename = os.path.join(self.image_dir, self.filenames[idx])
         img = Image.open(img_filename).convert('RGB')
-    
+        
         label_filename = os.path.join(self.label_dir, self.filenames[idx][:-4] + '.txt')
         with open(label_filename, "r") as f:
             labels_str = f.readlines()
@@ -106,17 +106,19 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         for word in labels_str:
             labels_str = word.split()
             labels.append([classmap[labels_str[0]]]+labels_str[1:])
-        labels = np.array(labels, dtype=np.float32)
-        boxes = labels[:, 1:5]
+        labels = np.array(labels, dtype=np.float32)        
+        boxes = labels[:, 4:8]
         class_labels = labels[:, 0]
-        img, boxes = resize_image_with_boxes_to_square(img, boxes, 416)
+        img,boxes=resize_image_with_boxes_to_square(img, boxes, 416)
         if self.transform is not None:
             img, boxes = self.transform(img, boxes)
-
-        target = torch.zeros((80, 5 ))
+        
+        target = torch.zeros((80, 5 + len(classmap)//2))
         for i in range(len(boxes)):
-            target[i, :4] = torch.tensor(boxes[i]).float() / 416
-            target[i, 5:] = torch.tensor(class_labels)
-
-
+            target[i, :4] = boxes[i].float() / 416
+            target[i, 4] = 1.0  # objectness
+            target[i, 5:] =torch.tensor(class_labels[i]).float()
         return img, target
+    
+
+

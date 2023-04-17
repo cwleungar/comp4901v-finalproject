@@ -922,7 +922,7 @@ class Yolo_loss(nn.Module):
 
         # labels = labels.cpu().data
         nlabel = (labels.sum(dim=2) > 0).sum(dim=1)  # number of objects
-
+        print(nlabel)
         truth_x_all = (labels[:, :, 2] + labels[:, :, 0]) / (self.strides[output_id] * 2)
         truth_y_all = (labels[:, :, 3] + labels[:, :, 1]) / (self.strides[output_id] * 2)
         truth_w_all = (labels[:, :, 2] - labels[:, :, 0]) / self.strides[output_id]
