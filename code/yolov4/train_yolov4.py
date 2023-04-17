@@ -18,14 +18,15 @@ def train(args):
     num_epochs = args.epochs
     learning_rate = args.lr
     num_classes = args.num_classes
-    path=args.path
+    data_path=args.path
+    label_path=args.label_path
     # Create dataset and data loaders
-    train_dataset = Dataset.ObjectDetectionDataset(path,split='train', val_split=0.1, transform=T.Compose([
+    train_dataset = Dataset.ObjectDetectionDataset(data_path,label_path,split='train', val_split=0.1, transform=T.Compose([
         T.RandomHorizontalFlip(p=0.5),
         T.RandomCrop(size=(224, 224)),
         T.ToTensor()
     ]))
-    val_dataset = Dataset.ObjectDetectionDataset(path,split='val', val_split=0.1, transform=None)
+    val_dataset = Dataset.ObjectDetectionDataset(data_path,label_path,split='val', val_split=0.1, transform=None)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
@@ -121,6 +122,7 @@ def __main__():
     parser.add_argument('--num_epochs', type=int, default=100, help='Number of epochs')
     parser.add_argument('--learning_rate', type=float, default=0.001, help='Learning rate')
     parser.add_argument('--num_classes', type=int, default=3, help='Number of classes')
-    parser.add_argument('--path', type=str, default='data', help='Path to dataset')
+    parser.add_argument('--data_path', type=str, default='data', help='Path to dataset')
+    parser.add_argument('--label_path', type=str, default='label', help='Path to label')
     args = parser.parse_args()
     train(args)

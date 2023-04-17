@@ -6,13 +6,13 @@ import torchvision.transforms.functional as F
 from PIL import Image
 
 class ObjectDetectionDataset(torch.utils.data.Dataset):
-    def __init__(self, root_dir, split='train', val_split=0.1, transform=None):
-        assert split in ['train', 'test'], f"Invalid split: {split}"
-        self.root_dir = root_dir
-        self.split = split
+    def __init__(self, data_dir,label_dir, split='training', val_split=0.1, transform=None):
+        self.data_dir = data_dir
+        self.label_dir = label_dir
+        self.split = 'training' if (split == 'train' or split=='valid') else 'testing'
         self.transform = transform
-        self.image_dir = os.path.join(self.root_dir, self.split, 'image_2')
-        self.label_dir = os.path.join(self.root_dir, 'label', self.split, 'image_2')
+        self.image_dir = os.path.join(self.data_dir, self.split, 'image_2')
+        self.label_dir = os.path.join(self.label_dir, self.split, 'image_2')
         self.filenames = os.listdir(self.image_dir)
         
         random.seed(42)
