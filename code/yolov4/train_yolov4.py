@@ -26,9 +26,9 @@ def train(args):
     label_path=args.label_path
     # Create dataset and data loaders
     train_dataset = ObjectDetectionDataset(data_path,label_path,split='train', val_split=0.1, transform=Compose([
-        RandomHorizontalFlip(p=0.5),
+        RandomHorizontalFlip(0.5),
         Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
-        RandomVerticalFlip(p=0.5),
+        RandomVerticalFlip(0.5),
     ]))
     val_dataset = ObjectDetectionDataset(data_path,label_path,split='val', val_split=0.1, transform=None)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
