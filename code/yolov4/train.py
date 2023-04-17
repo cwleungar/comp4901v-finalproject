@@ -30,8 +30,8 @@ from torch.utils.tensorboard import SummaryWriter
 
 from easydict import EasyDict as edict
 
-from .dataset import Yolo_dataset
-from .cfg import Cfg
+from dataset import Yolo_dataset
+from cfg import Cfg
 from models import Yolov4
 from tool.darknet2pytorch import Darknet
 
