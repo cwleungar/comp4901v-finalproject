@@ -31,7 +31,7 @@ classmap={
 def resize_image_with_boxes(image, boxes, new_size):
     # Resize the image while maintaining aspect ratio
     old_size = image.size
-    if old_size[0] > old_size[1]:
+    if True or old_size[0] > old_size[1]:
         new_width = new_size
         new_height = int(new_size * old_size[1] / old_size[0])
     else:
