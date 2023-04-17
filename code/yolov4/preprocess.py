@@ -31,7 +31,7 @@ buffer=[]
 for file in filenames:
     with open(os.path.join(label_dir, file)) as f:
         lines=f.readlines()
-        temp=img_dir+"/"+file.split(".")[0]+".png"+" "
+        temp=file.split(".")[0]+".png"+" "
         for line in lines:
             line=line.split(" ")
             temp=temp+str(line[4])+","+str(line[5])+","+str(line[6])+","+str(line[7])+","+str(classmap[line[0]])+" "
