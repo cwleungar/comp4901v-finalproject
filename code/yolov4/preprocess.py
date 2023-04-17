@@ -34,7 +34,7 @@ for file in filenames:
         temp=img_dir+"/"+file.split(".")[0]+".png"+" "
         for line in lines:
             line=line.split(" ")
-            temp=temp+line[4]+","+line[5]+","+line[6]+","+line[7]+","+classmap[line[0]]+" "
+            temp=temp+str(line[4])+","+str(line[5])+","+str(line[6])+","+str(line[7])+","+str(classmap[line[0]])+" "
         buffer.append(temp)
 random.seed(42)
 random.shuffle(buffer)
