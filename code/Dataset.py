@@ -1,10 +1,17 @@
+from enum import Enum
 import os
 import random
 import numpy as np
 import torch
 import torchvision.transforms.functional as F
 from PIL import Image
-
+def classlabel(class_labels):
+    if classlabel=="Car":
+        return 0
+    elif classlabel=="Pedestrian":
+        return 1
+    elif classlabel=="Cyclist":
+        return 2
 class ObjectDetectionDataset(torch.utils.data.Dataset):
     def __init__(self, data_dir,label_dir, split='training', val_split=0.1, transform=None):
         self.data_dir = data_dir
@@ -39,4 +46,5 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
             img, boxes = self.transform(img, boxes)
         boxes = torch.from_numpy(boxes)
         
-        return img, boxes, class_labels
+        return img, boxes, classlabel(class_labels)
+    

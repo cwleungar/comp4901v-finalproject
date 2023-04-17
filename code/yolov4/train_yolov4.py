@@ -32,7 +32,6 @@ def train(args):
         T.ToTensor()
     ]))
     val_dataset = ObjectDetectionDataset(data_path,label_path,split='val', val_split=0.1, transform=None)
-    print(len(train_dataset))
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
