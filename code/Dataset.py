@@ -98,6 +98,6 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
             target[i, :4] = boxes[i].float() / 416
             target[i, 4] = 1.0  # objectness
             target[i, 5:] =torch.tensor(class_labels[i]).float()
-        
+        print(img.size,target.size)
         return img, target
 
