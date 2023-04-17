@@ -5,6 +5,8 @@ import numpy as np
 import torch
 import torchvision.transforms.functional as F
 from PIL import Image
+import matplotlib.pyplot as plt
+import torchvision.transforms as T
 classmap={
     0: 'Car',
     1: 'Pedestrian', 
@@ -64,7 +66,13 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         
         if self.transform is not None:
             img, boxes = self.transform(img, boxes)
-        boxes = torch.from_numpy(boxes)
+        boxes = T.ToTensor(boxes)
         
-        return img, boxes, class_labels
+        target = torch.zeros((len(boxes), 5 + self.num_classes))
+        for i in range(len(boxes)):
+            target[i, :4] = torch.FloatTensor(boxes[i]) / self.img_size[0]
+            target[i, 4] = 1.0  # objectness
+            target[i, 5:] = torch.FloatTensor(class_labels[i])
+        
+        return T.ToTensor(img), target
     
