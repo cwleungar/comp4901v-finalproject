@@ -37,7 +37,7 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         img = Image.open(img_filename).convert('RGB')
         
         label_filename = os.path.join(self.label_dir, self.filenames[idx][:-4] + '.txt')
-        labels = np.loadtxt(label_filename, delimiter=' ', dtype=np.string, ndmin=2)
+        labels = np.loadtxt(label_filename, delimiter=' ', dtype=np.float32, ndmin=2)
         
         boxes = labels[:, 4:8]
         class_labels = labels[:, 0]
