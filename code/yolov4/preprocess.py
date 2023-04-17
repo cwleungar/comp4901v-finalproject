@@ -1,0 +1,47 @@
+import os
+import random
+
+
+classmap={
+    0: 'Car',
+    1: 'Pedestrian', 
+    2: 'Cyclist', 
+    3: 'Van', 
+    4: 'Person_sitting', 
+    5: 'Tram', 
+    6: 'Truck', 
+    7: 'Misc', 
+    8: 'DontCare', 
+    'Car': 0, 
+    'Pedestrian': 1, 
+    'Cyclist': 2, 
+    'Van': 3, 
+    'Person_sitting': 4,
+    'Tram': 5, 
+    'Truck': 6, 
+    'Misc': 7, 
+    'DontCare': 8
+}
+label_dir="/content/label"
+img_dir="/content/image"
+split="training"
+label_dir = os.path.join(label_dir, split, 'label_2')
+filenames=os.listdir(label_dir)
+buffer=[]
+for file in filenames:
+    with open(os.path.join(label_dir, file)) as f:
+        lines=f.readlines()
+        temp=img_dir+"/"+file.split(".")[0]+".png"+" "
+        for line in lines:
+            line=line.split(" ")
+            temp=temp+line[4]+","+line[5]+","+line[6]+","+line[7]+","+classmap[line[0]]+" "
+        buffer.append(temp)
+random.seed(42)
+random.shuffle(buffer)
+val_size = int(0.1 * len(buffer))
+with open("code/yolov4/data/train.txt","w") as f:
+    f.write("".join(buffer[val_size:]))
+
+with open("code/yolov4/data/val.txt","w") as f:
+    f.write("".join(buffer[:val_size]))
+# Path: yolov4\preprocess.py
