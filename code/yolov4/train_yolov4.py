@@ -7,6 +7,7 @@ import torch.utils.tensorboard as tb
 import torchvision.models.detection as detection
 from ..Dataset import ObjectDetectionDataset   # Import your custom dataset module
 from . import  yolov4             # Import your YOLOv4 module
+from . import  yolov4_byothers    # Import your YOLOv4 module
 import argparse
 from os import path
 import time
@@ -38,7 +39,7 @@ def train(args):
     optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=args.weight_decay)
 
     # Create loss function
-    criterion = yolov4.YOLOv4Loss()
+    criterion = yolov4_byothers.Yolo_loss(device=device, batch=batch_size, n_classes=num_classes)
     logger = tb.SummaryWriter(path.join(args.log_dir, f'yolov4-lr-{args.learning_rate}-wd--{args.weight_decay}-{current_GMT}'), flush_secs=1)
 
     # Create TensorBoard writer
