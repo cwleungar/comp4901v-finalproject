@@ -70,3 +70,6 @@ class ColorJitter(T.ColorJitter):
 class ColorJitter3(T.ColorJitter):
     def __call__(self, image, target, target2):
         return super().__call__(image), target, target2
+class ToTensor(T.ToTensor):
+    def __call__(self, image, target):
+        return super().__call__(image), torch.from_numpy(np.array(target)).long()
