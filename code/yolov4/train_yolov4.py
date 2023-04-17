@@ -20,10 +20,10 @@ def train(args):
 
     # Define hyperparameters
     batch_size = args.batch_size
-    num_epochs = args.epochs
-    learning_rate = args.lr
+    num_epochs = args.num_epochs
+    learning_rate = args.learning_rate
     num_classes = args.num_classes
-    data_path=args.path
+    data_path=args.data_path
     label_path=args.label_path
     # Create dataset and data loaders
     train_dataset = ObjectDetectionDataset(data_path,label_path,split='train', val_split=0.1, transform=T.Compose([
