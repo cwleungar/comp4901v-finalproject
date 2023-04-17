@@ -92,7 +92,6 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         img,boxes=resize_image_with_boxes(img, boxes, 416)
         if self.transform is not None:
             img, boxes = self.transform(img, boxes)
-        boxes = T.ToTensor(boxes)
         
         target = torch.zeros((len(boxes), 5 + self.num_classes))
         for i in range(len(boxes)):
@@ -100,5 +99,5 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
             target[i, 4] = 1.0  # objectness
             target[i, 5:] = torch.FloatTensor(class_labels[i])
         
-        return T.ToTensor(img), target
+        return img, target
 
