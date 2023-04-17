@@ -6,19 +6,26 @@ import torch
 import torchvision.transforms.functional as F
 from PIL import Image
 classmap={
-    0:"Car",
-    1:"Pedestrian",
-    2:"Cyclist",
-    3:"Van",
-    -1:"DontCare",
-
-    "Car":0,
-    "Pedestrian":1,
-    "Cyclist":2,
-    "Van":3,
-    "DontCare":-1,
-    
+    0: 'Car',
+    1: 'Pedestrian', 
+    2: 'Cyclist', 
+    3: 'Van', 
+    4: 'Person_sitting', 
+    5: 'Tram', 
+    6: 'Truck', 
+    7: 'Misc', 
+    -1: 'DontCare', 
+    'Car': 0, 
+    'Pedestrian': 1, 
+    'Cyclist': 2, 
+    'Van': 3, 
+    'Person_sitting': 4,
+    'Tram': 5, 
+    'Truck': 6, 
+    'Misc': 7, 
+    'DontCare': -1
 }
+
 
 class ObjectDetectionDataset(torch.utils.data.Dataset):
     def __init__(self, data_dir,label_dir, split='training', val_split=0.1, transform=None):
@@ -29,19 +36,6 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         self.image_dir = os.path.join(self.data_dir, self.split, 'image_2')
         self.label_dir = os.path.join(self.label_dir, self.split, 'label_2')
         self.filenames = os.listdir(self.image_dir)
-
-        for idx in  range(len(self.filenames)):
-            label_filename = os.path.join(self.label_dir, self.filenames[idx][:-4] + '.txt')
-            with open(label_filename, "r") as f:
-                labels_str = f.readlines()
-            labels = []
-            for word in labels_str:
-                labels_str = word.split()
-                if labels_str[0] not in classmap:
-                    classmap[labels_str[0]]=len(classmap)//2
-                    classmap[len(classmap)//2]=labels_str[0]
-                labels.append([classmap[labels_str[0]]]+labels_str[1:])
-        print(classmap)
         random.seed(42)
         random.shuffle(self.filenames)
         val_size = int(val_split * len(self.filenames))

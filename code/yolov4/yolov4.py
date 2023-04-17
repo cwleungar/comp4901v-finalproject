@@ -10,6 +10,7 @@ import time
 import argparse
 import pickle
 import torch.nn as nn
+from yolov3.utils.metrics import bbox_iou
 
 class ConvBlock(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0):
@@ -128,3 +129,56 @@ class YOLOv4(nn.Module):
         x = x.view(x.shape[0], -1, (self.num_classes + 5))
         
         return x
+    
+class YOLOv4Loss(nn.Module):
+    def __init__(self,batchsize, anchors, num_classes, img_size, ignore_thresh=0.5):
+        super(YOLOv4Loss, self).__init__()
+        self.anchors = anchors
+        self.num_anchors = len(anchors)
+        self.num_classes = num_classes
+        self.img_size = img_size
+        self.ignore_thresh = ignore_thresh
+        self.mse_loss = nn.MSELoss()
+        self.bce_loss = nn.BCELoss()
+        self.obj_scale = 1
+        self.noobj_scale = 100
+        self.reg_scale = 0.1
+        self.batchsize = batchsize
+        self.class_scale = 10
+    def forward(self, pred, target):
+        # Split the output tensor into bounding box coordinates, objectness scores, and class probabilities
+        pred_boxes = pred[..., :4]
+        pred_obj = pred[..., 4:5]
+        pred_class = pred[..., 5:]
+        
+        # Split the target tensor into bounding box coordinates, objectness masks, and class masks
+        target_boxes = target[..., :4]
+        target_obj = target[..., 4:5]
+        target_class = target[..., 5:]
+        
+        # Calculate the loss for the bounding box coordinates
+        loss_x = self.mse_loss(pred_boxes[..., 0:1], target_boxes[..., 0:1])
+        loss_y = self.mse_loss(pred_boxes[..., 1:2], target_boxes[..., 1:2])
+        loss_w = self.mse_loss(torch.sqrt(pred_boxes[..., 2:3]), torch.sqrt(target_boxes[..., 2:3]))
+        loss_h = self.mse_loss(torch.sqrt(pred_boxes[..., 3:4]), torch.sqrt(target_boxes[..., 3:4]))
+        loss_coord = loss_x + loss_y + loss_w + loss_h
+        
+        # Calculate the loss for the objectness scores
+        loss_obj = self.bce_loss(pred_obj, target_obj)
+        
+        # Calculate the loss for the class probabilities
+        loss_class = self.bce_loss(pred_class, target_class)
+        iou = bbox_iou(pred_boxes, target_boxes)
+        obj_mask = target[..., 5].view(-1)
+        noobj_mask = (iou < self.ignore_thresh).float() * (1 - obj_mask)
+        noobj_loss = F.binary_cross_entropy_with_logits(pred_obj, noobj_mask, reduction='none')
+        noobj_loss = noobj_loss.view(self.batch_size, -1).sum(dim=1).mean()
+        # Calculate the total loss
+        loss = self.obj_scale * loss_obj + self.reg_scale * loss_coord + loss_class*self.class_scale + self.noobj_scale * noobj_loss
+        
+        return loss
+def get_anchors():
+    anchors = np.array([[10, 13], [16, 30], [33, 23], [30, 61], [62, 45], [59, 119], [116, 90], [156, 198], [373, 326]])
+    anchors = anchors / 416
+    anchors = anchors.astype(np.float32)
+    return anchors

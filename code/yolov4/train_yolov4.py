@@ -137,7 +137,7 @@ if __name__ == "__main__":
     parser.add_argument('--batch_size', type=int, default=16, help='Batch size')
     parser.add_argument('--num_epochs', type=int, default=100, help='Number of epochs')
     parser.add_argument('--learning_rate', type=float, default=0.001, help='Learning rate')
-    parser.add_argument('--num_classes', type=int, default=3, help='Number of classes')
+    parser.add_argument('--num_classes', type=int, default=8, help='Number of classes')
     parser.add_argument('--data_path', type=str, default='data', help='Path to dataset')
     parser.add_argument('--label_path', type=str, default='label', help='Path to label')
     parser.add_argument('--log_dir', type=str, default='logs', help='Path to logs')
