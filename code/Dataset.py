@@ -5,13 +5,15 @@ import numpy as np
 import torch
 import torchvision.transforms.functional as F
 from PIL import Image
-def classlabel(class_labels):
-    if class_labels=="Car":
-        return 0
-    elif class_labels=="Pedestrian":
-        return 1
-    elif class_labels=="Cyclist":
-        return 2
+classmap={
+    0:"Car",
+    1:"Pedestrian",
+    2:"Cyclist",
+    "Car":0,
+    "Pedestrian":1,
+    "Cyclist":2
+}
+
 class ObjectDetectionDataset(torch.utils.data.Dataset):
     def __init__(self, data_dir,label_dir, split='training', val_split=0.1, transform=None):
         self.data_dir = data_dir
@@ -37,8 +39,13 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         img = Image.open(img_filename).convert('RGB')
         
         label_filename = os.path.join(self.label_dir, self.filenames[idx][:-4] + '.txt')
-        labels = np.loadtxt(label_filename, delimiter=' ', dtype=np.float32, ndmin=2)
-        
+        with open(label_filename, "r") as f:
+            labels_str = f.readlines()
+        labels = []
+        for word in labels_str:
+            labels_str = word.split()
+            labels.append([classmap[labels_str[0]]]+labels_str[1:])
+        labels = np.array(labels, dtype=np.float32)        
         boxes = labels[:, 4:8]
         class_labels = labels[:, 0]
         
@@ -46,5 +53,5 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
             img, boxes = self.transform(img, boxes)
         boxes = torch.from_numpy(boxes)
         
-        return img, boxes, classlabel(class_labels)
+        return img, boxes, class_labels
     
