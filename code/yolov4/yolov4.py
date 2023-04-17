@@ -75,7 +75,6 @@ class YOLOv4(nn.Module):
 
         # Define the feature pyramid network
         self.fpn = nn.Sequential(
-            ConvBlock(1024, 512, 1),
             ConvBlock(512, 256, 1),
             nn.Upsample(scale_factor=2, mode='nearest'),
             ConcatBlock(),
@@ -121,8 +120,7 @@ class YOLOv4(nn.Module):
         x = self.backbone(x)
         print(x.shape)
         # Pass the features through the feature pyramid network
-        x0, x1, x2 = torch.chunk(x, 3, dim=1)
-        x = self.fpn(x2)
+        x0, x1, x2 = torch.split(x, [int(x.shape[1] / 8), int(x.shape[1] / 4), int(x.shape[1] / 2)], dim=1)        x = self.fpn(x2)
 
         # Pass the features through the detection layers
         x = torch.cat([x, x1], dim=1)
