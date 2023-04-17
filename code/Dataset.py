@@ -12,7 +12,7 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         self.split = 'training' if (split == 'train' or split=='valid') else 'testing'
         self.transform = transform
         self.image_dir = os.path.join(self.data_dir, self.split, 'image_2')
-        self.label_dir = os.path.join(self.label_dir, self.split, 'image_2')
+        self.label_dir = os.path.join(self.label_dir, self.split, 'label_2')
         self.filenames = list(set(os.listdir(self.image_dir)) & set(os.listdir(self.label_dir)))
         random.seed(42)
         random.shuffle(self.filenames)
