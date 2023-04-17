@@ -253,13 +253,16 @@ class Yolo_dataset(Dataset):
         self.train = train
 
         truth = {}
-        print(label_path)
         f = open(label_path, 'r', encoding='utf-8')
         for line in f.readlines():
             data = line.split(" ")
             truth[data[0]] = []
             for i in data[1:]:
-                truth[data[0]].append([int(float(j)) for j in i.split(',')])
+                temp=[]
+                for j in i.split(','):
+                    print(j)
+                    temp.append(int(float(j)))
+                truth[data[0]].append(temp)
 
         self.truth = truth
         self.imgs = list(self.truth.keys())
