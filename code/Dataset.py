@@ -6,11 +6,11 @@ import torch
 import torchvision.transforms.functional as F
 from PIL import Image
 def classlabel(class_labels):
-    if classlabel=="Car":
+    if class_labels=="Car":
         return 0
-    elif classlabel=="Pedestrian":
+    elif class_labels=="Pedestrian":
         return 1
-    elif classlabel=="Cyclist":
+    elif class_labels=="Cyclist":
         return 2
 class ObjectDetectionDataset(torch.utils.data.Dataset):
     def __init__(self, data_dir,label_dir, split='training', val_split=0.1, transform=None):
