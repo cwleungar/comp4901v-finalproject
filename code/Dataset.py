@@ -90,7 +90,6 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         boxes = labels[:, 4:8]
         class_labels = labels[:, 0]
         img,boxes=resize_image_with_boxes(img, boxes, 416)
-        print(img)
         if self.transform is not None:
             img, boxes = self.transform(img, boxes)
         boxes = T.ToTensor(boxes)
