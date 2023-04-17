@@ -6,7 +6,7 @@ from torchvision import transforms
 from torch.utils.tensorboard import SummaryWriter
 import torchvision.models.detection as detection
 from .. import Dataset   # Import your custom dataset module
-from yolov4 import YOLOv4             # Import your YOLOv4 module
+import yolov4             # Import your YOLOv4 module
 import torchvision.transforms as T
 import argparse
 def train(args):
@@ -31,7 +31,7 @@ def train(args):
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
     # Create YOLOv4 model and optimizer
-    model = YOLOv4(num_classes=num_classes).to(device)
+    model = yolov4.YOLOv4(num_classes=num_classes).to(device)
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     # Create loss function
