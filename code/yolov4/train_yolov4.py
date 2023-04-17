@@ -6,7 +6,7 @@ from torchvision import transforms
 from torch.utils.tensorboard import SummaryWriter
 import torchvision.models.detection as detection
 from ..Dataset import ObjectDetectionDataset   # Import your custom dataset module
-import yolov4             # Import your YOLOv4 module
+from . import  yolov4             # Import your YOLOv4 module
 import torchvision.transforms as T
 import argparse
 def train(args):
