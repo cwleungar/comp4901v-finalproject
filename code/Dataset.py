@@ -16,7 +16,7 @@ classmap={
     5: 'Tram', 
     6: 'Truck', 
     7: 'Misc', 
-    -1: 'DontCare', 
+    8: 'DontCare', 
     'Car': 0, 
     'Pedestrian': 1, 
     'Cyclist': 2, 
@@ -25,7 +25,7 @@ classmap={
     'Tram': 5, 
     'Truck': 6, 
     'Misc': 7, 
-    'DontCare': -1
+    'DontCare': 8
 }
 
 def resize_image_with_boxes(image, boxes, new_size):
