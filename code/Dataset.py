@@ -30,7 +30,7 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         self.label_dir = os.path.join(self.label_dir, self.split, 'label_2')
         self.filenames = os.listdir(self.image_dir)
 
-        for idx in  len(self.filenames):
+        for idx in  range(len(self.filenames)):
             label_filename = os.path.join(self.label_dir, self.filenames[idx][:-4] + '.txt')
             with open(label_filename, "r") as f:
                 labels_str = f.readlines()
