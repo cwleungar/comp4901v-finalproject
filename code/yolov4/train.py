@@ -25,7 +25,9 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torch import optim
 from torch.nn import functional as F
-from tensorboardX import SummaryWriter
+import torch.utils.tensorboard as tb
+from torch.utils.tensorboard import SummaryWriter
+
 from easydict import EasyDict as edict
 
 from dataset import Yolo_dataset

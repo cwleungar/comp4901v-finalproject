@@ -70,7 +70,7 @@ elif Cfg.mosaic:
     Cfg.mixup = 3
 
 Cfg.checkpoints = os.path.join(_BASE_DIR, 'checkpoints')
-Cfg.TRAIN_TENSORBOARD_DIR = os.path.join(_BASE_DIR, 'log')
+Cfg.TRAIN_TENSORBOARD_DIR = '/content/drive/MyDrive/comp4901v-final/log/yolov4'
 
 Cfg.iou_type = 'iou'  # 'giou', 'diou', 'ciou'
 
