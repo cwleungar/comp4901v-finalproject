@@ -112,12 +112,9 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         img, boxes = resize_image_with_boxes_to_square(img, boxes, 416)
         if self.transform is not None:
             img, boxes = self.transform(img, boxes)
+
+        target = torch.zeros((len(boxes), 5 + len(classmap) // 2))
+        target[:, :4] = boxes.float() / 416
+        target[:, 5:] = class_labels
     
-        labels = torch.zeros((len(boxes), 5 + len(classmap) // 2))
-        labels[:, :4] = boxes.float() / 416
-        labels[:, 4] = 1.0  # objectness
-        class_onehot = torch.zeros((len(boxes), len(classmap) // 2))
-        class_onehot[torch.arange(len(boxes)), torch.tensor(class_labels).long()] = 1.0
-        labels[:, 5:] = class_onehot
-    
-        return img, labels
+        return img, target
