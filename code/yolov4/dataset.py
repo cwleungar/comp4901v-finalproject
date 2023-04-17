@@ -253,6 +253,7 @@ class Yolo_dataset(Dataset):
         self.train = train
 
         truth = {}
+        print(label_path)
         f = open(label_path, 'r', encoding='utf-8')
         for line in f.readlines():
             data = line.split(" ")
