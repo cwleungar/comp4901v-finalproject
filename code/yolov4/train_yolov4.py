@@ -41,7 +41,7 @@ def train(args):
 
     # Create loss function
     criterion = nn.MSELoss()
-    logger = tb.SummaryWriter(path.join(args.log_dir, f'yolov4-lr-{args.learning_rate}-wd--{args.weight_decay}-dp1--{args.dropout1}-dp2--{args.dropout2}-{current_GMT}'), flush_secs=1)
+    logger = tb.SummaryWriter(path.join(args.log_dir, f'yolov4-lr-{args.learning_rate}-wd--{args.weight_decay}-{current_GMT}'), flush_secs=1)
 
     # Create TensorBoard writer
 
