@@ -259,6 +259,8 @@ class Yolo_dataset(Dataset):
             truth[data[0]] = []
             for i in data[1:]:
                 temp=[]
+                if i==" ":
+                    continue
                 for j in i.split(','):
                     print(j)
                     temp.append(int(float(j)))
