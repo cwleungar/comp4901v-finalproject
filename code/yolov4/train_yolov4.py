@@ -3,12 +3,16 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from torch.utils.tensorboard import SummaryWriter
+import torch.utils.tensorboard as tb
 import torchvision.models.detection as detection
 from ..Dataset import ObjectDetectionDataset   # Import your custom dataset module
 from . import  yolov4             # Import your YOLOv4 module
 import torchvision.transforms as T
 import argparse
+from os import path
+import time
+current_GMT = time.time()
+
 def train(args):
     # Set device for training
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -36,9 +40,9 @@ def train(args):
 
     # Create loss function
     criterion = nn.MSELoss()
+    logger = tb.SummaryWriter(path.join(args.log_dir, f'yolov4-lr-{args.lr}-wd--{args.weight_decay}-dp1--{args.dropout1}-dp2--{args.dropout2}-{current_GMT}'), flush_secs=1)
 
     # Create TensorBoard writer
-    writer = SummaryWriter()
 
     # Training loop
     for epoch in range(num_epochs):
@@ -61,8 +65,19 @@ def train(args):
             optimizer.step()
 
             # Log training loss to TensorBoard
-            writer.add_scalar('Training Loss', loss.item(), epoch * len(train_loader) + i)
+            logger.add_scalar('train/Training Loss', loss.item(), epoch * len(train_loader) + i)
+            # Compute mAP using torchvision's detection API
+            detection_model = detection.fasterrcnn_resnet50_fpn(pretrained=True)
+            detection_model.eval()
+            detection_model.to(device)
+            gt_boxes = [b.to(device) for b in gt_boxes]
+            pred_boxes = [b.to(device) for b in pred_boxes]
+            mean_average_precision = detection.coco_evaluation.evaluate(
+                gt_boxes, pred_boxes, iou_threshold=0.5
+            )['map']
 
+            # Log mAP to TensorBoard
+            logger.add_scalar('train/mAP', mean_average_precision, epoch)
         # Set model to evaluation mode
         model.eval()
 
@@ -95,7 +110,7 @@ def train(args):
             avg_val_loss = total_loss / len(val_dataset)
 
             # Log validation loss to TensorBoard
-            writer.add_scalar('Validation Loss', avg_val_loss, epoch)
+            logger.add_scalar('val/Validation Loss', avg_val_loss, epoch)
 
             # Compute mAP using torchvision's detection API
             detection_model = detection.fasterrcnn_resnet50_fpn(pretrained=True)
@@ -108,7 +123,7 @@ def train(args):
             )['map']
 
             # Log mAP to TensorBoard
-            writer.add_scalar('mAP', mean_average_precision, epoch)
+            logger.add_scalar('val/mAP', mean_average_precision, epoch)
 
         # Save model checkpoint
         torch.save(model.state_dict(), f'model_checkpoint_{epoch}.pt')
