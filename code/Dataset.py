@@ -28,6 +28,8 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         self.transform = transform
         self.image_dir = os.path.join(self.data_dir, self.split, 'image_2')
         self.label_dir = os.path.join(self.label_dir, self.split, 'label_2')
+        self.filenames = os.listdir(self.image_dir)
+
         for idx in  len(self.filenames):
             label_filename = os.path.join(self.label_dir, self.filenames[idx][:-4] + '.txt')
             with open(label_filename, "r") as f:
@@ -40,7 +42,6 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
                     classmap[len(classmap)//2]=labels_str[0]
                 labels.append([classmap[labels_str[0]]]+labels_str[1:])
         print(classmap)
-        self.filenames = os.listdir(self.image_dir)
         random.seed(42)
         random.shuffle(self.filenames)
         val_size = int(val_split * len(self.filenames))
