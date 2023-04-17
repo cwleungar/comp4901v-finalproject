@@ -113,7 +113,7 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         if self.transform is not None:
             img, boxes = self.transform(img, boxes)
 
-        target = torch.zeros((80, 5 + len(classmap) // 2))
+        target = torch.zeros((80, 5 ))
         for i in range(len(boxes)):
             target[i, :4] = torch.tensor(boxes[i]).float() / 416
             target[i, 5:] = torch.tensor(class_labels)
