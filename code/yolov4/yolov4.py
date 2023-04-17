@@ -58,10 +58,13 @@ class ConcatBlock(nn.Module):
     def __init__(self):
         super(ConcatBlock, self).__init__()
 
-    def forward(self, x):
+    def forward(self, x, y):
         # Upsample x to the size of y
-        x1, x2 = torch.split(x, int(x.size()[1]/2), dim=1)
-        return torch.cat([x1, x2], dim=2)
+        x = nn.functional.interpolate(x, size=y.size()[2:], mode='nearest')
+        
+        # Concatenate x and y along the channel dimension
+        out = torch.cat([y, x], dim=1)
+        return out
     
 class YOLOv4(nn.Module):
     def __init__(self, num_classes=80):
@@ -82,8 +85,7 @@ class YOLOv4(nn.Module):
             ConvBlock(512, 256, 1),
             ConvBlock(256, 512, 3, padding=1),
             ConvBlock(512, 256, 1),
-            ConcatBlock(),
-            ConvBlock(512, 512, 3, padding=1)
+            ConvBlock(256, 512, 3, padding=1)
         )
         
         # Define the detection layers
@@ -125,7 +127,7 @@ class YOLOv4(nn.Module):
             split_sizes[1] += diff
         x0, x1, x2 = torch.split(x, split_sizes, dim=1)
         
-        x = self.fpn(x2)
+        x = self.fpn(x2,x2)
 
         # Pass the features through the detection layers
         x = torch.cat([x, x1], dim=1)
