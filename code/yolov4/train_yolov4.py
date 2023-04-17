@@ -31,7 +31,7 @@ def train(args):
         T.RandomCrop(size=(224, 224)),
         T.ToTensor()
     ]))
-    val_dataset = ObjectDetectionDataset(data_path,label_path,split='valid', val_split=0.1, transform=None)
+    val_dataset = ObjectDetectionDataset(data_path,label_path,split='val', val_split=0.1, transform=None)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 

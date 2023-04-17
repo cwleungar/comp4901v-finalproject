@@ -9,7 +9,7 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
     def __init__(self, data_dir,label_dir, split='training', val_split=0.1, transform=None):
         self.data_dir = data_dir
         self.label_dir = label_dir
-        self.split = 'training' if (split == 'train' or split=='valid') else 'testing'
+        self.split = 'training' if (split == 'train' or split=='val') else 'testing'
         self.transform = transform
         self.image_dir = os.path.join(self.data_dir, self.split, 'image_2')
         self.label_dir = os.path.join(self.label_dir, self.split, 'label_2')
