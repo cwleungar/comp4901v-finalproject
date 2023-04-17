@@ -95,9 +95,9 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         
         target = torch.zeros((len(boxes), 5 + len(classmap)//2))
         for i in range(len(boxes)):
-            target[i, :4] = torch.FloatTensor(boxes[i]).float() / self.img_size[0]
+            target[i, :4] = boxes[i].float() / self.img_size[0]
             target[i, 4] = 1.0  # objectness
-            target[i, 5:] = torch.FloatTensor(class_labels[i])
+            target[i, 5:] =class_labels[i].float()
         
         return img, target
 
