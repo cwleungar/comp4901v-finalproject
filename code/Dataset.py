@@ -56,25 +56,23 @@ def resize_image_with_boxes(image, boxes, new_size):
     return image, new_boxes
 def resize_image_with_boxes_to_square(image, boxes, new_size):
     width, height = image.size
-    
+
     # Compute the scaling factor to resize the image to the new size
     scale = min(new_size/width, new_size/height)
     new_width = int(scale * width)
     new_height = int(scale * height)
-    resized_image = image.resize((new_width, new_height))
+    resized_image = F.resize(image, (new_height, new_width))
 
     # Compute the padding needed to make the image square
     padding_left = (new_size - new_width) // 2
     padding_top = (new_size - new_height) // 2
-    padding_right = new_size - new_width - padding_left
-    padding_bottom = new_size - new_height - padding_top
-    
+
     # Pad the image and the boxes with zeros to make them square
-    padded_image = ImageOps.expand(resized_image, (padding_left, padding_top, padding_right, padding_bottom), fill=0)
+    padded_image = F.pad(resized_image, (padding_left, padding_top, new_size - new_width - padding_left, new_size - new_height - padding_top), fill=0)
     padded_boxes = boxes * scale
     padded_boxes[:, [0, 2]] += padding_left
     padded_boxes[:, [1, 3]] += padding_top
-    
+
     return padded_image, padded_boxes
 
 class ObjectDetectionDataset(torch.utils.data.Dataset):
