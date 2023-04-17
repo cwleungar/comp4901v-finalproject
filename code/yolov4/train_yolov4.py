@@ -5,7 +5,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 import torch.utils.tensorboard as tb
 import torchvision.models.detection as detection
-from ..Dataset import ObjectDetectionDataset   # Import your custom dataset module
+from ..Dataset import ObjectDetectionDataset, PadCollate   # Import your custom dataset module
 from . import  yolov4             # Import your YOLOv4 module
 import argparse
 from os import path
@@ -30,8 +30,8 @@ def train(args):
         Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
     ]))
     val_dataset = ObjectDetectionDataset(data_path,label_path,split='val', val_split=0.1, transform=None)
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True,collate_fn=PadCollate(dim=0))
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False,collate_fn=PadCollate(dim=0))
 
     # Create YOLOv4 model and optimizer
     model = yolov4.YOLOv4(num_classes=num_classes).to(device)

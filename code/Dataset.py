@@ -31,7 +31,7 @@ classmap={
 def resize_image_with_boxes(image, boxes, new_size):
     # Resize the image while maintaining aspect ratio
     old_size = image.size
-    if True or old_size[0] > old_size[1]:
+    if old_size[0] > old_size[1]:
         new_width = new_size
         new_height = int(new_size * old_size[1] / old_size[0])
     else:
@@ -100,4 +100,21 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
             target[i, 5:] =torch.tensor(class_labels[i]).float()
         print(img.shape,target.shape)
         return img, target
+    
+class PadCollate:
+    def __init__(self, dim=0):
+        self.dim = dim
+
+    def pad_collate(self, batch):
+        # Get the maximum length of the samples
+        max_len = max([len(sample) for sample in batch])
+
+        # Pad the samples with zeros
+        padded_batch = [torch.nn.functional.pad(sample, pad=(0, 0, 0, max_len - len(sample)), mode='constant', value=0) for sample in batch]
+
+        # Stack the padded samples along the specified dimension
+        return torch.stack(padded_batch, dim=self.dim)
+
+    def __call__(self, batch):
+        return self.pad_collate(batch)
 
