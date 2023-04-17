@@ -35,7 +35,7 @@ for file in filenames:
         for line in lines:
             line=line.split(" ")
             temp=temp+str(line[4])+","+str(line[5])+","+str(line[6])+","+str(line[7])+","+str(classmap[line[0]])+" "
-        buffer.append(temp)
+        buffer.append(temp+'\n')
 random.seed(42)
 random.shuffle(buffer)
 val_size = int(0.1 * len(buffer))
