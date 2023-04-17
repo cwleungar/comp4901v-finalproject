@@ -120,7 +120,8 @@ class YOLOv4(nn.Module):
         x = self.backbone(x)
         print(x.shape)
         # Pass the features through the feature pyramid network
-        x0, x1, x2 = torch.split(x, [int(x.shape[1] / 8), int(x.shape[1] / 4), int(x.shape[1] / 2)], dim=1)        x = self.fpn(x2)
+        x0, x1, x2 = torch.split(x, [int(x.shape[1] / 8), int(x.shape[1] / 4), int(x.shape[1] / 2)], dim=1)        
+        x = self.fpn(x2)
 
         # Pass the features through the detection layers
         x = torch.cat([x, x1], dim=1)
