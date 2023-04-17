@@ -134,7 +134,7 @@ class YOLOv4(nn.Module):
 
 
         # Pass the features through the detection layers
-        x = torch.cat([x, x1], dim=1)
+        x = torch.cat([x, x2], dim=1)
 
         x = self.head(x)
 
