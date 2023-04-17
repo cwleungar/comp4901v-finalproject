@@ -28,6 +28,32 @@ classmap={
     'DontCare': -1
 }
 
+def resize_image_with_boxes(image, boxes, new_size):
+    # Resize the image while maintaining aspect ratio
+    old_size = image.size
+    if old_size[0] > old_size[1]:
+        new_width = new_size
+        new_height = int(new_size * old_size[1] / old_size[0])
+    else:
+        new_height = new_size
+        new_width = int(new_size * old_size[0] / old_size[1])
+    image = image.resize((new_width, new_height))
+    
+    # Calculate the scaling factor for the bounding boxes
+    width_scale = new_width / old_size[0]
+    height_scale = new_height / old_size[1]
+    
+    # Adjust the bounding box locations based on the resized image
+    new_boxes = []
+    for box in boxes:
+        x, y, w, h = box
+        x = int(x * width_scale)
+        y = int(y * height_scale)
+        w = int(w * width_scale)
+        h = int(h * height_scale)
+        new_boxes.append([x, y, w, h])
+    
+    return image, new_boxes
 
 class ObjectDetectionDataset(torch.utils.data.Dataset):
     def __init__(self, data_dir,label_dir, split='training', val_split=0.1, transform=None):
@@ -63,7 +89,7 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         labels = np.array(labels, dtype=np.float32)        
         boxes = labels[:, 4:8]
         class_labels = labels[:, 0]
-        
+        img,boxes=resize_image_with_boxes(img, boxes, 416)
         if self.transform is not None:
             img, boxes = self.transform(img, boxes)
         boxes = T.ToTensor(boxes)
@@ -75,4 +101,4 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
             target[i, 5:] = torch.FloatTensor(class_labels[i])
         
         return T.ToTensor(img), target
-    
+

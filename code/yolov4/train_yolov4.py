@@ -1,13 +1,12 @@
+from ..Transforms import * 
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from torchvision import transforms
 import torch.utils.tensorboard as tb
 import torchvision.models.detection as detection
 from ..Dataset import ObjectDetectionDataset   # Import your custom dataset module
 from . import  yolov4             # Import your YOLOv4 module
-import torchvision.transforms as T
 import argparse
 from os import path
 import time
@@ -26,10 +25,10 @@ def train(args):
     data_path=args.data_path
     label_path=args.label_path
     # Create dataset and data loaders
-    train_dataset = ObjectDetectionDataset(data_path,label_path,split='train', val_split=0.1, transform=T.Compose([
-        T.RandomHorizontalFlip(p=0.5),
-        T.RandomCrop(size=(224, 224)),
-        T.ToTensor()
+    train_dataset = ObjectDetectionDataset(data_path,label_path,split='train', val_split=0.1, transform=Compose([
+        RandomHorizontalFlip(p=0.5),
+        Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+        RandomVerticalFlip(p=0.5),
     ]))
     val_dataset = ObjectDetectionDataset(data_path,label_path,split='val', val_split=0.1, transform=None)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
