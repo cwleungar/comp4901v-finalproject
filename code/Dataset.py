@@ -101,20 +101,5 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         print(img.shape,target.shape)
         return img, target
     
-class PadCollate:
-    def __init__(self, dim=0):
-        self.dim = dim
 
-    def pad_collate(self, batch):
-        # Get the maximum length of the samples
-        max_len = max([len(sample) for sample in batch])
-
-        # Pad the samples with zeros
-        padded_batch = [torch.nn.functional.pad(sample, pad=(0, 0, 0, max_len - len(sample)), mode='constant', value=0) for sample in batch]
-
-        # Stack the padded samples along the specified dimension
-        return torch.stack(padded_batch, dim=self.dim)
-
-    def __call__(self, batch):
-        return self.pad_collate(batch)
 
