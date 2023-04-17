@@ -35,7 +35,7 @@ def train(args):
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
     # Create YOLOv4 model and optimizer
-    model = yolov4.YOLOv4(num_classes=num_classes).to(device)
+    model = yolov4_byothers.Yolov4(n_classes=num_classes).to(device)
     optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=args.weight_decay)
 
     # Create loss function
