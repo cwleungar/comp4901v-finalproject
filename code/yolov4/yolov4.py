@@ -117,17 +117,18 @@ class YOLOv4(nn.Module):
     def forward(self, x):
         # Pass the input through the backbone network
         x = self.backbone(x)
-        
+
         # Pass the features through the feature pyramid network
         x = self.fpn(x)
-        
+
         # Pass the features through the detection layers
         x = self.head(x)
-        
+
         # Reshape the output to the YOLOv4 format
         x = x.permute(0, 2, 3, 1)
-        x = x.view(x.shape[0], -1, (self.num_classes + 5))
-        
+        B, H, W, C = x.shape
+        x = x.view(B, H*W, (self.num_classes + 5) * 3)
+
         return x
     
 class YOLOv4Loss(nn.Module):
