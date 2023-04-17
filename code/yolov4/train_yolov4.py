@@ -40,7 +40,7 @@ def train(args):
     optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=args.weight_decay)
 
     # Create loss function
-    criterion = yolov4.YOLOv4Loss(num_classes=num_classes)
+    criterion = yolov4.YOLOv4Loss()
     logger = tb.SummaryWriter(path.join(args.log_dir, f'yolov4-lr-{args.learning_rate}-wd--{args.weight_decay}-{current_GMT}'), flush_secs=1)
 
     # Create TensorBoard writer
