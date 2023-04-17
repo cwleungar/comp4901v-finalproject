@@ -13,8 +13,7 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         self.transform = transform
         self.image_dir = os.path.join(self.data_dir, self.split, 'image_2')
         self.label_dir = os.path.join(self.label_dir, self.split, 'image_2')
-        self.filenames = os.listdir(self.image_dir)
-        print(self.filenames)
+        self.filenames = list(set(os.listdir(self.image_dir)) & set(os.listdir(self.label_dir)))
         random.seed(42)
         random.shuffle(self.filenames)
         val_size = int(val_split * len(self.filenames))
