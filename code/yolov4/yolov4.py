@@ -58,8 +58,10 @@ class ConcatBlock(nn.Module):
     def __init__(self):
         super(ConcatBlock, self).__init__()
 
-    def forward(self, x1, x2):
-        return torch.cat([x1, x2], dim=1)
+    def forward(self, x):
+        # Upsample x to the size of y
+        x1, x2 = torch.split(x, int(x.size()[1]/2), dim=1)
+        return torch.cat([x1, x2], dim=2)
     
 class YOLOv4(nn.Module):
     def __init__(self, num_classes=80):
