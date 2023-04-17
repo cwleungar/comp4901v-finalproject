@@ -117,7 +117,7 @@ class YOLOv4(nn.Module):
     def forward(self, x):
         # Pass the input through the backbone network
         x = self.backbone(x)
-
+        print(x.shape)
         # Pass the features through the feature pyramid network
         x = self.fpn(x)
 
