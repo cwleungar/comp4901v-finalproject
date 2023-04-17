@@ -93,7 +93,7 @@ class ObjectDetectionDataset(torch.utils.data.Dataset):
         if self.transform is not None:
             img, boxes = self.transform(img, boxes)
         
-        target = torch.zeros((len(boxes), 5 + self.num_classes))
+        target = torch.zeros((len(boxes), 5 + len(classmap)//2))
         for i in range(len(boxes)):
             target[i, :4] = torch.FloatTensor(boxes[i]) / self.img_size[0]
             target[i, 4] = 1.0  # objectness
