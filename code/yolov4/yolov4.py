@@ -38,8 +38,8 @@ class Darknet53(nn.Module):
         self.resblock3 = nn.Sequential(ConvBlock(256, 128, 1), ConvBlock(128, 256, 3, padding=1))
         self.conv5 = ConvBlock(256, 512, 3, stride=2, padding=1)
         self.resblock4 = nn.Sequential(ConvBlock(512, 256, 1), ConvBlock(256, 512, 3, padding=1))
-        self.conv6 = ConvBlock(512, 512, 3, stride=2, padding=1)
-        self.resblock5 = nn.Sequential(ConvBlock(1024, 512, 1), ConvBlock(512, 512, 3, padding=1))
+        self.conv6 = ConvBlock(512, 1024, 3, stride=2, padding=1)
+        self.resblock5 = nn.Sequential(ConvBlock(1024, 512, 1), ConvBlock(512, 1024, 3, padding=1))
         
     def forward(self, x):
         x = self.conv1(x)
@@ -75,6 +75,7 @@ class YOLOv4(nn.Module):
 
         # Define the feature pyramid network
         self.fpn = nn.Sequential(
+            ConvBlock(1024, 512, 1),
             ConvBlock(512, 256, 1),
             nn.Upsample(scale_factor=2, mode='nearest'),
             ConcatBlock(),
