@@ -1,5 +1,5 @@
 # Pytorch-YOLOv4
-
+https://github.com/Tianxiaomo/pytorch-YOLOv4/blob/master/Use_yolov4_to_train_your_own_data.md
 ![](https://img.shields.io/static/v1?label=python&message=3.6|3.7&color=blue)
 ![](https://img.shields.io/static/v1?label=pytorch&message=1.4&color=<COLOR>)
 [![](https://img.shields.io/static/v1?label=license&message=Apache2&color=green)](./License.txt)

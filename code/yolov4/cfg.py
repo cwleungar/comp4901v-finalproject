@@ -17,7 +17,7 @@ from easydict import EasyDict
 _BASE_DIR = '/content/comp4901v-finalproject/code/yolov4'
 Cfg = EasyDict()
 
-Cfg.use_darknet_cfg = True
+Cfg.use_darknet_cfg = False
 Cfg.cfgfile = os.path.join(_BASE_DIR, 'cfg', 'yolov4.cfg')
 
 Cfg.batch = 64
