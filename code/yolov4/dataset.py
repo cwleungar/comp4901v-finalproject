@@ -240,26 +240,36 @@ def draw_box(img, bboxes):
         img = cv2.rectangle(img, (b[0], b[1]), (b[2], b[3]), (0, 255, 0), 2)
     return img
 
-def resize_image_with_boxes_to_square(image, boxes, new_size):
-    width, height = image.size
+def resize_image_with_boxes_to_square(image, boxes, size):
+    # Calculate the size of the output image
+    max_side = max(image.shape[:2])
+    scale = size / max_side
+    output_shape = (int(image.shape[0] * scale), int(image.shape[1] * scale))
 
-    # Compute the scaling factor to resize the image to the new size
-    scale = min(new_size/width, new_size/height)
-    new_width = int(scale * width)
-    new_height = int(scale * height)
-    resized_image = F.resize(image, (new_height, new_width))
+    # Resize the image
+    image = cv2.resize(image, output_shape)
 
-    # Compute the padding needed to make the image square
-    padding_left = (new_size - new_width) // 2
-    padding_top = (new_size - new_height) // 2
+    # Resize the boxes
+    new_boxes = []
+    for box in boxes:
+        x1, y1, x2, y2, class_number = box
+        x1, x2 = int(x1 * scale), int(x2 * scale)
+        y1, y2 = int(y1 * scale), int(y2 * scale)
+        new_boxes.append([x1, y1, x2, y2, class_number])
 
-    # Pad the image and the boxes with zeros to make them square
-    padded_image = F.pad(resized_image, (padding_left, padding_top, new_size - new_width - padding_left, new_size - new_height - padding_top), fill=0)
-    padded_boxes = boxes * scale
-    padded_boxes[:, [0, 2]] += padding_left
-    padded_boxes[:, [1, 3]] += padding_top
+    # Add padding to make the image square
+    pad_x = size - output_shape[1]
+    pad_y = size - output_shape[0]
+    image = cv2.copyMakeBorder(image, 0, pad_y, 0, pad_x, cv2.BORDER_CONSTANT, value=0)
 
-    return padded_image, padded_boxes
+    # Adjust the boxes for the padding
+    for box in new_boxes:
+        box[0] += pad_x // 2
+        box[1] += pad_y // 2
+        box[2] += pad_x // 2
+        box[3] += pad_y // 2
+
+    return image, new_boxes
 
 class Yolo_dataset(Dataset):
     def __init__(self, label_path, cfg, train=True):
@@ -321,8 +331,7 @@ class Yolo_dataset(Dataset):
                 bboxes = np.array(self.truth.get(img_path), dtype=np.float)
                 img_path = os.path.join(self.cfg.dataset_dir, img_path)
             img = cv2.imread(img_path)
-            print(bboxes)
-            img, bboxes = resize_image_with_boxes_to_square(Image.fromarray(img), bboxes, self.cfg.w)
+            img, bboxes = resize_image_with_boxes_to_square(img, bboxes, self.cfg.w)
 
             img = cv2.cvtColor(np.array(img), cv2.COLOR_BGR2RGB)
             if img is None:
