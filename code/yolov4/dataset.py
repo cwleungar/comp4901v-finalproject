@@ -240,11 +240,22 @@ def draw_box(img, bboxes):
         img = cv2.rectangle(img, (b[0], b[1]), (b[2], b[3]), (0, 255, 0), 2)
     return img
 
+import cv2
+import numpy as np
+
 def resize_image_with_boxes_to_square(image, boxes, size):
+    if len(image.shape) == 2:
+        # Grayscale image
+        h, w = image.shape
+        c = 1
+    else:
+        # Color image
+        h, w, c = image.shape
+
     # Calculate the size of the output image
-    max_side = max(image.shape[:2])
+    max_side = max(h, w)
     scale = size / max_side
-    output_shape = (int(image.shape[0] * scale), int(image.shape[1] * scale))
+    output_shape = (int(w * scale), int(h * scale))
 
     # Resize the image
     image = cv2.resize(image, output_shape)
@@ -258,9 +269,12 @@ def resize_image_with_boxes_to_square(image, boxes, size):
         new_boxes.append([x1, y1, x2, y2, class_number])
 
     # Add padding to make the image square
-    pad_x = size - output_shape[1]
-    pad_y = size - output_shape[0]
-    image = cv2.copyMakeBorder(image, 0, pad_y, 0, pad_x, cv2.BORDER_CONSTANT, value=0)
+    pad_x = size - output_shape[0]
+    pad_y = size - output_shape[1]
+    if c == 1:
+        image = cv2.copyMakeBorder(image, 0, pad_y, 0, pad_x, cv2.BORDER_CONSTANT, value=0)
+    else:
+        image = cv2.copyMakeBorder(image, 0, pad_y, 0, pad_x, cv2.BORDER_CONSTANT, value=(0, 0, 0))
 
     # Adjust the boxes for the padding
     for box in new_boxes:
