@@ -19,6 +19,7 @@ import numpy as np
 
 import torch
 from torch.utils.data.dataset import Dataset
+import torchvision.transforms.functional as F
 
 
 def rand_uniform_strong(min, max):
@@ -238,6 +239,26 @@ def draw_box(img, bboxes):
         img = cv2.rectangle(img, (b[0], b[1]), (b[2], b[3]), (0, 255, 0), 2)
     return img
 
+def resize_image_with_boxes_to_square(image, boxes, new_size):
+    width, height = image.size
+
+    # Compute the scaling factor to resize the image to the new size
+    scale = min(new_size/width, new_size/height)
+    new_width = int(scale * width)
+    new_height = int(scale * height)
+    resized_image = F.resize(image, (new_height, new_width))
+
+    # Compute the padding needed to make the image square
+    padding_left = (new_size - new_width) // 2
+    padding_top = (new_size - new_height) // 2
+
+    # Pad the image and the boxes with zeros to make them square
+    padded_image = F.pad(resized_image, (padding_left, padding_top, new_size - new_width - padding_left, new_size - new_height - padding_top), fill=0)
+    padded_boxes = boxes * scale
+    padded_boxes[:, [0, 2]] += padding_left
+    padded_boxes[:, [1, 3]] += padding_top
+
+    return padded_image, padded_boxes
 
 class Yolo_dataset(Dataset):
     def __init__(self, label_path, cfg, train=True):
@@ -299,6 +320,7 @@ class Yolo_dataset(Dataset):
                 bboxes = np.array(self.truth.get(img_path), dtype=np.float)
                 img_path = os.path.join(self.cfg.dataset_dir, img_path)
             img = cv2.imread(img_path)
+            img, bboxes = resize_image_with_boxes_to_square(img, bboxes, self.cfg.w)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             if img is None:
                 continue
