@@ -78,7 +78,10 @@ def fill_truth_detection(bboxes, num_boxes, classes, flip, dx, dy, sx, sy, net_w
     if bboxes.shape[0] > num_boxes:
         bboxes = bboxes[:num_boxes]
 
-    min_w_h = np.array([bboxes[:, 2] - bboxes[:, 0], bboxes[:, 3] - bboxes[:, 1]]).min()
+    if len(bboxes) == 0:
+        min_w_h = 0.0
+    else:
+        min_w_h = np.array([bboxes[:, 2] - bboxes[:, 0], bboxes[:, 3] - bboxes[:, 1]]).min()
 
     bboxes[:, 0] *= (net_w / sx)
     bboxes[:, 2] *= (net_w / sx)
