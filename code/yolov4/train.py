@@ -248,8 +248,8 @@ class Yolo_loss(nn.Module):
             output[..., np.r_[:2, 4:n_ch]] = torch.sigmoid(output[..., np.r_[:2, 4:n_ch]])
 
             pred = output[..., :4].clone()
-            print(pred[..., 0].shape)
-            print(self.grid_x[output_id].shape)
+            #print(pred[..., 0].shape)
+            #print(self.grid_x[output_id].shape)
             pred[..., 0] += self.grid_x[output_id]
             pred[..., 1] += self.grid_y[output_id]
             pred[..., 2] = torch.exp(pred[..., 2]) * self.anchor_w[output_id]
