@@ -322,7 +322,7 @@ class Yolo_dataset(Dataset):
                 img_path = os.path.join(self.cfg.dataset_dir, img_path)
             img = cv2.imread(img_path)
             img, bboxes = resize_image_with_boxes_to_square(Image.fromarray(img), bboxes, self.cfg.w)
-            print(img.shape)
+            print(img.size)
             img = cv2.cvtColor(np.array(img), cv2.COLOR_BGR2RGB)
             if img is None:
                 continue
