@@ -13,6 +13,7 @@
 import os
 import random
 import sys
+from PIL import Image
 
 import cv2
 import numpy as np
@@ -320,9 +321,8 @@ class Yolo_dataset(Dataset):
                 bboxes = np.array(self.truth.get(img_path), dtype=np.float)
                 img_path = os.path.join(self.cfg.dataset_dir, img_path)
             img = cv2.imread(img_path)
-            print(bboxes)
-            img, bboxes = resize_image_with_boxes_to_square(img, bboxes, self.cfg.w)
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img, bboxes = resize_image_with_boxes_to_square(Image.fromarray(img), bboxes, self.cfg.w)
+            img = cv2.cvtColor(np.array(img), cv2.COLOR_BGR2RGB)
             if img is None:
                 continue
             oh, ow, oc = img.shape
