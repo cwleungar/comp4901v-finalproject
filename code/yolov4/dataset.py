@@ -247,46 +247,18 @@ import cv2
 import numpy as np
 
 def resize_image_with_boxes_to_square(image, boxes, size):
-    if len(image.shape) == 2:
-        # Grayscale image
-        h, w = image.shape
-        c = 1
-    else:
-        # Color image
-        h, w, c = image.shape
-
-    # Calculate the size of the output image
-    max_side = max(h, w)
-    scale = size / max_side
-    output_shape = (int(w * scale), int(h * scale))
-
     # Resize the image
-    image = cv2.resize(image, output_shape)
+    image_resized = cv2.resize(image, (size, size))
 
     # Resize the boxes
-    new_boxes = []
+    boxes_resized = []
     for box in boxes:
         x1, y1, x2, y2, class_number = box
-        x1, x2 = int(x1 * scale), int(x2 * scale)
-        y1, y2 = int(y1 * scale), int(y2 * scale)
-        new_boxes.append([x1, y1, x2, y2, class_number])
+        x1, x2 = int(x1 * size / image.shape[1]), int(x2 * size / image.shape[1])
+        y1, y2 = int(y1 * size / image.shape[0]), int(y2 * size / image.shape[0])
+        boxes_resized.append([x1, y1, x2, y2, class_number])
 
-    # Add padding to make the image square
-    pad_x = size - output_shape[0]
-    pad_y = size - output_shape[1]
-    if c == 1:
-        image = cv2.copyMakeBorder(image, 0, pad_y, 0, pad_x, cv2.BORDER_CONSTANT, value=0)
-    else:
-        image = cv2.copyMakeBorder(image, 0, pad_y, 0, pad_x, cv2.BORDER_CONSTANT, value=(0, 0, 0))
-
-    # Adjust the boxes for the padding
-    for box in new_boxes:
-        box[0] += pad_x // 2
-        box[1] += pad_y // 2
-        box[2] += pad_x // 2
-        box[3] += pad_y // 2
-
-    return image, new_boxes
+    return image_resized, boxes_resized
 
 class Yolo_dataset(Dataset):
     def __init__(self, label_path, cfg, train=True):
