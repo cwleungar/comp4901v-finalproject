@@ -513,7 +513,7 @@ def visiualize(img,boxes):
     import cv2
     from google.colab.patches import cv2_imshow
     # Load the image and bounding boxes
-    image = img
+    image = np.array(img)
     bboxes = boxes
 
     # Draw the bounding boxes on the image
@@ -523,5 +523,5 @@ def visiualize(img,boxes):
         cv2.rectangle(image, (int(x), int(y)), (int(w), int(h)), (0, 255, 0), 2)
 
     # Show the image with bounding boxes
-    cv2_imshow( image)
+    cv2_imshow(image)
     
