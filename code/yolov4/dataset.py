@@ -351,6 +351,7 @@ class Yolo_dataset(Dataset):
             img, bboxes = resize_image_with_boxes_to_square(img, bboxes, self.cfg.w)
             bboxes=np.array(bboxes)
             img = cv2.cvtColor(np.array(img), cv2.COLOR_BGR2RGB)
+            visiualize(img, bboxes)
             if img is None:
                 continue
             oh, ow, oc = img.shape
@@ -506,3 +507,20 @@ if __name__ == "__main__":
         a = draw_box(out_img.copy(), out_bboxes.astype(np.int32))
         plt.imshow(a.astype(np.int32))
         plt.show()
+
+
+def visiualize(img,boxes):
+    import cv2
+
+    # Load the image and bounding boxes
+    image = img
+    bboxes = boxes
+
+    # Draw the bounding boxes on the image
+    for bbox in bboxes:
+        x, y, w, h = bbox
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+    # Show the image with bounding boxes
+    cv2.imshow("Image with Bounding Boxes", image)
+    cv2.waitKey(0)
