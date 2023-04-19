@@ -521,7 +521,9 @@ def visiualize(img,boxes):
         print(bbox)
         x, y, w, h,c = bbox
         cv2.rectangle(image, (int(x), int(y)), (int(w), int(h)), (0, 255, 0), 2)
+    cv2.imwrite('output.jpg',image)   
+    raise Exception('stop')
 
     # Show the image with bounding boxes
-    cv2_imshow(image)
+    #cv2_imshow(image)
     
