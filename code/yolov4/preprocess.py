@@ -38,9 +38,9 @@ for file in filenames:
         buffer.append(temp+'\n')
 random.seed(42)
 random.shuffle(buffer)
-val_size = int(0.1 * len(buffer))
+val_size = int(0.05 * len(buffer))
 with open("code/yolov4/data/train.txt","w") as f:
-    f.write("".join(buffer[int(val_size*5):]))
+    f.write("".join(buffer[int(len(buffer)*0.1):]))
 
 with open("code/yolov4/data/val.txt","w") as f:
     f.write("".join(buffer[:val_size]))
