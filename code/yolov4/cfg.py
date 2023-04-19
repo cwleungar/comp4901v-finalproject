@@ -22,8 +22,8 @@ Cfg.cfgfile = os.path.join(_BASE_DIR, 'cfg', 'yolov4.cfg')
 
 Cfg.batch = 64
 Cfg.subdivisions = 16
-Cfg.width = 800 
-Cfg.height = 320 
+Cfg.width = 640 
+Cfg.height = 640 
 Cfg.channels = 3
 Cfg.momentum = 0.949
 Cfg.decay = 0.0005
