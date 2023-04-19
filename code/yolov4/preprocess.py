@@ -22,8 +22,8 @@ classmap={
     'Misc': 7, 
     'DontCare': 8
 }
-label_dir="/content/label"
-img_dir="/content/image"
+label_dir='D:/Users/samle/Documents/GitHub/comp4901v-finalproject/dataset/label'
+img_dir='D:/Users/samle/Documents/GitHub/comp4901v-finalproject/dataset/image'
 split="training"
 label_dir = os.path.join(label_dir, split, 'label_2')
 filenames=os.listdir(label_dir)
@@ -40,7 +40,7 @@ random.seed(42)
 random.shuffle(buffer)
 val_size = int(0.1 * len(buffer))
 with open("code/yolov4/data/train.txt","w") as f:
-    f.write("".join(buffer[val_size:]))
+    f.write("".join(buffer[int(val_size*0.5):]))
 
 with open("code/yolov4/data/val.txt","w") as f:
     f.write("".join(buffer[:val_size]))
