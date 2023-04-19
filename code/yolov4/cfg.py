@@ -69,9 +69,9 @@ elif Cfg.cutmix:
 elif Cfg.mosaic:
     Cfg.mixup = 3
 
-Cfg.checkpoints = os.path.join(_BASE_DIR, 'checkpoints')
+Cfg.checkpoints = os.path.join('/content/drive/MyDrive/comp4901v-finalproject', 'checkpoints')
 Cfg.TRAIN_TENSORBOARD_DIR = '/content/drive/MyDrive/comp4901v-finalproject/log/yolov4'
 
-Cfg.iou_type = 'iou'  # 'giou', 'diou', 'ciou'
+Cfg.iou_type = 'ciou'  # 'giou', 'diou', 'ciou'
 
-Cfg.keep_checkpoint_max = 10
+Cfg.keep_checkpoint_max = 5
