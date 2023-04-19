@@ -523,5 +523,5 @@ def visiualize(img,boxes):
         cv2.rectangle(image, (int(x), int(y)), (int(w), int(h)), (0, 255, 0), 2)
 
     # Show the image with bounding boxes
-    cv2_imshow("Image with Bounding Boxes", image)
+    cv2_imshow( image)
     
