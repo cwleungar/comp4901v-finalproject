@@ -323,7 +323,7 @@ class Yolo_dataset(Dataset):
             img, bboxes = resize_image_with_boxes_to_square(img, bboxes, self.cfg.w)
             bboxes=np.array(bboxes)
             img = cv2.cvtColor(np.array(img), cv2.COLOR_BGR2RGB)
-            visiualize(img, bboxes)
+           #visiualize(img, bboxes)
             if img is None:
                 continue
             oh, ow, oc = img.shape
