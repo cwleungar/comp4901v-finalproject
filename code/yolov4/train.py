@@ -151,7 +151,7 @@ class Yolo_loss(nn.Module):
             ref_anchors[:, 2:] = np.array(all_anchors_grid, dtype=np.float32)
             ref_anchors = torch.from_numpy(ref_anchors)
             # calculate pred - xywh obj cls
-            vg=[52,26,13]
+            vg=[80,40,20]
 
             fsize = vg[i] #image_size // self.strides[i]
             grid_x = torch.arange(fsize, dtype=torch.float).repeat(batch, 3, fsize, 1).to(device)
@@ -250,8 +250,7 @@ class Yolo_loss(nn.Module):
             output[..., np.r_[:2, 4:n_ch]] = torch.sigmoid(output[..., np.r_[:2, 4:n_ch]])
 
             pred = output[..., :4].clone()
-            print(pred[..., 0].shape)
-            print(self.grid_x[output_id].shape)
+            
             pred[..., 0] += self.grid_x[output_id]
             pred[..., 1] += self.grid_y[output_id]
             pred[..., 2] = torch.exp(pred[..., 2]) * self.anchor_w[output_id]
