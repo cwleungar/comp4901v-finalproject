@@ -511,7 +511,7 @@ if __name__ == "__main__":
 
 def visiualize(img,boxes):
     import cv2
-
+    from google.colab.patches import cv2_imshow
     # Load the image and bounding boxes
     image = img
     bboxes = boxes
@@ -523,5 +523,5 @@ def visiualize(img,boxes):
         cv2.rectangle(image, (int(x), int(y)), (int(w), int(h)), (0, 255, 0), 2)
 
     # Show the image with bounding boxes
-    cv2.imshow("Image with Bounding Boxes", image)
-    cv2.waitKey(0)
+    cv2_imshow("Image with Bounding Boxes", image)
+    
