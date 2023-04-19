@@ -520,7 +520,7 @@ def visiualize(img,boxes):
     for bbox in bboxes:
         print(bbox)
         x, y, w, h,c = bbox
-        cv2.rectangle(image, (int(x), int(y)), (int(x + w), int(y + h)), (0, 255, 0), 2)
+        cv2.rectangle(image, (int(x), int(y)), (int(w), int(h)), (0, 255, 0), 2)
 
     # Show the image with bounding boxes
     cv2.imshow("Image with Bounding Boxes", image)
