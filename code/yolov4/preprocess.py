@@ -22,8 +22,8 @@ classmap={
     'Misc': 7, 
     'DontCare': 8
 }
-label_dir='D:/Users/samle/Documents/GitHub/comp4901v-finalproject/dataset/label'
-img_dir='D:/Users/samle/Documents/GitHub/comp4901v-finalproject/dataset/image'
+label_dir='/content/drive/MyDrive/comp4901v-final/label' #'/content/drive/MyDrive/comp4901v-finalproject/dataset/label'
+img_dir='/content/drive/MyDrive/comp4901v-final/data' #'/content/drive/MyDrive/comp4901v-finalproject/dataset/image'
 split="training"
 label_dir = os.path.join(label_dir, split, 'label_2')
 filenames=os.listdir(label_dir)

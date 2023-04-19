@@ -246,16 +246,16 @@ def draw_box(img, bboxes):
 import cv2
 import numpy as np
 
-def resize_image_with_boxes_to_square(image, boxes, size):
+def resize_image_with_boxes(image, boxes, size):
     # Resize the image
-    image_resized = cv2.resize(image, (size, size))
+    image_resized = cv2.resize(image, size)
 
     # Resize the boxes
     boxes_resized = []
     for box in boxes:
         x1, y1, x2, y2, class_number = box
-        x1, x2 = int(x1 * size / image.shape[1]), int(x2 * size / image.shape[1])
-        y1, y2 = int(y1 * size / image.shape[0]), int(y2 * size / image.shape[0])
+        x1, x2 = int(x1 * size[0] / image.shape[1]), int(x2 * size[0] / image.shape[1])
+        y1, y2 = int(y1 * size[1] / image.shape[0]), int(y2 * size[1] / image.shape[0])
         boxes_resized.append([x1, y1, x2, y2, class_number])
 
     return image_resized, boxes_resized
@@ -320,7 +320,7 @@ class Yolo_dataset(Dataset):
                 bboxes = np.array(self.truth.get(img_path), dtype=np.float)
                 img_path = os.path.join(self.cfg.dataset_dir, img_path)
             img = cv2.imread(img_path)
-            img, bboxes = resize_image_with_boxes_to_square(img, bboxes, self.cfg.w)
+            img, bboxes = resize_image_with_boxes(img, bboxes, (self.cfg.w,self.cfg.h))
             bboxes=np.array(bboxes)
             img = cv2.cvtColor(np.array(img), cv2.COLOR_BGR2RGB)
            #visiualize(img, bboxes)
@@ -483,7 +483,6 @@ if __name__ == "__main__":
 
 def visiualize(img,boxes):
     import cv2
-    from google.colab.patches import cv2_imshow
     # Load the image and bounding boxes
     image = np.array(img)
     bboxes = boxes

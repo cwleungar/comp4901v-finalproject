@@ -152,7 +152,7 @@ class Yolo_loss(nn.Module):
             ref_anchors = torch.from_numpy(ref_anchors)
             # calculate pred - xywh obj cls
             vg=[52,26,13]
-            fsize =vg[i] #image_size // self.strides[i]
+            fsize =image_size // self.strides[i]
             grid_x = torch.arange(fsize, dtype=torch.float).repeat(batch, 3, fsize, 1).to(device)
             grid_y = torch.arange(fsize, dtype=torch.float).repeat(batch, 3, fsize, 1).permute(0, 1, 3, 2).to(device)
             anchor_w = torch.from_numpy(masked_anchors[:, 0]).repeat(batch, fsize, fsize, 1).permute(0, 3, 1, 2).to(
@@ -241,7 +241,8 @@ class Yolo_loss(nn.Module):
             batchsize = output.shape[0]
             fsize = output.shape[2]
             n_ch = 5 + self.n_classes
-
+            #output = output.view(batchsize, self.n_anchors, -1, fsize, fsize)
+            print(fsize)
             output = output.view(batchsize, self.n_anchors, n_ch, fsize, fsize)
             output = output.permute(0, 1, 3, 4, 2)  # .contiguous()
 
