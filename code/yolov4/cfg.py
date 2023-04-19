@@ -14,7 +14,7 @@ import os
 from easydict import EasyDict
 
 
-_BASE_DIR = '/content/drive/MyDrive/comp4901v-finalproject/code/yolov4'
+_BASE_DIR = '/content/comp4901v-finalproject/code/yolov4'
 Cfg = EasyDict()
 
 Cfg.use_darknet_cfg = False
