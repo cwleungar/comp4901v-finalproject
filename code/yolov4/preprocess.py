@@ -43,5 +43,5 @@ with open("code/yolov4/data/train.txt","w") as f:
     f.write("".join(buffer[0:int(len(buffer)*0.1)]))
 
 with open("code/yolov4/data/val.txt","w") as f:
-    f.write("".join(buffer[-int(0.05 * len(buffer)):]))
+    f.write("".join(buffer[-int(0.01 * len(buffer)):]))
 # Path: yolov4\preprocess.py

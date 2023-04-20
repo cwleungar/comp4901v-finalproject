@@ -292,8 +292,11 @@ def collate(batch):
     bboxes = torch.from_numpy(bboxes)
     return images, bboxes
 
+current_GMT = time.time()
 
 def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=20, img_scale=0.5):
+    from os import path
+
     train_dataset = Yolo_dataset(Cfg.train_label, config, train=True)
     val_dataset = Yolo_dataset(Cfg.val_label, config, train=False)
 
@@ -306,10 +309,8 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
     val_loader = DataLoader(val_dataset, batch_size=config.batch // config.subdivisions, shuffle=True, num_workers=8,
                             pin_memory=True, drop_last=True, collate_fn=val_collate)
 
-    writer = SummaryWriter(log_dir=config.TRAIN_TENSORBOARD_DIR,
-                           filename_suffix=f'OPT_{config.TRAIN_OPTIMIZER}_LR_{config.learning_rate}_BS_{config.batch}_Sub_{config.subdivisions}_Size_{config.width}',
-                           comment=f'OPT_{config.TRAIN_OPTIMIZER}_LR_{config.learning_rate}_BS_{config.batch}_Sub_{config.subdivisions}_Size_{config.width}')
-    # writer.add_images('legend',
+    writer = tb.SummaryWriter(path.join(config.TRAIN_TENSORBOARD_DIR, f'OPT_{config.TRAIN_OPTIMIZER}_LR_{config.learning_rate}_BS_{config.batch}_Sub_{config.subdivisions}_Size_{config.width}-{current_GMT}'), flush_secs=1)
+   # writer.add_images('legend',
     #                   torch.from_numpy(train_dataset.label2colorlegend2(cfg.DATA_CLASSES).transpose([2, 0, 1])).to(
     #                       device).unsqueeze(0))
     max_itr = config.TRAIN_EPOCHS * n_train
