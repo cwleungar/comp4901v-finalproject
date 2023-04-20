@@ -367,7 +367,7 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
     save_prefix = 'Yolov4_epoch'
     saved_models = deque()
     model.train()
-    for epoch in range(epochs):
+    for epoch in range(150,epochs):
         # model.train()
         epoch_loss = 0
         epoch_step = 0
