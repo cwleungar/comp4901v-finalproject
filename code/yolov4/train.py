@@ -315,7 +315,7 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
     #                       device).unsqueeze(0))
     max_itr = config.TRAIN_EPOCHS * n_train
     # global_step = cfg.TRAIN_MINEPOCH * n_train
-    global_step = 0
+    global_step = cfg.TRAIN_MINEPOCH * n_train
     logging.info(f'''Starting training:
         Epochs:          {epochs}
         Batch size:      {config.batch}
@@ -367,7 +367,7 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
     save_prefix = 'Yolov4_epoch'
     saved_models = deque()
     model.train()
-    for epoch in range(150,epochs):
+    for epoch in range(epochs):
         # model.train()
         epoch_loss = 0
         epoch_step = 0
