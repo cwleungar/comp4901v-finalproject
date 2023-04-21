@@ -373,6 +373,8 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
         epoch_step = 0
 
         with tqdm(total=n_train, desc=f'Epoch {epoch + 1}/{epochs}', unit='img', ncols=50) as pbar:
+            model.train()
+
             for i, batch in enumerate(train_loader):
                 global_step += 1
                 epoch_step += 1
@@ -417,11 +419,11 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
                                           scheduler.get_lr()[0] * config.batch))
 
                 pbar.update(images.shape[0])
-
-            if cfg.use_darknet_cfg:
-                eval_model = Darknet(cfg.cfgfile, inference=True)
-            else:
-                eval_model = Yolov4(cfg.pretrained, n_classes=cfg.classes, inference=True)
+            eval_model=model.eval()
+            #if cfg.use_darknet_cfg:
+            #    eval_model = Darknet(cfg.cfgfile, inference=True)
+            #else:
+            #    eval_model = Yolov4(cfg.pretrained, n_classes=cfg.classes, inference=True)
             # eval_model = Yolov4(yolov4conv137weight=None, n_classes=config.classes, inference=True)
             if torch.cuda.device_count() > 1:
                 eval_model.load_state_dict(model.module.state_dict())
