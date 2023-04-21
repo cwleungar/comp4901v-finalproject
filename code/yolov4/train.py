@@ -334,7 +334,6 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
 
     # learning rate setup
     def burnin_schedule(i):
-        return 0.01
         if i < config.burn_in:
             factor = pow(i / config.burn_in, 4)
         elif i < config.steps[0]:
@@ -348,7 +347,7 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
     if config.TRAIN_OPTIMIZER.lower() == 'adam':
         optimizer = optim.Adam(
             model.parameters(),
-            lr=config.learning_rate / config.batch,
+            lr=0.01,#config.learning_rate / config.batch,
             betas=(0.9, 0.999),
             eps=1e-08,
         )
