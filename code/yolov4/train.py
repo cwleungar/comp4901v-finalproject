@@ -619,11 +619,11 @@ if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     logging.info(f'Using device {device}')
 
-    #if cfg.use_darknet_cfg:
-    #    model = Darknet(cfg.cfgfile)
-    #else:
-    #    model = Yolov4(cfg.pretrained, n_classes=cfg.classes)
-    model=torch.load(cfg.pretrained)
+    if cfg.use_darknet_cfg:
+        model = Darknet(cfg.cfgfile)
+    else:
+        model = Yolov4(cfg.pretrained, n_classes=cfg.classes)
+    model.load_state_dict(torch.load(cfg.pretrained))
     if torch.cuda.device_count() > 1:
         model = torch.nn.DataParallel(model)
     model.to(device=device)
