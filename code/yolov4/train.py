@@ -502,10 +502,12 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
         #model_time = time.time() - model_time
 #
         ## outputs = outputs.cpu().detach().numpy()
+        print("hi")
         bboxes = targets
         images = images.to(device=device, dtype=torch.float32)
         bboxes = bboxes.to(device=device)
         outputs = model(images)
+        print("bye")
         res = {}
         # for img, target, output in zip(images, targets, outputs):
         for img, target, boxes, confs in zip(images, targets, outputs[0], outputs[1]):
