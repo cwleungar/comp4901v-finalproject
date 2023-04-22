@@ -621,7 +621,7 @@ if __name__ == "__main__":
     logging = init_logger(log_dir='log')
     cfg = get_args(**Cfg)
     #os.environ["CUDA_VISIBLE_DEVICES"] = cfg.gpu
-    device = torch.device('cuda:6' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
     logging.info(f'Using device {device}')
 
     if cfg.use_darknet_cfg:
