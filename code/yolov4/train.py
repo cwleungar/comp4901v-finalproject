@@ -307,7 +307,7 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
                               num_workers=8, pin_memory=True, drop_last=True, collate_fn=collate)
 
     val_loader = DataLoader(val_dataset, batch_size=config.batch // config.subdivisions, shuffle=True, num_workers=8,
-                            pin_memory=True, drop_last=True, collate_fn=collate)#val_collate)
+                            pin_memory=True, drop_last=True, collate_fn=val_collate)
 
     writer = tb.SummaryWriter(path.join(config.TRAIN_TENSORBOARD_DIR, f'OPT_{config.TRAIN_OPTIMIZER}_LR_{config.learning_rate}_BS_{config.batch}_Sub_{config.subdivisions}_Size_{config.width}-{current_GMT}'), flush_secs=1)
    # writer.add_images('legend',
@@ -483,32 +483,25 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
     # header = 'Test:'
 
     coco = convert_to_coco_api(data_loader.dataset, bbox_fmt='coco')
-    print("1")
     coco_evaluator = CocoEvaluator(coco, iou_types = ["bbox"], bbox_fmt='coco')
-    print("In loader")
-    for i, (images, targets) in enumerate(data_loader):
-        #model_input = [[cv2.resize(img, (cfg.w, cfg.h))] for img in images]
-        #model_input = np.concatenate(model_input, axis=0)
-        #model_input = model_input.transpose(0, 3, 1, 2)
-        #model_input = torch.from_numpy(model_input).div(255.0)
-        #model_input = model_input.to(device)
-        #targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
-#
-        ##if torch.cuda.is_available():
-        ##    torch.cuda.synchronize()
-        #model_time = time.time()
-        #outputs = model(model_input)
-#
-        ## outputs = [{k: v.to(cpu_device) for k, v in t.items()} for t in outputs]
-        #model_time = time.time() - model_time
-#
-        ## outputs = outputs.cpu().detach().numpy()
-        print("hi")
-        bboxes = targets
-        images = images.to(device=device, dtype=torch.float32)
-        bboxes = bboxes.to(device=device)
-        outputs = model(images)
-        print("bye")
+    data_loader=data_loader.to(device)
+    for images, targets in data_loader:
+        model_input = [[cv2.resize(img, (cfg.w, cfg.h))] for img in images]
+        model_input = np.concatenate(model_input, axis=0)
+        model_input = model_input.transpose(0, 3, 1, 2)
+        model_input = torch.from_numpy(model_input).div(255.0)
+        model_input = model_input.to(device)
+        targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
+
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
+        model_time = time.time()
+        outputs = model(model_input)
+
+        # outputs = [{k: v.to(cpu_device) for k, v in t.items()} for t in outputs]
+        model_time = time.time() - model_time
+
+        # outputs = outputs.cpu().detach().numpy()
         res = {}
         # for img, target, output in zip(images, targets, outputs):
         for img, target, boxes, confs in zip(images, targets, outputs[0], outputs[1]):
