@@ -294,7 +294,6 @@ class Yolo_dataset(Dataset):
 
     def __getitem__(self, index):
         if not self.train:
-            print("test")
             return self._get_val_item(index)
         img_path = self.imgs[index]
         bboxes = np.array(self.truth.get(img_path), dtype=np.float)
