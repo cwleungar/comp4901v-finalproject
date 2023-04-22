@@ -52,8 +52,8 @@ class CocoEvaluator(object):
             create_common_coco_eval(self.coco_eval[iou_type], self.img_ids, self.eval_imgs[iou_type])
 
     def accumulate(self):
+        print(self.iou_types)
         for coco_eval in self.coco_eval.values():
-            print(coco_eval.params)
             coco_eval.accumulate()
 
     def summarize(self):
