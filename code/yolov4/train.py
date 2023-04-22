@@ -509,6 +509,7 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
             # boxes = output[...,:4].copy()  # output boxes in yolo format
             boxes = boxes.squeeze(2).cpu().detach().numpy()
             boxes[...,2:] = boxes[...,2:] - boxes[...,:2] # Transform [x1, y1, x2, y2] to [x1, y1, w, h]
+            print(boxes[...,0]*img_width)
             boxes[...,0] = boxes[...,0]*img_width
             boxes[...,1] = boxes[...,1]*img_height
             boxes[...,2] = boxes[...,2]*img_width
