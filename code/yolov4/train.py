@@ -486,22 +486,26 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
     coco_evaluator = CocoEvaluator(coco, iou_types = ["bbox"], bbox_fmt='coco')
     loop1=tqdm(enumerate(data_loader), total =len(data_loader), position=0, leave=True, ascii=True)
     for images, targets in loop1:
-        model_input = [[cv2.resize(img, (cfg.w, cfg.h))] for img in images]
-        model_input = np.concatenate(model_input, axis=0)
-        model_input = model_input.transpose(0, 3, 1, 2)
-        model_input = torch.from_numpy(model_input).div(255.0)
-        model_input = model_input.to(device)
-        targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
-
-        #if torch.cuda.is_available():
-        #    torch.cuda.synchronize()
-        model_time = time.time()
-        outputs = model(model_input)
-
-        # outputs = [{k: v.to(cpu_device) for k, v in t.items()} for t in outputs]
-        model_time = time.time() - model_time
-
-        # outputs = outputs.cpu().detach().numpy()
+        #model_input = [[cv2.resize(img, (cfg.w, cfg.h))] for img in images]
+        #model_input = np.concatenate(model_input, axis=0)
+        #model_input = model_input.transpose(0, 3, 1, 2)
+        #model_input = torch.from_numpy(model_input).div(255.0)
+        #model_input = model_input.to(device)
+        #targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
+#
+        ##if torch.cuda.is_available():
+        ##    torch.cuda.synchronize()
+        #model_time = time.time()
+        #outputs = model(model_input)
+#
+        ## outputs = [{k: v.to(cpu_device) for k, v in t.items()} for t in outputs]
+        #model_time = time.time() - model_time
+#
+        ## outputs = outputs.cpu().detach().numpy()
+        bboxes = targets
+        images = images.to(device=device, dtype=torch.float32)
+        bboxes = bboxes.to(device=device)
+        outputs = model(images)
         res = {}
         # for img, target, output in zip(images, targets, outputs):
         for img, target, boxes, confs in zip(images, targets, outputs[0], outputs[1]):
