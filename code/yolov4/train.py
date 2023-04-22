@@ -334,6 +334,7 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
 
     # learning rate setup
     def burnin_schedule(i):
+        return 1
         if i < config.burn_in:
             factor = pow(i / config.burn_in, 4)
         elif i < config.steps[0]:
