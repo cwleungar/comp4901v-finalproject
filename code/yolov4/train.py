@@ -303,12 +303,12 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
     n_train = len(train_dataset)
     n_val = len(val_dataset)
 
-    train_loader = DataLoader(train_dataset, batch_size=config.batch // config.subdivisions, shuffle=True,
+    train_loader = DataLoader(val_dataset, batch_size=config.batch // config.subdivisions, shuffle=True,
                               num_workers=8, pin_memory=True, drop_last=True, collate_fn=collate)
 
     val_loader = DataLoader(val_dataset, batch_size=config.batch // config.subdivisions, shuffle=True, num_workers=8,
                             pin_memory=True, drop_last=True, collate_fn=val_collate)
-
+    
     writer = tb.SummaryWriter(path.join(config.TRAIN_TENSORBOARD_DIR, f'OPT_{config.TRAIN_OPTIMIZER}_LR_{config.learning_rate}_BS_{config.batch}_Sub_{config.subdivisions}_Size_{config.width}-{current_GMT}'), flush_secs=1)
    # writer.add_images('legend',
     #                   torch.from_numpy(train_dataset.label2colorlegend2(cfg.DATA_CLASSES).transpose([2, 0, 1])).to(
@@ -484,7 +484,6 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
 
     coco = convert_to_coco_api(data_loader.dataset, bbox_fmt='coco')
     coco_evaluator = CocoEvaluator(coco, iou_types = ["bbox"], bbox_fmt='coco')
-    data_loader=data_loader.to(device)
     print("here")
     for images, targets in data_loader:
         print("finally here")
