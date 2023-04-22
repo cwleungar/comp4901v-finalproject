@@ -493,8 +493,8 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
         model_input = model_input.to(device)
         targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
 
-        if torch.cuda.is_available():
-            torch.cuda.synchronize()
+        #if torch.cuda.is_available():
+        #    torch.cuda.synchronize()
         model_time = time.time()
         outputs = model(model_input)
 
