@@ -376,52 +376,52 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
         with tqdm(total=n_train, desc=f'Epoch {epoch + 1}/{epochs}', unit='img', ncols=50) as pbar:
             model.train()
 
-            #for i, batch in enumerate(train_loader):
-            #    global_step += 1
-            #    epoch_step += 1
-            #    images = batch[0]
-            #    bboxes = batch[1]
-#
-            #    images = images.to(device=device, dtype=torch.float32)
-            #    bboxes = bboxes.to(device=device)
-#
-            #    bboxes_pred = model(images)
-            #    loss, loss_xy, loss_wh, loss_obj, loss_cls, loss_l2 = criterion(bboxes_pred, bboxes)
-            #    # loss = loss / config.subdivisions
-            #    loss.backward()
-#
-            #    epoch_loss += loss.item()
-#
-            #    if global_step % config.subdivisions == 0:
-            #        optimizer.step()
-            #        scheduler.step()
-            #        model.zero_grad()
-#
-            #    if global_step % (log_step * config.subdivisions) == 0:
-            #        writer.add_scalar('train/Loss', loss.item(), global_step)
-            #        writer.add_scalar('train/loss_xy', loss_xy.item(), global_step)
-            #        writer.add_scalar('train/loss_wh', loss_wh.item(), global_step)
-            #        writer.add_scalar('train/loss_obj', loss_obj.item(), global_step)
-            #        writer.add_scalar('train/loss_cls', loss_cls.item(), global_step)
-            #        writer.add_scalar('train/loss_l2', loss_l2.item(), global_step)
-            #        writer.add_scalar('lr', scheduler.get_lr()[0] * config.batch, global_step)
-            #        pbar.set_postfix(**{'loss (batch)': loss.item(), 'loss_xy': loss_xy.item(),
-            #                            'loss_wh': loss_wh.item(),
-            #                            'loss_obj': loss_obj.item(),
-            #                            'loss_cls': loss_cls.item(),
-            #                            'loss_l2': loss_l2.item(),
-            #                            'lr': scheduler.get_lr()[0] * config.batch
-            #                            })
-            #        logging.debug('Train step_{}: loss : {},loss xy : {},loss wh : {},'
-            #                      'loss obj : {}，loss cls : {},loss l2 : {},lr : {}'
-            #                      .format(global_step, loss.item(), loss_xy.item(),
-            #                              loss_wh.item(), loss_obj.item(),
-            #                              loss_cls.item(), loss_l2.item(),
-            #                              scheduler.get_lr()[0] * config.batch))
-#
-            #    pbar.update(images.shape[0])
-            #print("train end")
-            ##eval_model=model.eval()
+            for i, batch in enumerate(train_loader):
+                global_step += 1
+                epoch_step += 1
+                images = batch[0]
+                bboxes = batch[1]
+
+                images = images.to(device=device, dtype=torch.float32)
+                bboxes = bboxes.to(device=device)
+
+                bboxes_pred = model(images)
+                loss, loss_xy, loss_wh, loss_obj, loss_cls, loss_l2 = criterion(bboxes_pred, bboxes)
+                # loss = loss / config.subdivisions
+                loss.backward()
+
+                epoch_loss += loss.item()
+
+                if global_step % config.subdivisions == 0:
+                    optimizer.step()
+                    scheduler.step()
+                    model.zero_grad()
+
+                if global_step % (log_step * config.subdivisions) == 0:
+                    writer.add_scalar('train/Loss', loss.item(), global_step)
+                    writer.add_scalar('train/loss_xy', loss_xy.item(), global_step)
+                    writer.add_scalar('train/loss_wh', loss_wh.item(), global_step)
+                    writer.add_scalar('train/loss_obj', loss_obj.item(), global_step)
+                    writer.add_scalar('train/loss_cls', loss_cls.item(), global_step)
+                    writer.add_scalar('train/loss_l2', loss_l2.item(), global_step)
+                    writer.add_scalar('lr', scheduler.get_lr()[0] * config.batch, global_step)
+                    pbar.set_postfix(**{'loss (batch)': loss.item(), 'loss_xy': loss_xy.item(),
+                                        'loss_wh': loss_wh.item(),
+                                        'loss_obj': loss_obj.item(),
+                                        'loss_cls': loss_cls.item(),
+                                        'loss_l2': loss_l2.item(),
+                                        'lr': scheduler.get_lr()[0] * config.batch
+                                        })
+                    logging.debug('Train step_{}: loss : {},loss xy : {},loss wh : {},'
+                                  'loss obj : {}，loss cls : {},loss l2 : {},lr : {}'
+                                  .format(global_step, loss.item(), loss_xy.item(),
+                                          loss_wh.item(), loss_obj.item(),
+                                          loss_cls.item(), loss_l2.item(),
+                                          scheduler.get_lr()[0] * config.batch))
+
+                pbar.update(images.shape[0])
+            print("train end")
+            #eval_model=model.eval()
             #if cfg.use_darknet_cfg:
             #    eval_model = Darknet(cfg.cfgfile, inference=True)
             #else:
