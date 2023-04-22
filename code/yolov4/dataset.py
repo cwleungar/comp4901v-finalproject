@@ -418,37 +418,37 @@ class Yolo_dataset(Dataset):
     def _get_val_item(self, index):
         """
         """
-        print("1")
+        #print("1")
         img_path = self.imgs[index]
-        print("2")
+        #print("2")
         bboxes_with_cls_id = np.array(self.truth.get(img_path), dtype=np.float)
-        print("3")
+        #print("3")
         img = cv2.imread(os.path.join(self.cfg.dataset_dir, img_path))
         # img_height, img_width = img.shape[:2]
-        print("4")
+        #print("4")
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         # img = cv2.resize(img, (self.cfg.w, self.cfg.h))
         # img = torch.from_numpy(img.transpose(2, 0, 1)).float().div(255.0).unsqueeze(0)
-        print("5")
+        #print("5")
         num_objs = len(bboxes_with_cls_id)
-        print("6")
+        #print("6")
         target = {}
         # boxes to coco format
-        print("7")
+        #print("7")
         boxes = bboxes_with_cls_id[...,:4]
-        print("8")
+        #print("8")
         boxes[..., 2:] = boxes[..., 2:] - boxes[..., :2]  # box width, box height
-        print("9")
+        #print("9")
         target['boxes'] = torch.as_tensor(boxes, dtype=torch.float32)
-        print("10")
+        #print("10")
         target['labels'] = torch.as_tensor(bboxes_with_cls_id[...,-1].flatten(), dtype=torch.int64)
-        print("11")
+        #print("11")
         target['image_id'] = torch.tensor([get_image_id(img_path)])
-        print("12")
+        #print("12")
         target['area'] = (target['boxes'][:,3])*(target['boxes'][:,2])
-        print("13")
+        #print("13")
         target['iscrowd'] = torch.zeros((num_objs,), dtype=torch.int64)
-        print("14")
+        #print("14")
         return img, target
 
 
