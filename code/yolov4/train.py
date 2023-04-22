@@ -315,7 +315,7 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
     #                       device).unsqueeze(0))
     max_itr = config.TRAIN_EPOCHS * n_train
     # global_step = cfg.TRAIN_MINEPOCH * n_train
-    global_step = 52160
+    global_step = 65920
     logging.info(f'''Starting training:
         Epochs:          {epochs}
         Batch size:      {config.batch}
