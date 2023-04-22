@@ -530,7 +530,7 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
         evaluator_time = time.time() - evaluator_time
 
     # gather the stats from all processes
-    #coco_evaluator.synchronize_between_processes()
+    coco_evaluator.synchronize_between_processes()
 
     # accumulate predictions from all images
     coco_evaluator.accumulate()
