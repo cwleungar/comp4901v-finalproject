@@ -53,7 +53,7 @@ class CocoEvaluator(object):
 
     def accumulate(self):
         for coco_eval in self.coco_eval.values():
-            print(coco_eval)
+            print(coco_eval.params)
             coco_eval.accumulate()
 
     def summarize(self):
