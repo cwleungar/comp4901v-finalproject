@@ -304,7 +304,7 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
     n_val = len(val_dataset)
 
     train_loader = DataLoader(val_dataset, batch_size=config.batch // config.subdivisions, shuffle=True,
-                              num_workers=8, pin_memory=True, drop_last=True, collate_fn=val_collate)
+                              num_workers=8, pin_memory=True, drop_last=True, collate_fn=collate)
 
     val_loader = DataLoader(val_dataset, batch_size=config.batch // config.subdivisions, shuffle=True, num_workers=8,
                             pin_memory=True, drop_last=True, collate_fn=val_collate)
@@ -425,50 +425,49 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
             #if cfg.use_darknet_cfg:
             #    eval_model = Darknet(cfg.cfgfile, inference=True)
             #else:
-            eval_model = Yolov4(cfg.pretrained, n_classes=cfg.classes, inference=True)
-            # eval_model = Yolov4(yolov4conv137weight=None, n_classes=config.classes, inference=True)
-            #if torch.cuda.device_count() > 1:
-            #    eval_model.load_state_dict(model.module.state_dict())
-            #else:
-            eval_model.load_state_dict(model.state_dict())
-            eval_model.to(device)
-            evaluator = evaluate(eval_model, val_loader, config, device)
-            del eval_model
-            print("done eval")
-            stats = evaluator.coco_eval['bbox'].stats
-            writer.add_scalar('val/AP', stats[0], global_step)
-            writer.add_scalar('val/AP50', stats[1], global_step)
-            writer.add_scalar('val/AP75', stats[2], global_step)
-            writer.add_scalar('val/AP_small', stats[3], global_step)
-            writer.add_scalar('val/AP_medium', stats[4], global_step)
-            writer.add_scalar('val/AP_large', stats[5], global_step)
-            writer.add_scalar('val/AR1', stats[6], global_step)
-            writer.add_scalar('val/AR10', stats[7], global_step)
-            writer.add_scalar('val/AR100', stats[8], global_step)
-            writer.add_scalar('val/AR_small', stats[9], global_step)
-            writer.add_scalar('val/AR_medium', stats[10], global_step)
-            writer.add_scalar('val/AR_large', stats[11], global_step)
-
-            if save_cp:
+        eval_model = Yolov4(cfg.pretrained, n_classes=cfg.classes, inference=True)
+        # eval_model = Yolov4(yolov4conv137weight=None, n_classes=config.classes, inference=True)
+        #if torch.cuda.device_count() > 1:
+        #    eval_model.load_state_dict(model.module.state_dict())
+        #else:
+        eval_model.load_state_dict(model.state_dict())
+        eval_model.to(device)
+        evaluator = evaluate(eval_model, val_loader, config, device)
+        del eval_model
+        print("done eval")
+        stats = evaluator.coco_eval['bbox'].stats
+        writer.add_scalar('val/AP', stats[0], global_step)
+        writer.add_scalar('val/AP50', stats[1], global_step)
+        writer.add_scalar('val/AP75', stats[2], global_step)
+        writer.add_scalar('val/AP_small', stats[3], global_step)
+        writer.add_scalar('val/AP_medium', stats[4], global_step)
+        writer.add_scalar('val/AP_large', stats[5], global_step)
+        writer.add_scalar('val/AR1', stats[6], global_step)
+        writer.add_scalar('val/AR10', stats[7], global_step)
+        writer.add_scalar('val/AR100', stats[8], global_step)
+        writer.add_scalar('val/AR_small', stats[9], global_step)
+        writer.add_scalar('val/AR_medium', stats[10], global_step)
+        writer.add_scalar('val/AR_large', stats[11], global_step)
+        if save_cp:
+            try:
+                # os.mkdir(config.checkpoints)
+                os.makedirs(config.checkpoints, exist_ok=True)
+                logging.info('Created checkpoint directory')
+            except OSError:
+                pass
+            save_path = os.path.join(config.checkpoints, f'{save_prefix}{epoch + 1}.pth')
+            if isinstance(model, torch.nn.DataParallel):
+                torch.save(model.moduel,state_dict(), save_path)
+            else:
+                torch.save(model.state_dict(), save_path)
+            logging.info(f'Checkpoint {epoch + 1} saved !')
+            saved_models.append(save_path)
+            if len(saved_models) > config.keep_checkpoint_max > 0:
+                model_to_remove = saved_models.popleft()
                 try:
-                    # os.mkdir(config.checkpoints)
-                    os.makedirs(config.checkpoints, exist_ok=True)
-                    logging.info('Created checkpoint directory')
-                except OSError:
-                    pass
-                save_path = os.path.join(config.checkpoints, f'{save_prefix}{epoch + 1}.pth')
-                if isinstance(model, torch.nn.DataParallel):
-                    torch.save(model.moduel,state_dict(), save_path)
-                else:
-                    torch.save(model.state_dict(), save_path)
-                logging.info(f'Checkpoint {epoch + 1} saved !')
-                saved_models.append(save_path)
-                if len(saved_models) > config.keep_checkpoint_max > 0:
-                    model_to_remove = saved_models.popleft()
-                    try:
-                        os.remove(model_to_remove)
-                    except:
-                        logging.info(f'failed to remove {model_to_remove}')
+                    os.remove(model_to_remove)
+                except:
+                    logging.info(f'failed to remove {model_to_remove}')
 
     writer.close()
 
