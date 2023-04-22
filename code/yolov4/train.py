@@ -298,7 +298,7 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
     from os import path
 
     train_dataset = Yolo_dataset(Cfg.train_label, config, train=True)
-    val_dataset = Yolo_dataset(Cfg.val_label, config, train=False)
+    val_dataset = Yolo_dataset(Cfg.val_label, config, train=True)
 
     n_train = len(train_dataset)
     n_val = len(val_dataset)
@@ -307,7 +307,7 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
                               num_workers=8, pin_memory=True, drop_last=True, collate_fn=collate)
 
     val_loader = DataLoader(val_dataset, batch_size=config.batch // config.subdivisions, shuffle=True, num_workers=8,
-                            pin_memory=True, drop_last=True, collate_fn=val_collate)
+                            pin_memory=True, drop_last=True, collate_fn=collate)
     
     writer = tb.SummaryWriter(path.join(config.TRAIN_TENSORBOARD_DIR, f'OPT_{config.TRAIN_OPTIMIZER}_LR_{config.learning_rate}_BS_{config.batch}_Sub_{config.subdivisions}_Size_{config.width}-{current_GMT}'), flush_secs=1)
    # writer.add_images('legend',
