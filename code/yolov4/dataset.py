@@ -293,8 +293,8 @@ class Yolo_dataset(Dataset):
         return len(self.truth.keys())
 
     def __getitem__(self, index):
-        #if not self.train:
-        #    return self._get_val_item(index)
+        if not self.train:
+            return self._get_val_item(index)
         img_path = self.imgs[index]
         bboxes = np.array(self.truth.get(img_path), dtype=np.float)
         img_path = os.path.join(self.cfg.dataset_dir, img_path)
@@ -340,7 +340,7 @@ class Yolo_dataset(Dataset):
 
             flip = random.randint(0, 1) if self.cfg.flip else 0
 
-            if (not self.train and self.cfg.blur):
+            if (self.cfg.blur):
                 tmp_blur = random.randint(0, 2)  # 0 - disable, 1 - blur background, 2 - blur the whole image
                 if tmp_blur == 0:
                     blur = 0
@@ -349,12 +349,12 @@ class Yolo_dataset(Dataset):
                 else:
                     blur = self.cfg.blur
 
-            if not self.train and self.cfg.gaussian and random.randint(0, 1):
+            if self.cfg.gaussian and random.randint(0, 1):
                 gaussian_noise = self.cfg.gaussian
             else:
                 gaussian_noise = 0
 
-            if not self.train and self.cfg.letter_box:
+            if self.cfg.letter_box:
                 img_ar = ow / oh
                 net_ar = self.cfg.w / self.cfg.h
                 result_ar = img_ar / net_ar
@@ -418,23 +418,37 @@ class Yolo_dataset(Dataset):
     def _get_val_item(self, index):
         """
         """
+        print("1")
         img_path = self.imgs[index]
+        print("2")
         bboxes_with_cls_id = np.array(self.truth.get(img_path), dtype=np.float)
+        print("3")
         img = cv2.imread(os.path.join(self.cfg.dataset_dir, img_path))
         # img_height, img_width = img.shape[:2]
+        print("4")
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         # img = cv2.resize(img, (self.cfg.w, self.cfg.h))
         # img = torch.from_numpy(img.transpose(2, 0, 1)).float().div(255.0).unsqueeze(0)
+        print("5")
         num_objs = len(bboxes_with_cls_id)
+        print("6")
         target = {}
         # boxes to coco format
+        print("7")
         boxes = bboxes_with_cls_id[...,:4]
+        print("8")
         boxes[..., 2:] = boxes[..., 2:] - boxes[..., :2]  # box width, box height
+        print("9")
         target['boxes'] = torch.as_tensor(boxes, dtype=torch.float32)
+        print("10")
         target['labels'] = torch.as_tensor(bboxes_with_cls_id[...,-1].flatten(), dtype=torch.int64)
+        print("11")
         target['image_id'] = torch.tensor([get_image_id(img_path)])
+        print("12")
         target['area'] = (target['boxes'][:,3])*(target['boxes'][:,2])
+        print("13")
         target['iscrowd'] = torch.zeros((num_objs,), dtype=torch.int64)
+        print("14")
         return img, target
 
 
