@@ -23,7 +23,7 @@ class CocoEvaluator(object):
         self.bbox_fmt = bbox_fmt.lower()
         assert self.bbox_fmt in ['voc', 'coco', 'yolo']
 
-        self.iou_types =[0] if iou_types==["bbox"] else [1] if iou_types==["segm"] else [2] if iou_types==["keypoints"] else iou_types
+        self.iou_types = iou_types
         self.coco_eval = {}
         for iou_type in iou_types:
             self.coco_eval[iou_type] = COCOeval(coco_gt, iouType=iou_type)
@@ -62,11 +62,11 @@ class CocoEvaluator(object):
             coco_eval.summarize()
 
     def prepare(self, predictions, iou_type):
-        if iou_type == 0 or iou_type=="bbox":
+        if iou_type == "bbox":
             return self.prepare_for_coco_detection(predictions)
-        elif iou_type == 1 or iou_type == "segm":
+        elif iou_type == "segm":
             return self.prepare_for_coco_segmentation(predictions)
-        elif iou_type == 2 or iou_type == "keypoints":
+        elif iou_type == "keypoints":
             return self.prepare_for_coco_keypoint(predictions)
         else:
             raise ValueError("Unknown iou type {}".format(iou_type))
