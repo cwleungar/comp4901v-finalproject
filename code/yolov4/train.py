@@ -484,6 +484,7 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
 
     coco = convert_to_coco_api(data_loader.dataset, bbox_fmt='coco')
     coco_evaluator = CocoEvaluator(coco, iou_types = ["bbox"], bbox_fmt='coco')
+    print("In loader")
     for i, (images, targets) in enumerate(data_loader):
         #model_input = [[cv2.resize(img, (cfg.w, cfg.h))] for img in images]
         #model_input = np.concatenate(model_input, axis=0)
