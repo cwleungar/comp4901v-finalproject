@@ -436,18 +436,18 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
             del eval_model
             print("done eval")
             stats = evaluator.coco_eval['bbox'].stats
-            writer.add_scalar('train/AP', stats[0], global_step)
-            writer.add_scalar('train/AP50', stats[1], global_step)
-            writer.add_scalar('train/AP75', stats[2], global_step)
-            writer.add_scalar('train/AP_small', stats[3], global_step)
-            writer.add_scalar('train/AP_medium', stats[4], global_step)
-            writer.add_scalar('train/AP_large', stats[5], global_step)
-            writer.add_scalar('train/AR1', stats[6], global_step)
-            writer.add_scalar('train/AR10', stats[7], global_step)
-            writer.add_scalar('train/AR100', stats[8], global_step)
-            writer.add_scalar('train/AR_small', stats[9], global_step)
-            writer.add_scalar('train/AR_medium', stats[10], global_step)
-            writer.add_scalar('train/AR_large', stats[11], global_step)
+            writer.add_scalar('val/AP', stats[0], global_step)
+            writer.add_scalar('val/AP50', stats[1], global_step)
+            writer.add_scalar('val/AP75', stats[2], global_step)
+            writer.add_scalar('val/AP_small', stats[3], global_step)
+            writer.add_scalar('val/AP_medium', stats[4], global_step)
+            writer.add_scalar('val/AP_large', stats[5], global_step)
+            writer.add_scalar('val/AR1', stats[6], global_step)
+            writer.add_scalar('val/AR10', stats[7], global_step)
+            writer.add_scalar('val/AR100', stats[8], global_step)
+            writer.add_scalar('val/AR_small', stats[9], global_step)
+            writer.add_scalar('val/AR_medium', stats[10], global_step)
+            writer.add_scalar('val/AR_large', stats[11], global_step)
 
             if save_cp:
                 try:
@@ -484,8 +484,8 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
 
     coco = convert_to_coco_api(data_loader.dataset, bbox_fmt='coco')
     coco_evaluator = CocoEvaluator(coco, iou_types = ["bbox"], bbox_fmt='coco')
-
-    for images, targets in data_loader:
+    loop1=tqdm(enumerate(data_loader), total =len(data_loader), position=0, leave=True, ascii=True)
+    for images, targets in loop1:
         model_input = [[cv2.resize(img, (cfg.w, cfg.h))] for img in images]
         model_input = np.concatenate(model_input, axis=0)
         model_input = model_input.transpose(0, 3, 1, 2)
