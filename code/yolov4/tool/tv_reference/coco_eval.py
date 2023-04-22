@@ -62,7 +62,7 @@ class CocoEvaluator(object):
             coco_eval.summarize()
 
     def prepare(self, predictions, iou_type):
-        if iou_type == "bbox":
+        if iou_type == 0 or iou_type=="bbox":
             return self.prepare_for_coco_detection(predictions)
         elif iou_type == "segm":
             return self.prepare_for_coco_segmentation(predictions)
