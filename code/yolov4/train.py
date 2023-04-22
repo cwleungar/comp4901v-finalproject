@@ -434,7 +434,7 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
             eval_model.to(device)
             evaluator = evaluate(eval_model, val_loader, config, device)
             del eval_model
-
+            print("done eval")
             stats = evaluator.coco_eval['bbox'].stats
             writer.add_scalar('train/AP', stats[0], global_step)
             writer.add_scalar('train/AP50', stats[1], global_step)
