@@ -23,7 +23,7 @@ class CocoEvaluator(object):
         self.bbox_fmt = bbox_fmt.lower()
         assert self.bbox_fmt in ['voc', 'coco', 'yolo']
 
-        self.iou_types = iou_types
+        self.iou_types =0 if iou_types=="bbox"
         self.coco_eval = {}
         for iou_type in iou_types:
             self.coco_eval[iou_type] = COCOeval(coco_gt, iouType=iou_type)
