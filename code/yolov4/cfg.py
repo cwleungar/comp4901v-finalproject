@@ -14,7 +14,7 @@ import os
 from easydict import EasyDict
 
 
-_BASE_DIR = '/content/comp4901v-finalproject/code/yolov4'
+_BASE_DIR = '/data/cwleungar/comp4901v-finalproject/code/yolov4/'
 Cfg = EasyDict()
 
 Cfg.use_darknet_cfg = False
@@ -70,8 +70,8 @@ elif Cfg.cutmix:
 elif Cfg.mosaic:
     Cfg.mixup = 3
 
-Cfg.checkpoints = os.path.join('/content/drive/MyDrive/comp4901v-final', 'checkpoints')
-Cfg.TRAIN_TENSORBOARD_DIR = '/content/drive/MyDrive/comp4901v-final/log/yolov4'
+Cfg.checkpoints = os.path.join('/data/cwleungar/comp4901v-finalproject/code/yolov4/', 'checkpoints')
+Cfg.TRAIN_TENSORBOARD_DIR = '/data/cwleungar/comp4901v-finalproject/log/yolov4/'
 
 Cfg.iou_type = 'ciou'  # 'giou', 'diou', 'ciou'
 
