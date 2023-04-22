@@ -476,6 +476,7 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
 def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
     """ finished, tested
     """
+    print("evaluating...")
     # cpu_device = torch.device("cpu")
     model.eval()
     # header = 'Test:'
