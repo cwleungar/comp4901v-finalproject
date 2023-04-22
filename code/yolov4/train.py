@@ -289,7 +289,6 @@ def collate(batch):
     images = images.transpose(0, 3, 1, 2)
     images = torch.from_numpy(images).div(255.0)
     bboxes = np.concatenate(bboxes, axis=0)
-    print(bboxes)
     bboxes = torch.from_numpy(bboxes)
     return images, bboxes
 
@@ -305,7 +304,7 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
     n_val = len(val_dataset)
 
     train_loader = DataLoader(val_dataset, batch_size=config.batch // config.subdivisions, shuffle=True,
-                              num_workers=8, pin_memory=True, drop_last=True, collate_fn=collate)
+                              num_workers=8, pin_memory=True, drop_last=True, collate_fn=val_collate)
 
     val_loader = DataLoader(val_dataset, batch_size=config.batch // config.subdivisions, shuffle=True, num_workers=8,
                             pin_memory=True, drop_last=True, collate_fn=val_collate)
