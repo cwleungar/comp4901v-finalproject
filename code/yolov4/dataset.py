@@ -293,8 +293,8 @@ class Yolo_dataset(Dataset):
         return len(self.truth.keys())
 
     def __getitem__(self, index):
-        if not self.train:
-            return self._get_val_item(index)
+        #if not self.train:
+        #    return self._get_val_item(index)
         img_path = self.imgs[index]
         bboxes = np.array(self.truth.get(img_path), dtype=np.float)
         img_path = os.path.join(self.cfg.dataset_dir, img_path)
@@ -340,7 +340,7 @@ class Yolo_dataset(Dataset):
 
             flip = random.randint(0, 1) if self.cfg.flip else 0
 
-            if (self.cfg.blur):
+            if (not self.train and self.cfg.blur):
                 tmp_blur = random.randint(0, 2)  # 0 - disable, 1 - blur background, 2 - blur the whole image
                 if tmp_blur == 0:
                     blur = 0
@@ -349,12 +349,12 @@ class Yolo_dataset(Dataset):
                 else:
                     blur = self.cfg.blur
 
-            if self.cfg.gaussian and random.randint(0, 1):
+            if not self.train and self.cfg.gaussian and random.randint(0, 1):
                 gaussian_noise = self.cfg.gaussian
             else:
                 gaussian_noise = 0
 
-            if self.cfg.letter_box:
+            if not self.train and self.cfg.letter_box:
                 img_ar = ow / oh
                 net_ar = self.cfg.w / self.cfg.h
                 result_ar = img_ar / net_ar
