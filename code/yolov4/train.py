@@ -513,7 +513,7 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
             confs = confs.cpu().detach().numpy()
             labels = np.argmax(confs, axis=1).flatten()
             labels = torch.as_tensor(labels, dtype=torch.int64)
-            print("box:",list(boxes[0][0].cpu().detach().numpy()))
+            print("box:",list(boxes[0][0].cpu().detach().numpy()).append(labels[0].detach().numpy()[0]))
             print("lb",labels[0])
             visiualize(img,boxes[0]+labels[0])
             raise('stop')
