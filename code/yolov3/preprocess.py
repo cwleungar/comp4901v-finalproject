@@ -39,15 +39,15 @@ def convert_to_coco(input_file, output_dir):
             print(f'Error: input file {input_file} is empty')
             return
         for line_num, line in enumerate(lines):
-            line.split(' ')
-            imgname = line[0]
+            li=line.split(' ')
+            imgname = li[0]
             with open(os.path.join(output_dir, imgname + '.txt'), 'w') as f:
-                for i in range(len(line)):
+                for i in range(len(li)):
                     if i==0:
                         continue
-                    l=line.split(',')
+                    l=li.split(',')
                     buffer=l[4]+' '+l[0]+' '+l[1]+' '+l[2]+' '+l[3]
-                    if i!=len(line)-1:
+                    if i!=len(li)-1:
                         buffer+='\n'
                     f.write(buffer)
 
