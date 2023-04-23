@@ -499,7 +499,8 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
         res = {}
         # for img, target, output in zip(images, targets, outputs):
         for img, target, boxes, confs in zip(images, targets, outputs[0], outputs[1]):
-            print(boxes)
+            print(boxes[0])
+            print(confs)
             visiualize(img,boxes[0])
             raise('stop')
             img_height, img_width = img.shape[:2]
