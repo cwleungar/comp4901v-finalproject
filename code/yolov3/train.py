@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # YOLOv3 🚀 by Ultralytics, AGPL-3.0 license
 """
 Train a YOLOv3 model on a custom dataset.
