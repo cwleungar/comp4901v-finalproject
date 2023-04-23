@@ -518,7 +518,7 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
             labels=np.argmax(confs, axis=1)[0]
             print("b",boxes)
             print("l",labels)
-            visiualize(img,[boxes[0].append(labels)])
+            visiualize(img,[list(boxes[0]).append(labels)])
             raise('stop')
             scores = np.max(confs, axis=1).flatten()
             scores = torch.as_tensor(scores, dtype=torch.float32)
