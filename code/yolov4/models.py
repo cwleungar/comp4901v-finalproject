@@ -437,8 +437,6 @@ class Yolov4(nn.Module):
 
 
     def forward(self, input):
-        print(input.shape)
-        raise('Err')
         d1 = self.down1(input)
         d2 = self.down2(d1)
         d3 = self.down3(d2)
