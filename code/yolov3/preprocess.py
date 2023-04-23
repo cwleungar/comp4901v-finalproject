@@ -45,7 +45,7 @@ def convert_to_coco(input_file, output_dir):
                 for i in range(len(li)):
                     if i==0:
                         continue
-                    l=li.split(',')
+                    l=li[i].split(',')
                     buffer=l[4]+' '+l[0]+' '+l[1]+' '+l[2]+' '+l[3]
                     if i!=len(li)-1:
                         buffer+='\n'
