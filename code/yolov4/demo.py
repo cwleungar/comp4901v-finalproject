@@ -19,12 +19,12 @@ from tool.torch_utils import *
 from tool.darknet2pytorch import Darknet
 import torch
 import argparse
+import cv2
 
 """hyper parameters"""
 use_cuda = True
 
 def detect_cv2(cfgfile, weightfile, imgfile):
-    import cv2
     m = Darknet(cfgfile)
 
     m.print_network()
@@ -44,7 +44,7 @@ def detect_cv2(cfgfile, weightfile, imgfile):
     class_names = load_class_names(namesfile)
 
     img = cv2.imread(imgfile)
-    sized = cv2.resize(img, (m.width, m.height))
+    sized = cv2.resize(img, (m.width, m.height)) 
     sized = cv2.cvtColor(sized, cv2.COLOR_BGR2RGB)
 
     for i in range(2):
