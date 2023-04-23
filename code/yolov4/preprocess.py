@@ -1,29 +1,33 @@
 import os
 import random
-
-
-classmap={
-    0: 'Car',
-    1: 'Pedestrian', 
-    2: 'Cyclist', 
-    3: 'Van', 
-    4: 'Person_sitting', 
-    5: 'Tram', 
-    6: 'Truck', 
-    7: 'Misc', 
-    8: 'DontCare', 
-    'Car': 0, 
-    'Pedestrian': 1, 
-    'Cyclist': 2, 
-    'Van': 3, 
-    'Person_sitting': 4,
-    'Tram': 5, 
-    'Truck': 6, 
-    'Misc': 7, 
-    'DontCare': 8
-}
-label_dir='/content/drive/MyDrive/comp4901v-final/label' #'/content/drive/MyDrive/comp4901v-finalproject/dataset/label'
-img_dir='/content/drive/MyDrive/comp4901v-final/data' #'/content/drive/MyDrive/comp4901v-finalproject/dataset/image'
+import shutil
+#
+#
+#classmap={
+#    0: 'Car',
+#    1: 'Pedestrian', 
+#    2: 'Cyclist', 
+#    3: 'Van', 
+#    4: 'Person_sitting', 
+#    5: 'Tram', 
+#    6: 'Truck', 
+#    7: 'Misc', 
+#    8: 'DontCare', 
+#    'Car': 0, 
+#    'Pedestrian': 1, 
+#    'Cyclist': 2, 
+#    'Van': 3, 
+#    'Person_sitting': 4,
+#    'Tram': 5, 
+#    'Truck': 6, 
+#    'Misc': 7, 
+#    'DontCare': 8
+#}
+#label_dir='D:/Users/samle/Documents/GitHub/comp4901v-finalproject/dataset/label' 
+####'/content/drive/MyDrive/comp4901v-final/label' #'/content/drive/MyDrive/comp4901v-finalproject/dataset/label'
+img_dir='D:/Users/samle/Documents/GitHub/comp4901v-finalproject/dataset/data' 
+####'/content/drive/MyDrive/comp4901v-final/data' #'/content/drive/MyDrive/comp4901v-finalproject/dataset/image'
+kk='D:/Users/samle/Documents/GitHub/comp4901v-finalproject/dataset/small_image'
 split="training"
 label_dir = os.path.join(label_dir, split, 'label_2')
 filenames=os.listdir(label_dir)
