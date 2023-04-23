@@ -502,7 +502,7 @@ if __name__ == "__main__":
         #boxes = do_detect(model, sized, 0.4, 0.6, use_cuda)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    Cfg['dataset_dir']="D:\\Users\\samle\\Documents\\GitHub\\comp4901v-finalproject\\dataset\\small_image\\training\\image_2"
+    Cfg['dataset_dir']='/data/cwleungar/dataset/small_image/training/image_2/'
     val_dataset = Yolo_dataset('data/test.txt', Cfg, train=False)
     val_loader = DataLoader(val_dataset, 2, shuffle=True, num_workers=0,
                             drop_last=False, collate_fn=val_collate)
