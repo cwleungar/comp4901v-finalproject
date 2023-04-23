@@ -41,7 +41,7 @@ def convert_to_coco(input_file, output_dir):
         for line_num, line in enumerate(lines):
             li=line.split(' ')
             imgname = li[0]
-            with open(os.path.join(output_dir, imgname + '.txt'), 'w') as f:
+            with open(os.path.join(output_dir, imgname.split('.')[0] + '.txt'), 'w') as f:
                 for i in range(len(li)):
                     if i==0:
                         continue
