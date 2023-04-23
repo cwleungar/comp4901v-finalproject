@@ -517,7 +517,7 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
             boxes=list(boxes[0].cpu().detach().numpy())
             labels=np.argmax(confs, axis=1)[0]
             print("b",boxes)
-            print("l",labels.shape)
+            print("l",labels)
             visiualize(img,[boxes])
             raise('stop')
             scores = np.max(confs, axis=1).flatten()
