@@ -515,9 +515,9 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
             labels = torch.as_tensor(labels, dtype=torch.int64)
             
             boxes=list(boxes[0].cpu().detach().numpy())
-            labels=list(labels)
 
-            print(boxes,labels)
+            print("b",boxes)
+            print("l",labels.shape)
             visiualize(img,[boxes])
             raise('stop')
             scores = np.max(confs, axis=1).flatten()
