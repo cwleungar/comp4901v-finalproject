@@ -48,7 +48,6 @@ def convert_to_coco(input_file, output_dir):
                     if li[i]=='\n':
                         break
                     l=li[i].split(',')
-                    print(l)
                     buffer=l[4]+' '+l[0]+' '+l[1]+' '+l[2]+' '+l[3]
                     if i!=len(li)-1:
                         buffer+='\n'
