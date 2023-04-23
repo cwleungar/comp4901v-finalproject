@@ -54,7 +54,7 @@ def convert_to_coco(input_file, output_dir, image_dir):
                     m1,m2=(x1+x2)/2,(y1+y2)/2
                     w1,h1=x2-x1,y2-y1
                     x,y,wn,hn=m1/w,m2/h,w1/w,h1/h
-                    buffer=l[4]+' '+x+' '+y+' '+wn+' '+hn
+                    buffer=l[4]+' '+str(x)+' '+str(y)+' '+str(wn)+' '+str(hn)
                     if i!=len(li)-1:
                         buffer+='\n'
                     f.write(buffer)
