@@ -58,7 +58,8 @@ def convert_to_coco(input_file, output_dir, image_dir):
                     if i!=len(li)-1:
                         buffer+='\n'
                     f.write(buffer)
-
+            a='/data/cwleungar/dataset/coco/images/train'
+            os.popen('mv '+os.path.join(image_dir, imgname)+' '+os.path.join(a,, imgname))
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Convert text file of bounding box annotations to COCO-format label files')
     parser.add_argument('input_file', help='Path to input file')
