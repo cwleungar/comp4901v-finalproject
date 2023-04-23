@@ -29,7 +29,7 @@ CLASSES = {
     'DontCare': 8
 }
 
-def convert_to_coco(input_file, output_dir):
+def convert_to_coco(input_file, output_dir, image_dir):
     """
     Converts a text file containing bounding box annotations to COCO-format label files.
     """
@@ -41,6 +41,8 @@ def convert_to_coco(input_file, output_dir):
         for line_num, line in enumerate(lines):
             li=line.split(' ')
             imgname = li[0]
+            img = Image.open(os.path.join(image_dir, imgname))
+            w,h=img.size
             with open(os.path.join(output_dir, imgname.split('.')[0] + '.txt'), 'w') as f:
                 for i in range(len(li)):
                     if i==0:
@@ -48,7 +50,11 @@ def convert_to_coco(input_file, output_dir):
                     if li[i]=='\n':
                         break
                     l=li[i].split(',')
-                    buffer=l[4]+' '+l[0]+' '+l[1]+' '+l[2]+' '+l[3]
+                    x1,y1,x2,y2=float(l[0]),float(l[1]),float(l[2]),float(l[3])
+                    m1,m2=(x1+x2)/2,(y1+y2)/2
+                    w1,h1=x2-x1,y2-y1
+                    x,y,wn,hn=m1/w,m2/h,w1/w,h1/h
+                    buffer=l[4]+' '+x+' '+y+' '+wn+' '+hn
                     if i!=len(li)-1:
                         buffer+='\n'
                     f.write(buffer)
@@ -57,10 +63,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Convert text file of bounding box annotations to COCO-format label files')
     parser.add_argument('input_file', help='Path to input file')
     parser.add_argument('output_dir', help='Path to output directory')
+    parser.add_argument('image_dir', help='Path to Image directory')
+
     args = parser.parse_args()
 
     # Create the output directory if it doesn't exist
     os.makedirs(args.output_dir, exist_ok=True)
 
     # Convert the input file to COCO-format label files
-    convert_to_coco(args.input_file, args.output_dir)
+    convert_to_coco(args.input_file, args.output_dir, args.image_dir)
