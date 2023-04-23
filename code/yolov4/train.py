@@ -30,7 +30,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 from easydict import EasyDict as edict
 
-from dataset import Yolo_dataset
+from dataset import Yolo_dataset, visiualize
 from cfg import Cfg
 from models import Yolov4
 from tool.darknet2pytorch import Darknet
@@ -491,7 +491,7 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
             torch.cuda.synchronize()
         model_time = time.time()
         outputs = model(model_input)
-
+        
         # outputs = [{k: v.to(cpu_device) for k, v in t.items()} for t in outputs]
         model_time = time.time() - model_time
 
@@ -499,6 +499,8 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
         res = {}
         # for img, target, output in zip(images, targets, outputs):
         for img, target, boxes, confs in zip(images, targets, outputs[0], outputs[1]):
+            visiualize(img,boxes)
+            raise('stop')
             img_height, img_width = img.shape[:2]
             # boxes = output[...,:4].copy()  # output boxes in yolo format
             boxes = boxes.squeeze(2).cpu().detach().numpy()
@@ -622,7 +624,7 @@ if __name__ == "__main__":
         model = Darknet(cfg.cfgfile)
     else:
         model = Yolov4(cfg.pretrained, n_classes=cfg.classes)
-    #model.load_state_dict(torch.load(cfg.pretrained))
+    model.load_state_dict(torch.load(cfg.pretrained))
     #if torch.cuda.device_count() > 1:
     #    model = torch.nn.DataParallel(model)
     model.to(device=device)
