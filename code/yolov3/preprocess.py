@@ -28,27 +28,6 @@ CLASSES = {
     'Misc': 7, 
     'DontCare': 8
 }
-def parse_annotations(annotations_str):
-    """
-    Parses a string containing bounding box annotations and returns a list of annotations in COCO-format.
-    """
-    try:
-        parts = annotations_str.strip().split(' ')
-        image_path = parts[0]
-        bboxes = parts[1:]
-        annotations = []
-        for i in range(0, len(bboxes), 5):
-            x1, y1, x2, y2, class_name = bboxes[i:i+5]
-            bbox = [float(x1), float(y1), float(x2) - float(x1), float(y2) - float(y1)]
-            category_id = CLASSES[class_name]
-            annotation = {
-                'bbox': bbox,
-                'category_id': category_id
-            }
-            annotations.append(annotation)
-        return image_path, annotations
-    except Exception as e:
-        raise ValueError(f'Error parsing annotation string "{annotations_str}": {e}')
 
 def convert_to_coco(input_file, output_dir):
     """
@@ -60,27 +39,17 @@ def convert_to_coco(input_file, output_dir):
             print(f'Error: input file {input_file} is empty')
             return
         for line_num, line in enumerate(lines):
-            try:
-                image_path, annotations = parse_annotations(line)
-            except ValueError as e:
-                print(f'Error parsing line {line_num+1}: {e}')
-                continue
-            image_name = os.path.basename(image_path)
-            image_id = os.path.splitext(image_name)[0]
-            image = Image.open(image_path)
-            width, height = image.size
-            label_string = '_'.join([CLASSES[a['category_id']] for a in annotations])
-            coco_label = {
-                'file_name': image_name,
-                'image_id': image_id,
-                'height': height,
-                'width': width,
-                'annotations': annotations
-            }
-            output_path = os.path.join(output_dir, f'{image_id}_{label_string}.json')
-            with open(output_path, 'w') as f:
-                json.dump(coco_label, f)
-            print(f'Successfully converted {image_path} to {output_path}')
+            line.split(' ')
+            imgname = line[0]
+            with open(os.path.join(output_dir, imgname + '.txt'), 'w') as f:
+                for i in range(len(line)):
+                    if i==0:
+                        continue
+                    l=line.split(',')
+                    buffer=l[4]+' '+l[0]+' '+l[1]+' '+l[2]+' '+l[3]
+                    if i!=len(line)-1:
+                        buffer+='\n'
+                    f.write(buffer)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Convert text file of bounding box annotations to COCO-format label files')
