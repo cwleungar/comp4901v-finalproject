@@ -1,8 +1,10 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
+from dataset import Yolo_dataset
 from tool.torch_utils import *
 from tool.yolo_layer import YoloLayer
+from cfg import Cfg
 
 
 class Mish(torch.nn.Module):
@@ -491,15 +493,28 @@ if __name__ == "__main__":
     sized = cv2.cvtColor(sized, cv2.COLOR_BGR2RGB)
 
     from tool.utils import load_class_names, plot_boxes_cv2
-    from tool.torch_utils import do_detect
+    from tool.torch_utils import do_detect  
+    from tool.tv_reference.utils import collate_fn as val_collate
+    from torch.utils.data import DataLoader
 
     #for i in range(2):  # This 'for' loop is for speed check
                         # Because the first iteration is usually longer
         #boxes = do_detect(model, sized, 0.4, 0.6, use_cuda)
-    img=torch.tensor(sized).unsqueeze(0).permute(0,3,1,2).float().cuda()
-    print(img.shape)
-    output=model(img)
-    print(output)
+
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    Cfg['dataset_dir']="D:\\Users\\samle\\Documents\\GitHub\\comp4901v-finalproject\\dataset\\small_image\\training\\image_2"
+    val_dataset = Yolo_dataset('data/test.txt', Cfg, train=False)
+    val_loader = DataLoader(val_dataset, 2, shuffle=True, num_workers=0,
+                            drop_last=False, collate_fn=val_collate)
+    for (image,label) in val_loader:
+        model_input = [[cv2.resize(img, (width, height))] for img in image]
+        model_input = np.concatenate(model_input, axis=0)
+        model_input = model_input.transpose(0, 3, 1, 2)
+        model_input = torch.from_numpy(model_input).div(255.0)
+        model_input = model_input.to(device)
+        print(model_input.shape)
+        output=model(model_input)
+        print(output)
 
     if namesfile == None:
         if n_classes == 20:
