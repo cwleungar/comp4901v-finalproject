@@ -515,7 +515,7 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
             labels = torch.as_tensor(labels, dtype=torch.int64)
             
             boxes=list(boxes[0].cpu().detach().numpy())
-
+            labels=np.argmax(confs, axis=1)[0]
             print("b",boxes)
             print("l",labels.shape)
             visiualize(img,[boxes])
