@@ -478,20 +478,6 @@ if __name__ == "__main__":
     pretrained_dict = torch.load(weightfile, map_location=torch.device('cuda'))
     model.load_state_dict(pretrained_dict)
 
-    use_cuda = True
-    if use_cuda:
-        model.cuda()
-
-    img = cv2.imread(imgfile)
-
-    # Inference input size is 416*416 does not mean training size is the same
-    # Training size could be 608*608 or even other sizes
-    # Optional inference sizes:
-    #   Hight in {320, 416, 512, 608, ... 320 + 96 * n}
-    #   Width in {320, 416, 512, 608, ... 320 + 96 * m}
-    sized = cv2.resize(img, (width, height))
-    sized = cv2.cvtColor(sized, cv2.COLOR_BGR2RGB)
-
     from tool.utils import load_class_names, plot_boxes_cv2
     from tool.torch_utils import do_detect  
     from tool.tv_reference.utils import collate_fn as val_collate
@@ -502,6 +488,7 @@ if __name__ == "__main__":
         #boxes = do_detect(model, sized, 0.4, 0.6, use_cuda)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model=model.to(device)
     Cfg['dataset_dir']='/data/cwleungar/dataset/small_image/training/image_2/'
     val_dataset = Yolo_dataset('data/test.txt', Cfg, train=False)
     val_loader = DataLoader(val_dataset, 2, shuffle=True, num_workers=0,
