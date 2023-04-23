@@ -437,6 +437,8 @@ class Yolov4(nn.Module):
 
 
     def forward(self, input):
+        print(input.shape)
+        raise('Err')
         d1 = self.down1(input)
         d2 = self.down2(d1)
         d3 = self.down3(d2)
@@ -493,9 +495,13 @@ if __name__ == "__main__":
     from tool.utils import load_class_names, plot_boxes_cv2
     from tool.torch_utils import do_detect
 
-    for i in range(2):  # This 'for' loop is for speed check
+    #for i in range(2):  # This 'for' loop is for speed check
                         # Because the first iteration is usually longer
-        boxes = do_detect(model, sized, 0.4, 0.6, use_cuda)
+        #boxes = do_detect(model, sized, 0.4, 0.6, use_cuda)
+    img=torch.tensor(sized).unsqueeze(0).permute(0,3,1,2).float().cuda()
+    print(img.shape)
+    output=model(img)
+    print(output)
 
     if namesfile == None:
         if n_classes == 20:
@@ -503,7 +509,7 @@ if __name__ == "__main__":
         elif n_classes == 80:
             namesfile = 'data/coco.names'
         else:
-            print("please give namefile")
+            namesfile = 'data/x.names'
 
     class_names = load_class_names(namesfile)
     plot_boxes_cv2(img, boxes[0], 'predictions.jpg', class_names)
