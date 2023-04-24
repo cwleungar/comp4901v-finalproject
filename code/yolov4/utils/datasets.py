@@ -941,7 +941,7 @@ def augment_hsv(img, hgain=0.5, sgain=0.5, vgain=0.5):
     hue, sat, val = cv2.split(cv2.cvtColor(img, cv2.COLOR_BGR2HSV))
     dtype = img.dtype  # uint8
 
-    x = np.arange(0, 256, dtype=np.int3216)
+    x = np.arange(0, 256, dtype=np.int16)
     lut_hue = ((x * r[0]) % 180).astype(dtype)
     lut_sat = np.clip(x * r[1], 0, 255).astype(dtype)
     lut_val = np.clip(x * r[2], 0, 255).astype(dtype)
