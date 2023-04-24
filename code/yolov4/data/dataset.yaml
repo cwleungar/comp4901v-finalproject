@@ -2,7 +2,7 @@
 train: /data/cwleungar/dataset/coco/images/train/  # train images (relative to 'path') 128 images
 val: /data/cwleungar/dataset/coco/images/val/  # val images (relative to 'path') 128 images
 test:  # test images (optional)
-nc: 8
+nc: 9
 # Classes (80 COCO classes)
 names: [ 'Car','Pedestrian','Cyclist','Van','Person_sitting','Tram','Truck','Misc','DontCare']
 
