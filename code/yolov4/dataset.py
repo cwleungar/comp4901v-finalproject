@@ -298,7 +298,7 @@ class Yolo_dataset(Dataset):
         if not self.train:
             return self._get_val_item(index)
         img_path = self.imgs[index]
-        bboxes = np.array(self.truth.get(img_path), dtype=np.float64)
+        bboxes = np.array(self.truth.get(img_path), dtype=np.float3264)
         img_path = os.path.join(self.cfg.dataset_dir, img_path)
         use_mixup = self.cfg.mixup
         if random.randint(0, 1):
@@ -319,7 +319,7 @@ class Yolo_dataset(Dataset):
         for i in range(use_mixup + 1):
             if i != 0:
                 img_path = random.choice(list(self.truth.keys()))
-                bboxes = np.array(self.truth.get(img_path), dtype=np.float)
+                bboxes = np.array(self.truth.get(img_path), dtype=np.float32)
                 img_path = os.path.join(self.cfg.dataset_dir, img_path)
             img = cv2.imread(img_path)
             #img, bboxes = resize_image_with_boxes(img, bboxes, (self.cfg.w,self.cfg.h))
@@ -329,7 +329,7 @@ class Yolo_dataset(Dataset):
             if img is None:
                 continue
             oh, ow, oc = img.shape
-            dh, dw, dc = np.array(np.array([oh, ow, oc]) * self.cfg.jitter, dtype=np.int)
+            dh, dw, dc = np.array(np.array([oh, ow, oc]) * self.cfg.jitter, dtype=np.int32)
 
             dhue = rand_uniform_strong(-self.cfg.hue, self.cfg.hue)
             dsat = rand_scale(self.cfg.saturation)
@@ -423,7 +423,7 @@ class Yolo_dataset(Dataset):
         #print("1")
         img_path = self.imgs[index]
         #print("2")
-        bboxes_with_cls_id = np.array(self.truth.get(img_path), dtype=np.float)
+        bboxes_with_cls_id = np.array(self.truth.get(img_path), dtype=np.float32)
         #print("3")
         img = cv2.imread(os.path.join(self.cfg.dataset_dir, img_path))
         # img_height, img_width = img.shape[:2]
@@ -492,8 +492,8 @@ if __name__ == "__main__":
     dataset = Yolo_dataset(Cfg.train_label, Cfg)
     for i in range(100):
         out_img, out_bboxes = dataset.__getitem__(i)
-        a = draw_box(out_img.copy(), out_bboxes.astype(np.int32))
-        plt.imshow(a.astype(np.int32))
+        a = draw_box(out_img.copy(), out_bboxes.astype(np.int3232))
+        plt.imshow(a.astype(np.int3232))
         plt.show()
 
 

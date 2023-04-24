@@ -80,9 +80,9 @@ def convert_cat_id_and_reorientate_bbox(single_annotation):
 
 
 def myconverter(obj):
-    if isinstance(obj, np.integer):
+    if isinstance(obj, np.int32eger):
         return int(obj)
-    elif isinstance(obj, np.floating):
+    elif isinstance(obj, np.float32ing):
         return float(obj)
     elif isinstance(obj, np.ndarray):
         return obj.tolist()
