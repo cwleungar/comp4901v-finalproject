@@ -499,10 +499,10 @@ def evaluate(model, data_loader, cfg, device, logger=None, **kwargs):
             # boxes = output[...,:4].copy()  # output boxes in yolo format
             boxes = boxes.squeeze(2).cpu().detach().numpy()
             boxes[...,2:] = boxes[...,2:] - boxes[...,:2] # Transform [x1, y1, x2, y2] to [x1, y1, w, h]
-            boxes[...,0] = np.asarray(boxes[...,0], dtype=np.float3264) * np.asarray(img_width, dtype=np.float3264)
-            boxes[...,1] = np.asarray(boxes[...,1], dtype=np.float3264) * np.asarray(img_height, dtype=np.float3264)
-            boxes[...,2] = np.asarray(boxes[...,2], dtype=np.float3264) * np.asarray(img_width, dtype=np.float3264)
-            boxes[...,3] = np.asarray(boxes[...,3], dtype=np.float3264) * np.asarray(img_height, dtype=np.float3264)
+            boxes[...,0] = np.asarray(boxes[...,0], dtype=np.float64) * np.asarray(img_width, dtype=np.float64)
+            boxes[...,1] = np.asarray(boxes[...,1], dtype=np.float64) * np.asarray(img_height, dtype=np.float64)
+            boxes[...,2] = np.asarray(boxes[...,2], dtype=np.float64) * np.asarray(img_width, dtype=np.float64)
+            boxes[...,3] = np.asarray(boxes[...,3], dtype=np.float64) * np.asarray(img_height, dtype=np.float64)
             boxes = torch.as_tensor(boxes, dtype=torch.float32)
             # confs = output[...,4:].copy()
             confs = confs.cpu().detach().numpy()
