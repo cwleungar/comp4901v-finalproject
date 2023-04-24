@@ -401,7 +401,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         cache.pop('hash')  # remove hash
         labels, shapes = zip(*cache.values())
         self.labels = list(labels)
-        self.shapes = np.array(shapes, dtype=np.float3264)
+        self.shapes = np.array(shapes, dtype=np.float64)
         self.img_files = list(cache.keys())  # update
         self.label_files = img2label_paths(cache.keys())  # update
 
@@ -684,7 +684,7 @@ class LoadImagesAndLabels9(Dataset):  # for training/testing
         cache.pop('hash')  # remove hash
         labels, shapes = zip(*cache.values())
         self.labels = list(labels)
-        self.shapes = np.array(shapes, dtype=np.float3264)
+        self.shapes = np.array(shapes, dtype=np.float64)
         self.img_files = list(cache.keys())  # update
         self.label_files = img2label_paths(cache.keys())  # update
 
