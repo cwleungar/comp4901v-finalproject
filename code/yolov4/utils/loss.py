@@ -166,10 +166,10 @@ def build_targets(p, targets, model):
 
         # Append
         #indices.append((b, a, gj, gi))  # image, anchor, grid indices
-        print("b",b)
-        print("a",a)
-        print("gj",gj.clamp_(0, gain[3] - 1))
-        print("gi",gi.clamp_(0, gain[2] - 1))
+        print("b",b.dtype )
+        print("a",a.dtype )
+        print("gj",gj.clamp_(0, gain[3] - 1).dtype )
+        print("gi",gi.clamp_(0, gain[2] - 1).dtype )
         indices.append((b, a, gj.clamp_(0, gain[3] - 1).long()), gi.clamp_(0, gain[2] - 1).long())  # image, anchor, grid indices
         tbox.append(torch.cat((gxy - gij, gwh), 1))  # box
         anch.append(anchors[a])  # anchors
