@@ -619,7 +619,7 @@ if __name__ == "__main__":
         model = Darknet(cfg.cfgfile)
     else:
         model = Yolov4(cfg.pretrained, n_classes=cfg.classes)
-    model.load_state_dict(torch.load(cfg.pretrained))
+    #model.load_state_dict(torch.load(cfg.pretrained))
     #if torch.cuda.device_count() > 1:
     #    model = torch.nn.DataParallel(model)
     model.to(device=device)
