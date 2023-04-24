@@ -294,11 +294,11 @@ class Yolo_dataset(Dataset):
 
     def __getitem__(self, index):
         cv2.ocl.setUseOpenCL(False)   #设置opencv不使用多进程运行，但这句命令只在本作用域有效。
-        #cv2.setNumThreads(0)
+        cv2.setNumThreads(0)
         if not self.train:
             return self._get_val_item(index)
         img_path = self.imgs[index]
-        bboxes = np.array(self.truth.get(img_path), dtype=np.float)
+        bboxes = np.array(self.truth.get(img_path), dtype=np.float64)
         img_path = os.path.join(self.cfg.dataset_dir, img_path)
         use_mixup = self.cfg.mixup
         if random.randint(0, 1):
