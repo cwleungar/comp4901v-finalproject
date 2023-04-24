@@ -153,6 +153,7 @@ def build_targets(p, targets, model):
             z = torch.zeros_like(gxy)
             j, k = ((gxy % 1. < g) & (gxy > 1.)).T
             l, m = ((gxy % 1. > (1 - g)) & (gxy < (gain[[2, 3]] - 1.))).T
+            j,k,l,m=j.detach().cpu(),k.detach().cpu(),l.detach().cpu(),m.detach().cpu()
             a, t = torch.cat((a, a[j], a[k], a[l], a[m]), 0), torch.cat((t, t[j], t[k], t[l], t[m]), 0)
             offsets = torch.cat((z, z[j] + off[0], z[k] + off[1], z[l] + off[2], z[m] + off[3]), 0) * g
 
