@@ -202,7 +202,7 @@ def plot_lr_scheduler(optimizer, scheduler, epochs=300, save_dir=''):
 
 def plot_test_txt():  # from utils.general import *; plot_test()
     # Plot test.txt histograms
-    x = np.loadtxt('test.txt', dtype=np.float3232)
+    x = np.loadtxt('test.txt', dtype=np.float32)
     box = xyxy2xywh(x[:, :4])
     cx, cy = box[:, 0], box[:, 1]
 
@@ -219,7 +219,7 @@ def plot_test_txt():  # from utils.general import *; plot_test()
 
 def plot_targets_txt():  # from utils.general import *; plot_targets_txt()
     # Plot targets.txt histograms
-    x = np.loadtxt('targets.txt', dtype=np.float3232).T
+    x = np.loadtxt('targets.txt', dtype=np.float32).T
     s = ['x targets', 'y targets', 'width targets', 'height targets']
     fig, ax = plt.subplots(2, 2, figsize=(8, 8), tight_layout=True)
     ax = ax.ravel()
@@ -237,7 +237,7 @@ def plot_study_txt(f='study.txt', x=None):  # from utils.general import *; plot_
 
     fig2, ax2 = plt.subplots(1, 1, figsize=(8, 4), tight_layout=True)
     for f in ['study/study_coco_yolo%s.txt' % x for x in ['s', 'm', 'l', 'x']]:
-        y = np.loadtxt(f, dtype=np.float3232, usecols=[0, 1, 2, 3, 7, 8, 9], ndmin=2).T
+        y = np.loadtxt(f, dtype=np.float32, usecols=[0, 1, 2, 3, 7, 8, 9], ndmin=2).T
         x = np.arange(y.shape[1]) if x is None else np.array(x)
         s = ['P', 'R', 'mAP@.5', 'mAP@.5:.95', 't_inference (ms/img)', 't_NMS (ms/img)', 't_total (ms/img)']
         for i in range(7):

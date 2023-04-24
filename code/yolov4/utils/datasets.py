@@ -521,9 +521,9 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
                 assert (shape[0] > 9) & (shape[1] > 9), 'image size <10 pixels'
                 if os.path.isfile(label):
                     with open(label, 'r') as f:
-                        l = np.array([x.split() for x in f.read().splitlines()], dtype=np.float3232)  # labels
+                        l = np.array([x.split() for x in f.read().splitlines()], dtype=np.float32)  # labels
                 if len(l) == 0:
-                    l = np.zeros((0, 5), dtype=np.float3232)
+                    l = np.zeros((0, 5), dtype=np.float32)
                 x[img] = [l, shape]
             except Exception as e:
                 print('WARNING: Ignoring corrupted image and/or label %s: %s' % (img, e))
@@ -804,9 +804,9 @@ class LoadImagesAndLabels9(Dataset):  # for training/testing
                 assert (shape[0] > 9) & (shape[1] > 9), 'image size <10 pixels'
                 if os.path.isfile(label):
                     with open(label, 'r') as f:
-                        l = np.array([x.split() for x in f.read().splitlines()], dtype=np.float3232)  # labels
+                        l = np.array([x.split() for x in f.read().splitlines()], dtype=np.float32)  # labels
                 if len(l) == 0:
-                    l = np.zeros((0, 5), dtype=np.float3232)
+                    l = np.zeros((0, 5), dtype=np.float32)
                 x[img] = [l, shape]
             except Exception as e:
                 print('WARNING: Ignoring corrupted image and/or label %s: %s' % (img, e))
@@ -1271,7 +1271,7 @@ def cutout(image, labels):
 
         # return unobscured labels
         if len(labels) and s > 0.03:
-            box = np.array([xmin, ymin, xmax, ymax], dtype=np.float3232)
+            box = np.array([xmin, ymin, xmax, ymax], dtype=np.float32)
             ioa = bbox_ioa(box, labels[:, 1:5])  # intersection over area
             labels = labels[ioa < 0.60]  # remove >60% obscured labels
 
