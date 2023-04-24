@@ -58,8 +58,8 @@ def convert_to_coco(input_file, output_dir, image_dir):
                     if i!=len(li)-1:
                         buffer+='\n'
                     f.write(buffer)
-            a='/data/cwleungar/dataset/coco/images/train'
-            b='/data/cwleungar/dataset/coco/labels/train'
+            a='/data/cwleungar/dataset/coco/images/val'
+            b='/data/cwleungar/dataset/coco/labels/val'
             os.popen('mv '+os.path.join(image_dir, imgname)+' '+os.path.join(a, imgname))
             os.popen('mv '+os.path.join(output_dir, imgname.split('.')[0] + '.txt')+' '+os.path.join(b, imgname.split('.')[0] + '.txt'))
 if __name__ == '__main__':
