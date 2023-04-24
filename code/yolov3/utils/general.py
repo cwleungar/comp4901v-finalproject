@@ -28,7 +28,7 @@ from tarfile import is_tarfile
 from typing import Optional
 from zipfile import ZipFile, is_zipfile
 
-from cv2 import cv2
+import cv2
 import IPython
 import numpy as np
 import pandas as pd

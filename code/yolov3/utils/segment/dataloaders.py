@@ -6,7 +6,7 @@ Dataloaders
 import os
 import random
 
-from cv2 import cv2
+import cv2
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, distributed

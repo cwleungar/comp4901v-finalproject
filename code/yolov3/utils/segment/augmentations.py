@@ -6,7 +6,7 @@ Image augmentation functions
 import math
 import random
 
-from cv2 import cv2
+import cv2
 import numpy as np
 
 from ..augmentations import box_candidates
