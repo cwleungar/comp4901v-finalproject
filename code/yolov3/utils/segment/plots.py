@@ -2,7 +2,7 @@ import contextlib
 import math
 from pathlib import Path
 
-import cv2
+from cv2 import cv2 as cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd

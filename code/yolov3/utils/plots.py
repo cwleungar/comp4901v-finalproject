@@ -10,7 +10,7 @@ from copy import copy
 from pathlib import Path
 from urllib.error import URLError
 
-import cv2
+from cv2 import cv2 as cv2
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
