@@ -322,7 +322,7 @@ class Yolo_dataset(Dataset):
                 bboxes = np.array(self.truth.get(img_path), dtype=np.float)
                 img_path = os.path.join(self.cfg.dataset_dir, img_path)
             img = cv2.imread(img_path)
-            img, bboxes = resize_image_with_boxes(img, bboxes, (self.cfg.w,self.cfg.h))
+            #img, bboxes = resize_image_with_boxes(img, bboxes, (self.cfg.w,self.cfg.h))
             bboxes=np.array(bboxes)
             img = cv2.cvtColor(np.array(img), cv2.COLOR_BGR2RGB)
            #visiualize(img, bboxes)
@@ -382,9 +382,9 @@ class Yolo_dataset(Dataset):
             if (min_w_h / 8) < blur and blur > 1:  # disable blur if one of the objects is too small
                 blur = min_w_h / 8
 
-            #ai = image_data_augmentation(img, self.cfg.w, self.cfg.h, pleft, ptop, swidth, sheight, flip,
-            #                             dhue, dsat, dexp, gaussian_noise, blur, truth)
-            ai=img
+            ai = image_data_augmentation(img, self.cfg.w, self.cfg.h, pleft, ptop, swidth, sheight, flip,
+                                         dhue, dsat, dexp, gaussian_noise, blur, truth)
+            
             if use_mixup == 0:
                 out_img = ai
                 out_bboxes = truth

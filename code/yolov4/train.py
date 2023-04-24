@@ -151,9 +151,7 @@ class Yolo_loss(nn.Module):
             ref_anchors[:, 2:] = np.array(all_anchors_grid, dtype=np.float32)
             ref_anchors = torch.from_numpy(ref_anchors)
             # calculate pred - xywh obj cls
-            vg=[80,40,20]
-
-            fsize = vg[i] #image_size // self.strides[i]
+            fsize = image_size // self.strides[i]
             grid_x = torch.arange(fsize, dtype=torch.float).repeat(batch, 3, fsize, 1).to(device)
             grid_y = torch.arange(fsize, dtype=torch.float).repeat(batch, 3, fsize, 1).permute(0, 1, 3, 2).to(device)
             anchor_w = torch.from_numpy(masked_anchors[:, 0]).repeat(batch, fsize, fsize, 1).permute(0, 3, 1, 2).to(
@@ -212,7 +210,7 @@ class Yolo_loss(nn.Module):
             truth_box[:n, 0] = truth_x_all[b, :n]
             truth_box[:n, 1] = truth_y_all[b, :n]
 
-            pred_ious = bboxes_iou(pred[b].reshape(-1, 4), truth_box, xyxy=False)
+            pred_ious = bboxes_iou(pred[b].view(-1, 4), truth_box, xyxy=False)
             pred_best_iou, _ = pred_ious.max(dim=1)
             pred_best_iou = (pred_best_iou > self.ignore_thre)
             pred_best_iou = pred_best_iou.view(pred[b].shape[:3])
@@ -250,7 +248,6 @@ class Yolo_loss(nn.Module):
             output[..., np.r_[:2, 4:n_ch]] = torch.sigmoid(output[..., np.r_[:2, 4:n_ch]])
 
             pred = output[..., :4].clone()
-            
             pred[..., 0] += self.grid_x[output_id]
             pred[..., 1] += self.grid_y[output_id]
             pred[..., 2] = torch.exp(pred[..., 2]) * self.anchor_w[output_id]
@@ -276,9 +273,7 @@ class Yolo_loss(nn.Module):
 
         loss = loss_xy + loss_wh + loss_obj + loss_cls
 
-        return loss, loss_xy, loss_wh, loss_obj, loss_cls, loss_l2
-
-
+        return loss, loss_xy, loss_wh, loss_obj, loss_cls, 
 def collate(batch):
     images = []
     bboxes = []

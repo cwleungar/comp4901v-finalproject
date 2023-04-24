@@ -1,10 +1,8 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
-from dataset import Yolo_dataset
 from tool.torch_utils import *
 from tool.yolo_layer import YoloLayer
-from cfg import Cfg
 
 
 class Mish(torch.nn.Module):
@@ -26,7 +24,6 @@ class Upsample(nn.Module):
 
         if inference:
 
-            #B = x.data.size(0)
             #C = x.data.size(1)
             #H = x.data.size(2)
             #W = x.data.size(3)
@@ -478,30 +475,26 @@ if __name__ == "__main__":
     pretrained_dict = torch.load(weightfile, map_location=torch.device('cuda'))
     model.load_state_dict(pretrained_dict)
 
+    use_cuda = True
+    if use_cuda:
+        model.cuda()
+
+    img = cv2.imread(imgfile)
+
+    # Inference input size is 416*416 does not mean training size is the same
+    # Training size could be 608*608 or even other sizes
+    # Optional inference sizes:
+    #   Hight in {320, 416, 512, 608, ... 320 + 96 * n}
+    #   Width in {320, 416, 512, 608, ... 320 + 96 * m}
+    sized = cv2.resize(img, (width, height))
+    sized = cv2.cvtColor(sized, cv2.COLOR_BGR2RGB)
+
     from tool.utils import load_class_names, plot_boxes_cv2
-    from tool.torch_utils import do_detect  
-    from tool.tv_reference.utils import collate_fn as val_collate
-    from torch.utils.data import DataLoader
+    from tool.torch_utils import do_detect
 
-    #for i in range(2):  # This 'for' loop is for speed check
+    for i in range(2):  # This 'for' loop is for speed check
                         # Because the first iteration is usually longer
-        #boxes = do_detect(model, sized, 0.4, 0.6, use_cuda)
-
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model=model.to(device)
-    Cfg['dataset_dir']='/data/cwleungar/dataset/small_image/training/image_2/'
-    val_dataset = Yolo_dataset('data/test.txt', Cfg, train=False)
-    val_loader = DataLoader(val_dataset, 2, shuffle=True, num_workers=0,
-                            drop_last=False, collate_fn=val_collate)
-    for (image,label) in val_loader:
-        model_input = [[cv2.resize(img, (width, height))] for img in image]
-        model_input = np.concatenate(model_input, axis=0)
-        model_input = model_input.transpose(0, 3, 1, 2)
-        model_input = torch.from_numpy(model_input).div(255.0)
-        model_input = model_input.to(device)
-        print(model_input.shape)
-        output=model(model_input)
-        print(output)
+        boxes = do_detect(model, sized, 0.4, 0.6, use_cuda)
 
     if namesfile == None:
         if n_classes == 20:
@@ -509,7 +502,7 @@ if __name__ == "__main__":
         elif n_classes == 80:
             namesfile = 'data/coco.names'
         else:
-            namesfile = 'data/x.names'
+            print("please give namefile")
 
     class_names = load_class_names(namesfile)
     plot_boxes_cv2(img, boxes[0], 'predictions.jpg', class_names)
