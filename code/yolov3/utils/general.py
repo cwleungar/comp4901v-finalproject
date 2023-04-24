@@ -1127,7 +1127,7 @@ def increment_path(path, exist_ok=False, sep='', mkdir=False):
 
 
 # OpenCV Multilanguage-friendly functions ------------------------------------------------------------------------------------
-imshow_ = cv2.imshow  # copy to avoid recursion errors
+#imshow_ = cv2.imshow  # copy to avoid recursion errors
 
 
 def imread(path, flags=cv2.IMREAD_COLOR):
@@ -1143,7 +1143,8 @@ def imwrite(path, im):
 
 
 def imshow(path, im):
-    imshow_(path.encode('unicode_escape').decode(), im)
+    return
+    #imshow_(path.encode('unicode_escape').decode(), im)
 
 
 cv2.imread, cv2.imwrite, cv2.imshow = imread, imwrite, imshow  # redefine
