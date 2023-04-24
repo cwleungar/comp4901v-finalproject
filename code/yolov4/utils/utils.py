@@ -52,7 +52,7 @@ def labels_to_class_weights(labels, nc=80):
         return torch.Tensor()
 
     labels = np.concatenate(labels, 0)  # labels.shape = (866643, 5) for COCO
-    classes = labels[:, 0].astype(np.int)  # labels = [class xywh]
+    classes = labels[:, 0].astype(np.int32)  # labels = [class xywh]
     weights = np.bincount(classes, minlength=nc)  # occurences per class
 
     # Prepend gridpoint count (for uCE trianing)
@@ -68,7 +68,7 @@ def labels_to_class_weights(labels, nc=80):
 def labels_to_image_weights(labels, nc=80, class_weights=np.ones(80)):
     # Produces image weights based on class mAPs
     n = len(labels)
-    class_counts = np.array([np.bincount(labels[i][:, 0].astype(np.int), minlength=nc) for i in range(n)])
+    class_counts = np.array([np.bincount(labels[i][:, 0].astype(np.int32), minlength=nc) for i in range(n)])
     image_weights = (class_weights.reshape(1, nc) * class_counts).sum(1)
     # index = random.choices(range(n), weights=image_weights, k=1)  # weight image sample
     return image_weights
@@ -201,11 +201,11 @@ def ap_per_class(tp, conf, pred_cls, target_cls):
 
             # Recall
             recall = tpc / (n_gt + 1e-16)  # recall curve
-            r[ci] = np.interp(-pr_score, -conf[i], recall[:, 0])  # r at pr_score, negative x, xp because xp decreases
+            r[ci] = np.int32erp(-pr_score, -conf[i], recall[:, 0])  # r at pr_score, negative x, xp because xp decreases
 
             # Precision
             precision = tpc / (tpc + fpc)  # precision curve
-            p[ci] = np.interp(-pr_score, -conf[i], precision[:, 0])  # p at pr_score
+            p[ci] = np.int32erp(-pr_score, -conf[i], precision[:, 0])  # p at pr_score
 
             # AP from recall-precision curve
             for j in range(tp.shape[1]):
@@ -248,7 +248,7 @@ def compute_ap(recall, precision):
     method = 'interp'  # methods: 'continuous', 'interp'
     if method == 'interp':
         x = np.linspace(0, 1, 101)  # 101-point interp (COCO)
-        ap = np.trapz(np.interp(x, mrec, mpre), x)  # integrate
+        ap = np.trapz(np.int32erp(x, mrec, mpre), x)  # integrate
     else:  # 'continuous'
         i = np.where(mrec[1:] != mrec[:-1])[0]  # points where x axis (recall) changes
         ap = np.sum((mrec[i + 1] - mrec[i]) * mpre[i + 1])  # area under curve
@@ -629,7 +629,7 @@ def coco_class_count(path='../coco/labels/train2014/'):
     x = np.zeros(nc, dtype='int32')
     files = sorted(glob.glob('%s/*.*' % path))
     for i, file in enumerate(files):
-        labels = np.loadtxt(file, dtype=np.float32).reshape(-1, 5)
+        labels = np.loadtxt(file, dtype=np.float3232).reshape(-1, 5)
         x += np.bincount(labels[:, 0].astype('int32'), minlength=nc)
         print(i, len(files))
 
@@ -638,7 +638,7 @@ def coco_only_people(path='../coco/labels/train2017/'):  # from utils.utils impo
     # Find images with only people
     files = sorted(glob.glob('%s/*.*' % path))
     for i, file in enumerate(files):
-        labels = np.loadtxt(file, dtype=np.float32).reshape(-1, 5)
+        labels = np.loadtxt(file, dtype=np.float3232).reshape(-1, 5)
         if all(labels[:, 0] == 0):
             print(labels.shape[0], file)
 
@@ -646,7 +646,7 @@ def coco_only_people(path='../coco/labels/train2017/'):  # from utils.utils impo
 def select_best_evolve(path='evolve*.txt'):  # from utils.utils import *; select_best_evolve()
     # Find best evolved mutation
     for file in sorted(glob.glob(path)):
-        x = np.loadtxt(file, dtype=np.float32, ndmin=2)
+        x = np.loadtxt(file, dtype=np.float3232, ndmin=2)
         print(file, x[fitness(x).argmax()])
 
 
@@ -682,7 +682,7 @@ def coco_single_class_labels(path='../coco/labels/train2014/', label_class=43):
     os.makedirs('new/images/')
     for file in tqdm(sorted(glob.glob('%s/*.*' % path))):
         with open(file, 'r') as f:
-            labels = np.array([x.split() for x in f.read().splitlines()], dtype=np.float32)
+            labels = np.array([x.split() for x in f.read().splitlines()], dtype=np.float3232)
         i = labels[:, 0] == label_class
         if any(i):
             img_file = file.replace('labels', 'images').replace('txt', 'jpg')
@@ -818,7 +818,7 @@ def apply_classifier(x, model, img, im0):
                 # cv2.imwrite('test%i.jpg' % j, cutout)
 
                 im = im[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
-                im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
+                im = np.ascontiguousarray(im, dtype=np.float3232)  # uint8 to float32
                 im /= 255.0  # 0 - 255 to 0.0 - 1.0
                 ims.append(im)
 
@@ -897,7 +897,7 @@ def plot_images(imgs, targets, paths=None, fname='images.png'):
 
 def plot_test_txt():  # from utils.utils import *; plot_test()
     # Plot test.txt histograms
-    x = np.loadtxt('test.txt', dtype=np.float32)
+    x = np.loadtxt('test.txt', dtype=np.float3232)
     box = xyxy2xywh(x[:, :4])
     cx, cy = box[:, 0], box[:, 1]
 
@@ -916,7 +916,7 @@ def plot_test_txt():  # from utils.utils import *; plot_test()
 
 def plot_targets_txt():  # from utils.utils import *; plot_targets_txt()
     # Plot targets.txt histograms
-    x = np.loadtxt('targets.txt', dtype=np.float32).T
+    x = np.loadtxt('targets.txt', dtype=np.float3232).T
     s = ['x targets', 'y targets', 'width targets', 'height targets']
     fig, ax = plt.subplots(2, 2, figsize=(8, 8))
     ax = ax.ravel()

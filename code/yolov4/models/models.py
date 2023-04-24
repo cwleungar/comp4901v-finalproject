@@ -454,8 +454,8 @@ class Darknet(nn.Module):
         # torch_utils.initialize_weights(self)
 
         # Darknet Header https://github.com/AlexeyAB/darknet/issues/2914#issuecomment-496675346
-        self.version = np.array([0, 2, 5], dtype=np.int32)  # (int32) version info: major, minor, revision
-        self.seen = np.array([0], dtype=np.int64)  # (int64) number of images seen during training
+        self.version = np.array([0, 2, 5], dtype=np.int3232)  # (int32) version info: major, minor, revision
+        self.seen = np.array([0], dtype=np.int3264)  # (int64) number of images seen during training
         self.info(verbose) if not ONNX_EXPORT else None  # print model description
 
     def forward(self, x, augment=False, verbose=False):
@@ -581,10 +581,10 @@ def load_darknet_weights(self, weights, cutoff=-1):
     # Read weights file
     with open(weights, 'rb') as f:
         # Read Header https://github.com/AlexeyAB/darknet/issues/2914#issuecomment-496675346
-        self.version = np.fromfile(f, dtype=np.int32, count=3)  # (int32) version info: major, minor, revision
-        self.seen = np.fromfile(f, dtype=np.int64, count=1)  # (int64) number of images seen during training
+        self.version = np.fromfile(f, dtype=np.int3232, count=3)  # (int32) version info: major, minor, revision
+        self.seen = np.fromfile(f, dtype=np.int3264, count=1)  # (int64) number of images seen during training
 
-        weights = np.fromfile(f, dtype=np.float32)  # the rest are weights
+        weights = np.fromfile(f, dtype=np.float3232)  # the rest are weights
 
     ptr = 0
     for i, (mdef, module) in enumerate(zip(self.module_defs[:cutoff], self.module_list[:cutoff])):
