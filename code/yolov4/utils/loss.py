@@ -168,7 +168,7 @@ def build_targets(p, targets, model):
         #indices.append((b, a, gj, gi))  # image, anchor, grid indices
         print("b",b.dtype )
         print("a",a.dtype )
-        print(gain[3])
+        gain=gain.detach().cpu()
         print("gj",gj.clamp_(0, gain[3] - 1).dtype )
         print("gi",gi.clamp_(0, gain[2] - 1).dtype )
         indices.append((b, a, gj.clamp_(0, gain[3] - 1).long()), gi.clamp_(0, gain[2] - 1).long())  # image, anchor, grid indices
