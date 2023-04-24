@@ -200,7 +200,7 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
             if plots:
                 plot_labels(labels, save_dir=save_dir)
                 if tb_writer:
-                    tb_writer.add_histogram('classes', np.greater(c, 0), 0)
+                    tb_writer.add_histogram('classes', c.astype(np.int32), 0)
                 if wandb:
                     wandb.log({"Labels": [wandb.Image(str(x), caption=x.name) for x in save_dir.glob('*labels*.png')]})
 
