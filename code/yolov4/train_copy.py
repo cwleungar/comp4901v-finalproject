@@ -45,8 +45,8 @@ ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 from models.models import *
 
 #from ..yolov3 import val as validate  # for end-of-epoch mAP
-from .. import yolov3
-import yolov3.val as validate
+#from .. import yolov3
+#import yolov3.val as validate
 from ..yolov3.models.experimental import attempt_load
 from utils.autoanchor import check_anchors
 from ..yolov3.utils.autobatch import check_train_batch_size
