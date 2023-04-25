@@ -35,7 +35,8 @@ import torch.nn as nn
 import yaml
 from torch.optim import lr_scheduler
 from tqdm import tqdm
-
+import sys
+sys.path.append('../')
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv3 root directory
@@ -44,22 +45,21 @@ if str(ROOT) not in sys.path:
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 from models.models import *
 
-#from ..yolov3 import val as validate  # for end-of-epoch mAP
-#from .. import yolov3
-#import yolov3.val as validate
-from ..yolov3.models.experimental import attempt_load
+from yolov3 import val as validate  # for end-of-epoch mAP
+
+from yolov3.models.experimental import attempt_load
 from utils.autoanchor import check_anchors
-from ..yolov3.utils.autobatch import check_train_batch_size
-from ..yolov3.utils.callbacks import Callbacks
+from yolov3.utils.autobatch import check_train_batch_size
+from yolov3.utils.callbacks import Callbacks
 from utils.datasets import create_dataloader
-from ..yolov3.utils.downloads import attempt_download, is_url
+from yolov3.utils.downloads import attempt_download, is_url
 from utils.general import (LOGGER, TQDM_BAR_FORMAT, check_amp, check_dataset, check_file, check_git_info,
                            check_git_status, check_img_size, check_requirements, check_suffix, check_yaml, colorstr,
                            get_latest_run, increment_path, init_seeds, intersect_dicts, labels_to_class_weights,
                            labels_to_image_weights, methods, one_cycle, print_args, print_mutation, strip_optimizer,
                            yaml_save)
-from ..yolov3.utils.loggers import Loggers
-from ..yolov3.utils.loggers.comet.comet_utils import check_comet_resume
+from yolov3.utils.loggers import Loggers
+from yolov3.utils.loggers.comet.comet_utils import check_comet_resume
 from utils.loss import compute_loss
 from utils.metrics import fitness
 from utils.plots import plot_evolve
