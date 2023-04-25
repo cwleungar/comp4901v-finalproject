@@ -189,9 +189,9 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
 
     # Trainloader
     
-    train_loader, dataset = create_dataloader(train_path, imgsz, batch_size // WORLD_SIZE, gs, opt,
+    train_loader, dataset = create_dataloader(train_path, imgsz, batch_size, gs, opt,
                                             hyp=hyp, augment=True, cache=None if noval else opt.cache, rect=opt.rect,
-                                            rank=LOCAL_RANK, world_size=opt.world_size, workers=opt.workers)
+                                            rank=LOCAL_RANK, world_size=WORLD_SIZE, workers=opt.workers)
     
     labels = np.concatenate(dataset.labels, 0)
     mlc = int(labels[:, 0].max())  # max label class
@@ -200,9 +200,9 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
     # Process 0
     if RANK in {-1, 0}:
 
-        val_loader = create_dataloader(val_path, imgsz, batch_size // WORLD_SIZE * 2, gs, opt,
+        val_loader = create_dataloader(val_path, imgsz, batch_size * 2, gs, opt,
                                        hyp=hyp, cache=None if noval else opt.cache, rect=True,
-                                       rank=-1, world_size=opt.world_size, workers=opt.workers)[0]  # testloader
+                                       rank=-1, world_size=WORLD_SIZE, workers=opt.workers)[0]  # testloader
 
         if not resume:
             if not opt.noautoanchor:
