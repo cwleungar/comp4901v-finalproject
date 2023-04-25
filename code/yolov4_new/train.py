@@ -321,6 +321,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
                     ema.update(model)
             # Log
             if RANK in {-1, 0}:
+                print("shape: ",loss_items.shape)
                 mloss = (mloss * i + loss_items) / (i + 1)  # update mean losses
                 mem = f'{torch.cuda.memory_reserved() / 1E9 if torch.cuda.is_available() else 0:.3g}G'  # (GB)
                 pbar.set_description(('%11s' * 2 + '%11.4g' * 5) %
