@@ -36,17 +36,16 @@ import yaml
 from torch.optim import lr_scheduler
 from tqdm import tqdm
 
-from yolov4.models.models import Darknet
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv3 root directory
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
+from models.models import *
 
 from ..yolov3 import val as validate  # for end-of-epoch mAP
 from ..yolov3.models.experimental import attempt_load
-from ..yolov3.models.yolo import Model
 from utils.autoanchor import check_anchors
 from ..yolov3.utils.autobatch import check_train_batch_size
 from ..yolov3.utils.callbacks import Callbacks
