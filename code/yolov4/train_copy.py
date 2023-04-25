@@ -44,7 +44,7 @@ if str(ROOT) not in sys.path:
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 from models.models import *
 
-from ..yolov3 import val as validate
+from yolov3 import val as validate
 
 from models.experimental import attempt_load
 from utils.autoanchor import check_anchors
