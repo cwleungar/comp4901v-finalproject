@@ -6,7 +6,10 @@ import torch
 import yaml
 
 __all__ = ['build_detector']
-
+def getname(path):
+    with open(path, 'r') as f:
+        name = f.readline().strip()
+    return name
 def build_detector(cfg, use_cuda):
     if 'YOLOV3' in cfg:
         ckpt = torch.load(cfg.YOLOV3.WEIGHT, map_location='cpu')
@@ -21,6 +24,7 @@ def build_detector(cfg, use_cuda):
         csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
         csd = intersect_dicts(csd, model.state_dict(), exclude=exclude)  # intersect
         model.load_state_dict(csd, strict=False)  # load
+        model['class_names']=getname(cfg.YOLOV3.CLASS_NAMES)
         return model
     elif 'YOLOV4' in cfg:
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -30,6 +34,7 @@ def build_detector(cfg, use_cuda):
         model = YOLOv4(cfgr).to(device)  # create
         state_dict=ckpt['model'].state_dict()
         model.load_state_dict(state_dict, strict=False)
+        model['class_names']=getname(cfg.YOLOV4.CLASS_NAMES)
         return model
     elif 'YOLOV5' in cfg:
         ckpt = torch.load(cfg.YOLOV5.WEIGHT, map_location='cpu')
@@ -44,4 +49,5 @@ def build_detector(cfg, use_cuda):
         csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
         csd = intersect_dicts(csd, model.state_dict(), exclude=exclude)  # intersect
         model.load_state_dict(csd, strict=False)  # load
+        model['class_names']=getname(cfg.YOLOV5.CLASS_NAMES)
         return model
