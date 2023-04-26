@@ -213,10 +213,14 @@ def run(
 
         # Loss
         if compute_loss:
-            train_out=train_out.to(device)
+            train_out_2=[]
+            for i in train_out:
+                i=i.to(device)
+                train_out_2.append(i)
+
             targets=targets.to(device)
             model=model.to(device)
-            loss += compute_loss(train_out, targets,model)[1]  # box, obj, cls
+            loss += compute_loss(train_out_2, targets,model)[1]  # box, obj, cls
 
         # NMS
         targets[:, 2:] *= torch.tensor((width, height, width, height), device=device)  # to pixels
