@@ -8,6 +8,7 @@ import numpy as np
 
 from detector import build_detector
 from deep_sort import build_tracker
+from detector.YOLOv3.utils.general import non_max_suppression, xyxy2xywh
 from utils.draw import draw_boxes
 from utils.parser import get_config
 from utils.log import get_logger
@@ -148,13 +149,26 @@ class VideoTracker(object):
             im=cv2.resize(im,(640,640))
             device = torch.device("cuda:2" if self.use_cuda else "cpu")
             im = torch.from_numpy(im).to(device).permute(2,0, 1).float()
+            
             im=im/255
             im=im.unsqueeze(0)
-            
-            
-            pred= self.detector(im)
-            bbox_xywh, cls_conf, cls_ids=extract_from_pred(pred)
+            gn = torch.tensor(im[0].shape)[[1, 0, 1, 0]]  # normalization gain whwh
 
+            screen=0
+            pred= self.detector(im,visualize=True,argument=False)
+            pred = non_max_suppression(pred, 0.4, 0.2, None, False, max_det=1000)
+            det=pred[0]
+            cls_ids = []
+            bbox_xywh = []
+            cls_conf = []
+            # Write results
+            for *xyxy, conf, cls in reversed(det):
+                xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
+                #line = (cls, *xywh, conf) 
+                cls_ids.append(int(cls))
+                bbox_xywh.append(xywh)
+                cls_conf.append(conf)
+            cls_ids,bbox_xywh,cls_conf=torch.tensor(cls_ids),torch.tensor(bbox_xywh),torch.tensor(cls_conf)
             #bbox_xywh, cls_conf, cls_ids = self.detector(im)
 
             # select person class
