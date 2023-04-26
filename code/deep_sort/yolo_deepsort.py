@@ -172,7 +172,7 @@ class VideoTracker(object):
                 bbox = np.array(xywh, dtype=np.float32).reshape(1, 4)
                 bbox_xywh[int(cls)] = np.concatenate([bbox_xywh[int(cls)], bbox], axis=0)
                 cls_conf[int(cls)] = np.concatenate([cls_conf[int(cls)], np.array([conf], dtype=np.float32)], axis=0)
-            
+            print(cls_conf)
             #bbox_xywh, cls_conf, cls_ids = self.detector(im)
 
             # select person class
