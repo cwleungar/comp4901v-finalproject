@@ -207,19 +207,16 @@ def run(
 
         # Inference
         with dt[1]:
-            model=model.to(device)
-            im=im.to(device)
             preds, train_out = model(im) if compute_loss else (model(im, augment=augment), None)
 
         # Loss
         if compute_loss:
             train_out_2=[]
             for i in train_out:
-                i=i.to(device)
+                i=i.cpu()
                 train_out_2.append(i)
 
-            targets=targets.to(device)
-            model=model.to(device)
+   
             loss += compute_loss(train_out_2, targets,model)[1]  # box, obj, cls
 
         # NMS
