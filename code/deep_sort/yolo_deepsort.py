@@ -15,7 +15,7 @@ from utils.io import write_results
 
 def extract_from_pred(pred):
     # Define the number of classes
-    num_classes = 8
+    num_classes = 9
 
     # Define the detection threshold
     conf_threshold = 0.4

@@ -19,7 +19,7 @@ def build_detector(cfg, use_cuda):
             with open(hyp, errors='ignore') as f:
                 hyp = yaml.safe_load(f) 
         device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
-        model = YOLOv3(cfgr or ckpt['model'].yaml, ch=3, nc=8, anchors=hyp.get('anchors')).to(device)  # create
+        model = YOLOv3(cfgr or ckpt['model'].yaml, ch=3, nc=9, anchors=hyp.get('anchors')).to(device)  # create
         exclude = ['anchor'] if (cfgr or hyp.get('anchors')) else []  # exclude keys
         csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
         csd = intersect_dicts(csd, model.state_dict(), exclude=exclude)  # intersect
@@ -44,7 +44,7 @@ def build_detector(cfg, use_cuda):
             with open(hyp, errors='ignore') as f:
                 hyp = yaml.safe_load(f) 
         device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
-        model = YOLOv5(cfgr or ckpt['model'].yaml, ch=3, nc=8, anchors=hyp.get('anchors')).to(device)  # create
+        model = YOLOv5(cfgr or ckpt['model'].yaml, ch=3, nc=9, anchors=hyp.get('anchors')).to(device)  # create
         exclude = ['anchor'] if (cfgr or hyp.get('anchors')) else []  # exclude keys
         csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
         csd = intersect_dicts(csd, model.state_dict(), exclude=exclude)  # intersect
