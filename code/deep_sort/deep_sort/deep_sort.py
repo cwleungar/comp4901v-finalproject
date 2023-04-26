@@ -33,7 +33,6 @@ class DeepSort(object):
             print("bbox_xywh",bbox_xywh)
             print("bbox_tlwh",bbox_tlwh)
             print("features",features)
-        print("conf",confidences)
         detections = [Detection(bbox_tlwh[i], conf, features[i]) for i,conf in enumerate(confidences) if conf>self.min_confidence]
 
         # run on non-maximum supression
@@ -109,9 +108,9 @@ class DeepSort(object):
     def _get_features(self, bbox_xywh, ori_img):
         im_crops = []
         for box in bbox_xywh:
-            x1,y1,x2,y2 = self._xywh_to_xyxy(box)
-            if x1==x2==y1==y2==0:
+            if box==[0,0,0,0]:
                 continue
+            x1,y1,x2,y2 = self._xywh_to_xyxy(box)
             im = ori_img[y1:y2,x1:x2]
             im_crops.append(im)
         if im_crops:
