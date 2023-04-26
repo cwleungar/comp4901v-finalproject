@@ -339,8 +339,8 @@ class YOLOLayer(nn.Module):
 
         else:  # inference
             io = p.sigmoid()
-            print("io ",io.get_device())
-            print("grid ",self.grid.get_device())
+            if (io.get_device() != self.grid.get_device()):
+                io=io.to(self.grid.get_device())
             io[..., :2] = (io[..., :2] * 2. - 0.5 + self.grid)
             io[..., 2:4] = (io[..., 2:4] * 2) ** 2 * self.anchor_wh
             io[..., :4] *= self.stride
