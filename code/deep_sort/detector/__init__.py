@@ -8,7 +8,6 @@ import yaml
 __all__ = ['build_detector']
 
 def build_detector(cfg, use_cuda):
-    print(cfg)
     if 'YOLOV3' in cfg:
         ckpt = torch.load(cfg.YOLOV3.WEIGHT, map_location='cpu')
         cfgr=cfg.YOLOV3.CFG
