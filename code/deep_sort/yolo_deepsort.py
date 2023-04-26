@@ -21,8 +21,8 @@ class VideoTracker(object):
         self.video_path = video_path
         self.logger = get_logger("root")
 
-        use_cuda = args.use_cuda and torch.cuda.is_available()
-        if not use_cuda:
+        self.use_cuda = args.use_cuda and torch.cuda.is_available()
+        if not self.use_cuda:
             warnings.warn("Running in cpu mode which maybe very slow!", UserWarning)
 
         if args.display:
@@ -34,8 +34,8 @@ class VideoTracker(object):
             self.vdo = cv2.VideoCapture(args.cam)
         else:
             self.vdo = cv2.VideoCapture()
-        self.detector,self.class_names = build_detector(cfg, use_cuda=use_cuda)
-        self.deepsort = build_tracker(cfg, use_cuda=use_cuda)
+        self.detector,self.class_names = build_detector(cfg, use_cuda=self.use_cuda)
+        self.deepsort = build_tracker(cfg, use_cuda=self.use_cuda)
 
     def __enter__(self):
         if self.args.cam != -1:
@@ -87,6 +87,9 @@ class VideoTracker(object):
             im = cv2.cvtColor(ori_im, cv2.COLOR_BGR2RGB)
 
             # do detection
+            im=cv2.resize(im,(640,640))
+            device = torch.device("cuda" if self.use_cuda else "cpu")
+            im = torch.from_numpy(im).to(device)
             pred= self.detector(im)
             print(pred)
             raise(0)
