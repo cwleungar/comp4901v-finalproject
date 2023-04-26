@@ -1,17 +1,13 @@
 from .YOLOv3.models.yolo import Model as YOLOv3
 from .YOLOv3.utils.general import intersect_dicts
-from .MMDet import MMDet
 from .YOLOv4.models.models import Darknet as YOLOv4
 from .YOLOv5.models.yolo import Model as YOLOv5
 import torch
 __all__ = ['build_detector']
 
 def build_detector(cfg, use_cuda):
-    if cfg.MODEL == 'MMDet':
-        return MMDet(cfg.MMDET.CFG, cfg.MMDET.CHECKPOINT,
-                    score_thresh=cfg.MMDET.SCORE_THRESH,
-                    is_xywh=True, use_cuda=use_cuda)
-    elif cfg.MODEL == 'yolov3':
+
+    if cfg.MODEL == 'yolov3':
         ckpt = torch.load(cfg.YOLOV3.WEIGHT, map_location='cpu')
         cfgr=cfg.YOLOV3.CFG
         hyp=cfg.YOLOV3.HYP

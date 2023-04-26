@@ -1,7 +1,7 @@
-from utils.google_utils import *
-from utils.layers import *
-from utils.parse_config import *
-from utils import torch_utils
+from detector.YOLOv4.utils.google_utils import *
+from detector.YOLOv4.utils.layers import *
+from detector.YOLOv4.utils.parse_config import *
+from detector.YOLOv4.utils import torch_utils
 
 ONNX_EXPORT = False
 
@@ -653,7 +653,7 @@ def save_weights(self, path='model.weights', cutoff=-1):
 
 def convert(cfg='cfg/yolov3-spp.cfg', weights='weights/yolov3-spp.weights', saveto='converted.weights'):
     # Converts between PyTorch and Darknet format per extension (i.e. *.weights convert to *.pt and vice versa)
-    # from models import *; convert('cfg/yolov3-spp.cfg', 'weights/yolov3-spp.weights')
+    # from detector.YOLOv4.models import *; convert('cfg/yolov3-spp.cfg', 'weights/yolov3-spp.weights')
 
     # Initialize model
     model = Darknet(cfg)
