@@ -163,43 +163,42 @@ class VideoTracker(object):
                 det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
 
                 #cls_ids = []
-                bbox_xywh = [np.empty((0, 4), dtype=np.float32) for _ in range(9)]
-                cls_conf = [np.empty(0, dtype=np.float32) for _ in range(9)]
-
+                #bbox_xywh = [np.empty((0, 4), dtype=np.float32) for _ in range(9)]
+                #cls_conf = [np.empty(0, dtype=np.float32) for _ in range(9)]
+                bbox_xywh=[]
+                cls_conf=[]
+                cls_ids=[]
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
                     conf=conf.cpu().detach().numpy()
                     xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) ).view(-1).tolist()  # normalized xywh
-                    bbox = np.array(xywh, dtype=np.float32).reshape(1, 4)
-                    bbox_xywh[int(cls)] = np.concatenate([bbox_xywh[int(cls)], bbox], axis=0)
-                    cls_conf[int(cls)] = np.concatenate([cls_conf[int(cls)], np.array([conf], dtype=np.float32)], axis=0)
+                    #bbox = np.array(xywh, dtype=np.float32).reshape(1, 4)
+                    #bbox_xywh[int(cls)] = np.concatenate([bbox_xywh[int(cls)], bbox], axis=0)
+                    #cls_conf[int(cls)] = np.concatenate([cls_conf[int(cls)], np.array([conf], dtype=np.float32)], axis=0)
+                    bbox_xywh.append(xywh)
+                    cls_conf.append(conf)
+                    cls_ids.append(cls)
+                bbox_xywh, cls_conf, cls_ids = np.array(bbox_xywh), np.array(cls_conf), np.array(cls_ids)
                 #bbox_xywh, cls_conf, cls_ids = self.detector(im)
-                print(bbox_xywh)
                 # select person class
-                for i in [2]:
-                    mask = i
-
-                    bbox_xywh = bbox_xywh[mask]
-                    # bbox dilation just in case bbox too small, delete this line if using a better pedestrian detector
-                    #bbox_xywh[:, 3:] *= 1.2
-                    cls_conf = cls_conf[mask]
-
-                    # do tracking
-                    outputs = self.deepsort.update(bbox_xywh, cls_conf, im0)
-
-                    # draw boxes for visualization
-                    if len(outputs) > 0:
-                        bbox_tlwh = []
-                        bbox_xyxy = outputs[:, :4]
-                        identities = outputs[:, -1]
-                        ori_im = draw_boxes(ori_im, bbox_xyxy, identities)
-
-                        for bb_xyxy in bbox_xyxy:
-                            bbox_tlwh.append(self.deepsort._xyxy_to_tlwh(bb_xyxy))
-
-                        results.append((idx_frame - 1, bbox_tlwh, identities))
-
-                    end = time.time()
+                
+                mask = np.ones_like(cls_ids, dtype=bool)
+                bbox_xywh = bbox_xywh[mask]
+                # bbox dilation just in case bbox too small, delete this line if using a better pedestrian detector
+                #bbox_xywh[:, 3:] *= 1.2
+                cls_conf = cls_conf[mask]
+                # do tracking
+                outputs = self.deepsort.update(bbox_xywh, cls_conf, im0)
+                # draw boxes for visualization
+                if len(outputs) > 0:
+                    bbox_tlwh = []
+                    bbox_xyxy = outputs[:, :4]
+                    identities = outputs[:, -1]
+                    ori_im = draw_boxes(ori_im, bbox_xyxy, identities)
+                    for bb_xyxy in bbox_xyxy:
+                        bbox_tlwh.append(self.deepsort._xyxy_to_tlwh(bb_xyxy))
+                    results.append((idx_frame - 1, bbox_tlwh, identities))
+                end = time.time()
                 if self.args.display:
                     cv2.imshow("test", ori_im)
                     cv2.waitKey(1)
