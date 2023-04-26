@@ -8,7 +8,7 @@ import numpy as np
 
 from detector import build_detector
 from deep_sort import build_tracker
-from detector.YOLOv3.utils.general import non_max_suppression, xyxy2xywh
+from detector.YOLOv3.utils.general import non_max_suppression, scale_boxes, xyxy2xywh
 from utils.draw import draw_boxes
 from utils.parser import get_config
 from utils.log import get_logger
@@ -146,22 +146,26 @@ class VideoTracker(object):
             im = cv2.cvtColor(ori_im, cv2.COLOR_BGR2RGB)
 
             # do detection
+            im0=im.copy()
             im=cv2.resize(im,(640,640))
             device = torch.device("cuda:2" if self.use_cuda else "cpu")
             im = torch.from_numpy(im).to(device).permute(2,0, 1).float()
             
             im=im/255
             im=im.unsqueeze(0)
-            gn = torch.tensor(im[0].shape)[[1, 0, 1, 0]]  # normalization gain whwh
+            gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
 
             screen=0
             pred= self.detector(im)
             pred = non_max_suppression(pred, 0.4, 0.2, None, False, max_det=1000)
             det=pred[0]
+            det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
+
             cls_ids = []
             bbox_xywh = []
             cls_conf = []
             # Write results
+
             for *xyxy, conf, cls in reversed(det):
                 xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
                 #line = (cls, *xywh, conf) 
