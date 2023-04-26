@@ -142,6 +142,13 @@ def build_targets(p, targets, model):
         if nt:
             na = anchors.shape[0]  # number of anchors
             at = torch.arange(na).view(na, 1).repeat(1, nt)  # anchor tensor, same as .repeat_interleave(nt)
+            d=model.get_device()
+            if d==-1:
+                    d='cpu'
+            else:
+                    d='cuda:'+str(d)
+            t=t.to(d)
+            anchors=anchors.to(d)
             r = t[None, :, 4:6] / anchors[:, None]  # wh ratio
             j = torch.max(r, 1. / r).max(2)[0] < model.hyp['anchor_t']  # compare
             # j = wh_iou(anchors, t[:, 4:6]) > model.hyp['iou_t']  # iou(3,n) = wh_iou(anchors(3,2), gwh(n,2))
