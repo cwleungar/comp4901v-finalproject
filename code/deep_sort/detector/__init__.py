@@ -24,6 +24,7 @@ def build_detector(cfg, use_cuda):
         csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
         csd = intersect_dicts(csd, model.state_dict(), exclude=exclude)  # intersect
         model.load_state_dict(csd, strict=False)  # load
+        model=model.eval()
         return model,getname(cfg.YOLOV3.CLASS_NAMES)
     elif 'YOLOV4' in cfg:
         device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
@@ -33,6 +34,7 @@ def build_detector(cfg, use_cuda):
         model = YOLOv4(cfgr).to(device)  # create
         state_dict=ckpt['model'].state_dict()
         model.load_state_dict(state_dict, strict=False)
+        model=model.eval()
         return model,getname(cfg.YOLOV4.CLASS_NAMES)
     elif 'YOLOV5' in cfg:
         ckpt = torch.load(cfg.YOLOV5.WEIGHT, map_location='cpu')
@@ -47,4 +49,5 @@ def build_detector(cfg, use_cuda):
         csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
         csd = intersect_dicts(csd, model.state_dict(), exclude=exclude)  # intersect
         model.load_state_dict(csd, strict=False)  # load
+        model=model.eval()
         return model,getname(cfg.YOLOV5.CLASS_NAMES)

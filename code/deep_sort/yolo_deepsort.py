@@ -13,6 +13,64 @@ from utils.parser import get_config
 from utils.log import get_logger
 from utils.io import write_results
 
+def extract_from_pred(pred):
+    # Define the number of classes
+    num_classes = 8
+
+    # Define the detection threshold
+    conf_threshold = 0.4
+
+    # Define the list of detected objects
+    detections = []
+    bbox=[]
+    conf=[]
+    ids=[]
+    # Iterate over the detection scales
+    for i, pred_i in enumerate(pred):
+        # Get the grid size for the current scale
+        grid_size = pred_i.shape[2]
+
+        # Compute the number of anchor boxes for the current scale
+        num_anchors = pred_i.shape[1] // (5 + num_classes)
+
+        # Reshape the output tensor to (batch_size, num_anchors, 5 + num_classes, grid_size, grid_size)
+        pred_i = pred_i.view(1, num_anchors, 5 + num_classes, grid_size, grid_size)
+
+        # Extract the bounding box coordinates (x, y, w, h) from the output tensor
+        bbox_xywh = pred_i[..., :4].sigmoid()
+
+        # Extract the objectness scores from the output tensor
+        obj_conf = pred_i[..., 4].sigmoid()
+
+        # Extract the class probabilities from the output tensor
+        class_conf = pred_i[..., 5:].sigmoid() * obj_conf.unsqueeze(-1)
+
+        # Apply the detection threshold
+        mask = class_conf > conf_threshold
+
+        # Iterate over the anchor boxes
+        for j in range(num_anchors):
+            # Get the mask for the current anchor box
+            mask_j = mask[0, j, ...]
+
+            # Get the bounding box coordinates for the current anchor box
+            bbox_xywh_j = bbox_xywh[0, j, ...][mask_j]
+
+            # Get the class confidence scores for the current anchor box
+            class_conf_j = class_conf[0, j, ...][mask_j]
+
+            # Get the class IDs for the current anchor box
+            class_ids_j = class_conf_j.argmax(-1)
+
+            # Add the detected objects to the list
+            bbox.append(bbox_xywh_j)
+            conf.append(class_conf_j)
+            ids.append(class_ids_j)
+            #detections.append((bbox_xywh_j, class_conf_j, class_ids_j))
+
+    # Print the list of detected objects
+    return torch.tensor(bbox),torch.tensor(conf),torch.tensor(ids)
+    #return detections
 
 class VideoTracker(object):
     def __init__(self, cfg, args, video_path):
@@ -95,34 +153,35 @@ class VideoTracker(object):
             
             
             pred= self.detector(im)
-            print("here",pred)
-            raise(0)
-            bbox_xywh, cls_conf, cls_ids = self.detector(im)
+            bbox_xywh, cls_conf, cls_ids=extract_from_pred(pred)
+
+            #bbox_xywh, cls_conf, cls_ids = self.detector(im)
 
             # select person class
-            mask = cls_ids == 0
+            for i in range(len(cls_ids)):
+                mask = cls_ids == i
 
-            bbox_xywh = bbox_xywh[mask]
-            # bbox dilation just in case bbox too small, delete this line if using a better pedestrian detector
-            bbox_xywh[:, 3:] *= 1.2
-            cls_conf = cls_conf[mask]
+                bbox_xywh = bbox_xywh[mask]
+                # bbox dilation just in case bbox too small, delete this line if using a better pedestrian detector
+                bbox_xywh[:, 3:] *= 1.2
+                cls_conf = cls_conf[mask]
 
-            # do tracking
-            outputs = self.deepsort.update(bbox_xywh, cls_conf, im)
+                # do tracking
+                outputs = self.deepsort.update(bbox_xywh, cls_conf, im)
 
-            # draw boxes for visualization
-            if len(outputs) > 0:
-                bbox_tlwh = []
-                bbox_xyxy = outputs[:, :4]
-                identities = outputs[:, -1]
-                ori_im = draw_boxes(ori_im, bbox_xyxy, identities)
+                # draw boxes for visualization
+                if len(outputs) > 0:
+                    bbox_tlwh = []
+                    bbox_xyxy = outputs[:, :4]
+                    identities = outputs[:, -1]
+                    ori_im = draw_boxes(ori_im, bbox_xyxy, identities)
 
-                for bb_xyxy in bbox_xyxy:
-                    bbox_tlwh.append(self.deepsort._xyxy_to_tlwh(bb_xyxy))
+                    for bb_xyxy in bbox_xyxy:
+                        bbox_tlwh.append(self.deepsort._xyxy_to_tlwh(bb_xyxy))
 
-                results.append((idx_frame - 1, bbox_tlwh, identities))
+                    results.append((idx_frame - 1, bbox_tlwh, identities))
 
-            end = time.time()
+                end = time.time()
 
             if self.args.display:
                 cv2.imshow("test", ori_im)
