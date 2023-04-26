@@ -142,7 +142,7 @@ def build_targets(p, targets, model):
         if nt:
             na = anchors.shape[0]  # number of anchors
             at = torch.arange(na).view(na, 1).repeat(1, nt)  # anchor tensor, same as .repeat_interleave(nt)
-            d=p.get_device()
+            d=p[0].get_device()
             if d==-1:
                     d='cpu'
             else:
