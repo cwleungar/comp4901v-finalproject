@@ -161,23 +161,23 @@ class VideoTracker(object):
             det=pred[0]
             det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
 
-            cls_ids = []
-            bbox_xywh = []
-            cls_conf = []
+            #cls_ids = []
+            bbox_xywh = [[] for i in range(9)]
+            cls_conf = [[] for i in range(9)]
             # Write results
 
             for *xyxy, conf, cls in reversed(det):
                 xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
                 #line = (cls, *xywh, conf) 
-                cls_ids.append(int(cls))
-                bbox_xywh.append(xywh)
-                cls_conf.append(conf)
-            cls_ids,bbox_xywh,cls_conf=torch.tensor(cls_ids),torch.tensor(bbox_xywh),torch.tensor(cls_conf)
+                #cls_ids.append(int(cls))
+                bbox_xywh[int(cls)].append(xywh)
+                cls_conf[int(cls)].append(conf)
+            bbox_xywh,cls_conf=torch.tensor(bbox_xywh),torch.tensor(cls_conf)
             #bbox_xywh, cls_conf, cls_ids = self.detector(im)
 
             # select person class
-            for i in range(len(cls_ids)):
-                mask = cls_ids == i
+            for i in range(self.class_names.shape[0]):
+                mask = i
 
                 bbox_xywh = bbox_xywh[mask]
                 # bbox dilation just in case bbox too small, delete this line if using a better pedestrian detector
