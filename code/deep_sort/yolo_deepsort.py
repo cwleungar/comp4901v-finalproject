@@ -91,8 +91,10 @@ class VideoTracker(object):
             device = torch.device("cuda" if self.use_cuda else "cpu")
             print(im.shape)
             im = torch.from_numpy(im).to(device).permute(2,0, 1).float()
-            print(im[0])
-            raise(0)
+            im=im/255
+            im=im.unsqueeze(0)
+            
+            
             pred= self.detector(im)
             print(pred)
             raise(0)
