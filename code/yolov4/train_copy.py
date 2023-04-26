@@ -47,22 +47,22 @@ from models.models import *
 from yolov3 import val as validate
 
 from models.experimental import attempt_load
-from utils.autoanchor import check_anchors
-from utils.autobatch import check_train_batch_size
-from utils.callbacks import Callbacks
-from utils.datasets import create_dataloader
-from utils.downloads import attempt_download, is_url
-from utils.general import (LOGGER, TQDM_BAR_FORMAT, check_amp, check_dataset, check_file, check_git_info,
+from .utils.autoanchor import check_anchors
+from .utils.autobatch import check_train_batch_size
+from .utils.callbacks import Callbacks
+from .utils.datasets import create_dataloader
+from .utils.downloads import attempt_download, is_url
+from .utils.general import (LOGGER, TQDM_BAR_FORMAT, check_amp, check_dataset, check_file, check_git_info,
                            check_git_status, check_img_size, check_requirements, check_suffix, check_yaml, colorstr,
                            get_latest_run, increment_path, init_seeds, intersect_dicts, labels_to_class_weights,
                            labels_to_image_weights, methods, one_cycle, print_args, print_mutation, strip_optimizer,
                            yaml_save)
-from utils.loggers import Loggers
-from utils.loggers.comet.comet_utils import check_comet_resume
-from utils.loss import compute_loss
-from utils.metrics import fitness
-from utils.plots import plot_evolve
-from utils.torch_utils import (EarlyStopping, ModelEMA, de_parallel, select_device, smart_DDP, smart_optimizer,
+from .utils.loggers import Loggers
+from .utils.loggers.comet.comet_utils import check_comet_resume
+from .utils.loss import compute_loss
+from .utils.metrics import fitness
+from .utils.plots import plot_evolve
+from .utils.torch_utils import (EarlyStopping, ModelEMA, de_parallel, select_device, smart_DDP, smart_optimizer,
                                smart_resume, torch_distributed_zero_first)
 
 LOCAL_RANK = int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html

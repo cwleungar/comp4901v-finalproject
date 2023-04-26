@@ -18,7 +18,7 @@ from flask import Response, Flask, jsonify, request, abort
 from rtsp_threaded_tracker import RealTimeTracking
 from server_cfg import model, deep_sort_dict
 from config.config import DevelopmentConfig
-from utils.parser import get_config
+from .utils.parser import get_config
 
 redis_cache = Redis('127.0.0.1')
 app = Flask(__name__)
