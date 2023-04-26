@@ -9,7 +9,7 @@ import torch
 from deep_sort import build_tracker
 from detector import build_detector
 import cv2
-from .utils.draw import compute_color_for_labels
+from utils.draw import compute_color_for_labels
 from concurrent.futures import ThreadPoolExecutor
 from redis import Redis
 

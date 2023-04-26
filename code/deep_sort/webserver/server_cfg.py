@@ -5,7 +5,7 @@ from os.path import dirname, abspath, isfile
 sys.path.append(dirname(dirname(abspath(__file__))))
 
 from dotenv import load_dotenv
-from .utils.asserts import assert_in_env
+from utils.asserts import assert_in_env
 from os import getenv
 from os.path import join
 
