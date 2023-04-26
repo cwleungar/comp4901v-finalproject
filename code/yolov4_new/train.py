@@ -126,6 +126,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
         ckpt = torch.load(weights, map_location=device)  # load checkpoint
         model = Darknet(opt.cfg).to(device)  # create
         #state_dict = {k: v for k, v in ckpt['model'].items() if model.state_dict()[k].numel() == v.numel()}
+        print(ckpt.keys())
         state_dict=ckpt['ema'].state_dict()
         model.load_state_dict(state_dict, strict=False)
         print('Transferred %g/%g items from %s' % (len(state_dict), len(model.state_dict()), weights))  # report
