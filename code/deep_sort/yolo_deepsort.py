@@ -34,9 +34,8 @@ class VideoTracker(object):
             self.vdo = cv2.VideoCapture(args.cam)
         else:
             self.vdo = cv2.VideoCapture()
-        self.detector = build_detector(cfg, use_cuda=use_cuda)
+        self.detector,self.class_names = build_detector(cfg, use_cuda=use_cuda)
         self.deepsort = build_tracker(cfg, use_cuda=use_cuda)
-        self.class_names = self.detector.class_names
 
     def __enter__(self):
         if self.args.cam != -1:
@@ -86,6 +85,9 @@ class VideoTracker(object):
             im = cv2.cvtColor(ori_im, cv2.COLOR_BGR2RGB)
 
             # do detection
+            pred= self.detector(im)
+            print(pred)
+            raise(0)
             bbox_xywh, cls_conf, cls_ids = self.detector(im)
 
             # select person class
