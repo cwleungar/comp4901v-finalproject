@@ -172,6 +172,8 @@ class VideoTracker(object):
                 #cls_ids.append(int(cls))
                 bbox_xywh[int(cls)].append(xywh)
                 cls_conf[int(cls)].append(conf)
+            print(bbox_xywh)
+            
             bbox_xywh,cls_conf=torch.tensor(bbox_xywh),torch.tensor(cls_conf)
             #bbox_xywh, cls_conf, cls_ids = self.detector(im)
 
