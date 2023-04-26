@@ -168,7 +168,7 @@ class VideoTracker(object):
             # Write results
             for *xyxy, conf, cls in reversed(det):
                 conf=conf.cpu().detach().numpy()
-                xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
+                xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) ).view(-1).tolist()  # normalized xywh
                 bbox = np.array(xywh, dtype=np.float32).reshape(1, 4)
                 bbox_xywh[int(cls)] = np.concatenate([bbox_xywh[int(cls)], bbox], axis=0)
                 cls_conf[int(cls)] = np.concatenate([cls_conf[int(cls)], np.array([conf], dtype=np.float32)], axis=0)
