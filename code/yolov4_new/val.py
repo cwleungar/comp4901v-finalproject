@@ -210,14 +210,8 @@ def run(
             preds, train_out = model(im) if compute_loss else (model(im, augment=augment), None)
 
         # Loss
-        if compute_loss:
-            train_out_2=[]
-            for i in train_out:
-                i=i.cpu()
-                train_out_2.append(i)
-
-   
-            loss += compute_loss(train_out_2, targets,model)[1]  # box, obj, cls
+        if compute_loss:   
+            loss += compute_loss(train_out, targets,model)[1]  # box, obj, cls
 
         # NMS
         targets[:, 2:] *= torch.tensor((width, height, width, height), device=device)  # to pixels
