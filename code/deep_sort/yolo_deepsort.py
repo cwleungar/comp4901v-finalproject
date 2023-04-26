@@ -95,7 +95,7 @@ class VideoTracker(object):
             
             
             pred= self.detector(im)
-            print(pred.shape)
+            print("here",pred)
             raise(0)
             bbox_xywh, cls_conf, cls_ids = self.detector(im)
 
