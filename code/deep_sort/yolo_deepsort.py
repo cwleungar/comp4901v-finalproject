@@ -46,7 +46,8 @@ class VideoTracker(object):
             self.im_height = frame.shape[1]
 
         else:
-            assert os.path.isfile(self.video_path), "Path error"
+            assert os.path.isfile(self.video_path) or os.path.isdir(self.video_path), "Path error"
+
             self.vdo.open(self.video_path)
             self.im_width = int(self.vdo.get(cv2.CAP_PROP_FRAME_WIDTH))
             self.im_height = int(self.vdo.get(cv2.CAP_PROP_FRAME_HEIGHT))
