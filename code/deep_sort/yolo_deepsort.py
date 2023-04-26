@@ -184,7 +184,7 @@ class VideoTracker(object):
                 # bbox dilation just in case bbox too small, delete this line if using a better pedestrian detector
                 #bbox_xywh[:, 3:] *= 1.2
                 cls_conff = cls_conf[mask]
-
+                continue
                 # do tracking
                 outputs = self.deepsort.update(bbox_xywhh, cls_conff, im)
 
@@ -201,7 +201,7 @@ class VideoTracker(object):
                     results.append((idx_frame - 1, bbox_tlwh, identities))
 
                 end = time.time()
-
+            raise Exception
             if self.args.display:
                 cv2.imshow("test", ori_im)
                 cv2.waitKey(1)
