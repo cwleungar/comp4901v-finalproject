@@ -180,13 +180,12 @@ class VideoTracker(object):
                 mask = i
                 
                 bbox_xywhh = bbox_xywh[mask]
-                print(bbox_xywhh.shape)
                 # bbox dilation just in case bbox too small, delete this line if using a better pedestrian detector
                 #bbox_xywh[:, 3:] *= 1.2
                 cls_conff = cls_conf[mask]
-                continue
+                
                 # do tracking
-                outputs = self.deepsort.update(bbox_xywhh, cls_conff, im)
+                outputs = self.deepsort.update(bbox_xywhh, cls_conff, im0)
 
                 # draw boxes for visualization
                 if len(outputs) > 0:
