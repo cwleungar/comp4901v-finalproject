@@ -213,6 +213,9 @@ def run(
 
         # Loss
         if compute_loss:
+            train_out=train_out.to(device)
+            targets=targets.to(device)
+            model=model.to(device)
             loss += compute_loss(train_out, targets,model)[1]  # box, obj, cls
 
         # NMS
