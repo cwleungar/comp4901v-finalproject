@@ -7,7 +7,7 @@ __all__ = ['build_detector']
 
 def build_detector(cfg, use_cuda):
     print(cfg)
-    if cfg.MODEL == 'yolov3':
+    if 'YOLOV3' in cfg:
         ckpt = torch.load(cfg.YOLOV3.WEIGHT, map_location='cpu')
         cfgr=cfg.YOLOV3.CFG
         hyp=cfg.YOLOV3.HYP
@@ -18,7 +18,7 @@ def build_detector(cfg, use_cuda):
         csd = intersect_dicts(csd, model.state_dict(), exclude=exclude)  # intersect
         model.load_state_dict(csd, strict=False)  # load
         return model
-    elif cfg.MODEL == 'yovov4':
+    elif 'YOLOV4' in cfg:
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         ckpt = torch.load(cfg.YOLOV4.WEIGHT, map_location=device)  # load checkpoint
         cfgr=cfg.YOLOV4.CFG
@@ -27,7 +27,7 @@ def build_detector(cfg, use_cuda):
         state_dict=ckpt['model'].state_dict()
         model.load_state_dict(state_dict, strict=False)
         return model
-    elif cfg.MODEL == 'yolov5':
+    elif 'YOLOV5' in cfg:
         ckpt = torch.load(cfg.YOLOV5.WEIGHT, map_location='cpu')
         cfgr=cfg.YOLOV5.CFG
         hyp=cfg.YOLOV5.HYP
