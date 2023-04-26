@@ -176,7 +176,7 @@ class VideoTracker(object):
             #bbox_xywh, cls_conf, cls_ids = self.detector(im)
 
             # select person class
-            for i in range(self.class_names.shape[0]):
+            for i in range(9):
                 mask = i
 
                 bbox_xywh = bbox_xywh[mask]
