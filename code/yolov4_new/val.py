@@ -207,6 +207,8 @@ def run(
 
         # Inference
         with dt[1]:
+            model=model.to(device)
+            im=im.to(device)
             preds, train_out = model(im) if compute_loss else (model(im, augment=augment), None)
 
         # Loss
