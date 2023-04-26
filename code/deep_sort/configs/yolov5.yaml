@@ -1,0 +1,10 @@
+YOLOV5:
+  MODEL: "yolov5"
+
+  CFG: "../yolov5/models/yolov5l.yaml"
+  WEIGHT: "../yolov5/runs/train/yolov5_saved/weights/best.pt"
+  CLASS_NAMES: "./detector/YOLOv3/cfg/coco.names"
+  HYP: "../yolov5/runs/train/yolov5_saved/hyp.yaml"
+
+  SCORE_THRESH: 0.5
+  NMS_THRESH: 0.4
