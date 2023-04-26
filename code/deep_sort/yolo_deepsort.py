@@ -136,83 +136,84 @@ class VideoTracker(object):
     def run(self):
         results = []
         idx_frame = 0
-        while self.vdo.grab():
-            idx_frame += 1
-            if idx_frame % self.args.frame_interval:
-                continue
-
-            start = time.time()
-            _, ori_im = self.vdo.retrieve()
-            im = cv2.cvtColor(ori_im, cv2.COLOR_BGR2RGB)
-
-            # do detection
-            im0=im.copy()
-            im=cv2.resize(im,(640,640))
-            device = torch.device("cuda:2" if self.use_cuda else "cpu")
-            im = torch.from_numpy(im).to(device).permute(2,0, 1).float()
-            
-            im=im/255
-            im=im.unsqueeze(0)
-            gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
-
-            screen=0
-            pred= self.detector(im)
-            pred = non_max_suppression(pred, 0.4, 0.2, None, False, max_det=1000)
-            det=pred[0]
-            det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
-
-            #cls_ids = []
-            bbox_xywh = [np.empty((0, 4), dtype=np.float32) for _ in range(9)]
-            cls_conf = [np.empty(0, dtype=np.float32) for _ in range(9)]
-
-            # Write results
-            for *xyxy, conf, cls in reversed(det):
-                conf=conf.cpu().detach().numpy()
-                xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) ).view(-1).tolist()  # normalized xywh
-                bbox = np.array(xywh, dtype=np.float32).reshape(1, 4)
-                bbox_xywh[int(cls)] = np.concatenate([bbox_xywh[int(cls)], bbox], axis=0)
-                cls_conf[int(cls)] = np.concatenate([cls_conf[int(cls)], np.array([conf], dtype=np.float32)], axis=0)
-            #bbox_xywh, cls_conf, cls_ids = self.detector(im)
-
-            # select person class
-            for i in [2]:
-                mask = i
+        with torch.no_grad():
+            while self.vdo.grab():
+                idx_frame += 1
+                if idx_frame % self.args.frame_interval:
+                    continue
                 
-                bbox_xywh = bbox_xywh[mask]
-                # bbox dilation just in case bbox too small, delete this line if using a better pedestrian detector
-                #bbox_xywh[:, 3:] *= 1.2
-                cls_conf = cls_conf[mask]
+                start = time.time()
+                _, ori_im = self.vdo.retrieve()
+                im = cv2.cvtColor(ori_im, cv2.COLOR_BGR2RGB)
+    
+                # do detection
+                im0=im.copy()
+                im=cv2.resize(im,(640,640))
+                device = torch.device("cuda:2" if self.use_cuda else "cpu")
+                im = torch.from_numpy(im).to(device).permute(2,0, 1).float()
                 
-                # do tracking
-                outputs = self.deepsort.update(bbox_xywh, cls_conf, im0)
-
-                # draw boxes for visualization
-                if len(outputs) > 0:
-                    bbox_tlwh = []
-                    bbox_xyxy = outputs[:, :4]
-                    identities = outputs[:, -1]
-                    ori_im = draw_boxes(ori_im, bbox_xyxy, identities)
-
-                    for bb_xyxy in bbox_xyxy:
-                        bbox_tlwh.append(self.deepsort._xyxy_to_tlwh(bb_xyxy))
-
-                    results.append((idx_frame - 1, bbox_tlwh, identities))
-
-                end = time.time()
-            if self.args.display:
-                cv2.imshow("test", ori_im)
-                cv2.waitKey(1)
-
-            if self.args.save_path:
-                self.writer.write(ori_im)
-
-            # save results
-            write_results(self.save_results_path, results, 'mot')
-
-            # logging
-            self.logger.info("time: {:.03f}s, fps: {:.03f}, detection numbers: {}, tracking numbers: {}" \
-                             .format(end - start, 1 / (end - start), bbox_xywh.shape[0], len(outputs)))
-
+                im=im/255
+                im=im.unsqueeze(0)
+                gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
+    
+                screen=0
+                pred= self.detector(im)
+                pred = non_max_suppression(pred, 0.4, 0.2, None, False, max_det=1000)
+                det=pred[0]
+                det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
+    
+                #cls_ids = []
+                bbox_xywh = [np.empty((0, 4), dtype=np.float32) for _ in range(9)]
+                cls_conf = [np.empty(0, dtype=np.float32) for _ in range(9)]
+    
+                # Write results
+                for *xyxy, conf, cls in reversed(det):
+                    conf=conf.cpu().detach().numpy()
+                    xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) ).view(-1).tolist()  # normalized xywh
+                    bbox = np.array(xywh, dtype=np.float32).reshape(1, 4)
+                    bbox_xywh[int(cls)] = np.concatenate([bbox_xywh[int(cls)], bbox], axis=0)
+                    cls_conf[int(cls)] = np.concatenate([cls_conf[int(cls)], np.array([conf], dtype=np.float32)], axis=0)
+                #bbox_xywh, cls_conf, cls_ids = self.detector(im)
+    
+                # select person class
+                for i in [2]:
+                    mask = i
+                    
+                    bbox_xywh = bbox_xywh[mask]
+                    # bbox dilation just in case bbox too small, delete this line if using a better pedestrian detector
+                    #bbox_xywh[:, 3:] *= 1.2
+                    cls_conf = cls_conf[mask]
+                    
+                    # do tracking
+                    outputs = self.deepsort.update(bbox_xywh, cls_conf, im0)
+    
+                    # draw boxes for visualization
+                    if len(outputs) > 0:
+                        bbox_tlwh = []
+                        bbox_xyxy = outputs[:, :4]
+                        identities = outputs[:, -1]
+                        ori_im = draw_boxes(ori_im, bbox_xyxy, identities)
+    
+                        for bb_xyxy in bbox_xyxy:
+                            bbox_tlwh.append(self.deepsort._xyxy_to_tlwh(bb_xyxy))
+    
+                        results.append((idx_frame - 1, bbox_tlwh, identities))
+    
+                    end = time.time()
+                if self.args.display:
+                    cv2.imshow("test", ori_im)
+                    cv2.waitKey(1)
+    
+                if self.args.save_path:
+                    self.writer.write(ori_im)
+    
+                # save results
+                write_results(self.save_results_path, results, 'mot')
+    
+                # logging
+                self.logger.info("time: {:.03f}s, fps: {:.03f}, detection numbers: {}, tracking numbers: {}" \
+                                 .format(end - start, 1 / (end - start), bbox_xywh.shape[0], len(outputs)))
+    
 
 def parse_args():
     parser = argparse.ArgumentParser()
