@@ -155,7 +155,7 @@ class VideoTracker(object):
             gn = torch.tensor(im[0].shape)[[1, 0, 1, 0]]  # normalization gain whwh
 
             screen=0
-            pred= self.detector(im,visualize=True)
+            pred= self.detector(im)
             pred = non_max_suppression(pred, 0.4, 0.2, None, False, max_det=1000)
             det=pred[0]
             cls_ids = []
