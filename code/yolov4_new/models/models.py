@@ -343,7 +343,7 @@ class YOLOLayer(nn.Module):
                 d=self.grid.get_device()
                 if d==-1:
                     d='cpu'
-                else
+                else:
                     d='cuda:'+str(d)
                 io=io.to(d)
             io[..., :2] = (io[..., :2] * 2. - 0.5 + self.grid)
