@@ -47,9 +47,9 @@ class VideoTracker(object):
         else:
             assert os.path.isfile(self.video_path) or os.path.isdir(self.video_path), "Path error"
             if os.path.isdir(self.video_path):
-                self.video_path = os.path.join(self.video_path, '%d.png')
-            self.vdo.open('/data/cwleungar/comp4901v-finalproject/small_video/data/0000/%d.png')
-            #self.vdo.open(self.video_path)
+                self.video_path = os.path.join(self.video_path, '%6d.png')
+                
+            self.vdo.open(self.video_path)
             self.im_width = int(self.vdo.get(cv2.CAP_PROP_FRAME_WIDTH))
             self.im_height = int(self.vdo.get(cv2.CAP_PROP_FRAME_HEIGHT))
             assert self.vdo.isOpened()
