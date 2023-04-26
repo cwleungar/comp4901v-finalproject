@@ -175,7 +175,7 @@ class VideoTracker(object):
             #bbox_xywh, cls_conf, cls_ids = self.detector(im)
 
             # select person class
-            for i in range(9):
+            for i in [6]:
                 mask = i
                 
                 bbox_xywhh = bbox_xywh[mask]
@@ -199,7 +199,6 @@ class VideoTracker(object):
                     results.append((idx_frame - 1, bbox_tlwh, identities))
 
                 end = time.time()
-            raise Exception
             if self.args.display:
                 cv2.imshow("test", ori_im)
                 cv2.waitKey(1)

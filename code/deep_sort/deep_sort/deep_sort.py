@@ -110,9 +110,7 @@ class DeepSort(object):
         for box in bbox_xywh:
             x1,y1,x2,y2 = self._xywh_to_xyxy(box)
             im = ori_img[y1:y2,x1:x2]
-            print("box ",box)
-            print("x1,y1,x2,y2 ",x1,y1,x2,y2)
-            print("im ",im)
+
             if im.size == 0:
                 continue
             im_crops.append(im)
