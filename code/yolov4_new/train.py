@@ -175,7 +175,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
     if pretrained:
         if resume:
             best_fitness, start_epoch, epochs = smart_resume(ckpt, optimizer, ema, weights, epochs, resume)
-        del ckpt, csd
+        del ckpt
 
     # DP mode
     if cuda and RANK == -1 and torch.cuda.device_count() > 1:
