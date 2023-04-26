@@ -339,6 +339,7 @@ class YOLOLayer(nn.Module):
 
         else:  # inference
             io = p.sigmoid()
+            io=io.cpu()
             io[..., :2] = (io[..., :2] * 2. - 0.5 + self.grid)
             io[..., 2:4] = (io[..., 2:4] * 2) ** 2 * self.anchor_wh
             io[..., :4] *= self.stride
