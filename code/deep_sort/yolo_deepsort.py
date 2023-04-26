@@ -26,25 +26,46 @@ def extract_from_pred(pred):
     conf=[]
     ids=[]
     # Iterate over the detection scales
-    for i in range(pred.shape[1]):
-        # Get the grid indices for the current anchor box
-        grid_x, grid_y, anchor_idx = torch.nonzero(pred[0, i, ..., 4] > conf_threshold, as_tuple=True)
+    for i, pred_i in enumerate(pred):
+        # Get the grid size for the current scale
+        grid_size = pred_i.shape[2]
 
-        # Iterate over the grid indices
-        for j in range(len(grid_x)):
-            # Get the bounding box coordinates (x, y, w, h)
-            bbox_xywh = pred[0, i, grid_x[j], grid_y[j], :4].tolist()
+        # Compute the number of anchor boxes for the current scale
+        num_anchors = pred_i.shape[1] // (5 + num_classes)
 
-            # Get the class confidence scores
-            class_conf = pred[0, i, grid_x[j], grid_y[j], 5:(5 + num_classes)].tolist()
+        # Reshape the output tensor to (batch_size, num_anchors, 5 + num_classes, grid_size, grid_size)
+        pred_i = pred_i.view(1, num_anchors, 5 + num_classes, grid_size, grid_size)
 
-            # Get the class ID with the highest confidence score
-            cls_id = class_conf.index(max(class_conf))
+        # Extract the bounding box coordinates (x, y, w, h) from the output tensor
+        bbox_xywh = pred_i[..., :4].sigmoid()
 
-            # Add the detected object to the list
-            bbox.append(bbox_xywh)
-            conf.append(class_conf)
-            ids.append(cls_id)
+        # Extract the objectness scores from the output tensor
+        obj_conf = pred_i[..., 4].sigmoid()
+
+        # Extract the class probabilities from the output tensor
+        class_conf = pred_i[..., 5:].sigmoid() * obj_conf.unsqueeze(-1)
+
+        # Apply the detection threshold
+        mask = class_conf > conf_threshold
+
+        # Iterate over the anchor boxes
+        for j in range(num_anchors):
+            # Get the mask for the current anchor box
+            mask_j = mask[0, j, ...]
+
+            # Get the bounding box coordinates for the current anchor box
+            bbox_xywh_j = bbox_xywh[0, j, ...][mask_j]
+
+            # Get the class confidence scores for the current anchor box
+            class_conf_j = class_conf[0, j, ...][mask_j]
+
+            # Get the class IDs for the current anchor box
+            class_ids_j = class_conf_j.argmax(-1)
+
+            # Add the detected objects to the list
+            bbox.append(bbox_xywh_j)
+            conf.append(class_conf_j)
+            ids.append(class_ids_j)
             #detections.append((bbox_xywh_j, class_conf_j, class_ids_j))
 
     # Print the list of detected objects
