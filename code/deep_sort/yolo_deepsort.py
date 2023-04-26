@@ -88,8 +88,7 @@ class VideoTracker(object):
 
             # do detection
             im=cv2.resize(im,(640,640))
-            device = torch.device("cuda" if self.use_cuda else "cpu")
-            print(im.shape)
+            device = torch.device("cuda:2" if self.use_cuda else "cpu")
             im = torch.from_numpy(im).to(device).permute(2,0, 1).float()
             im=im/255
             im=im.unsqueeze(0)

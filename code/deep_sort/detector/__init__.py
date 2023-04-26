@@ -18,7 +18,7 @@ def build_detector(cfg, use_cuda):
         if isinstance(hyp, str):
             with open(hyp, errors='ignore') as f:
                 hyp = yaml.safe_load(f) 
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
         model = YOLOv3(cfgr or ckpt['model'].yaml, ch=3, nc=8, anchors=hyp.get('anchors')).to(device)  # create
         exclude = ['anchor'] if (cfgr or hyp.get('anchors')) else []  # exclude keys
         csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
@@ -26,7 +26,7 @@ def build_detector(cfg, use_cuda):
         model.load_state_dict(csd, strict=False)  # load
         return model,getname(cfg.YOLOV3.CLASS_NAMES)
     elif 'YOLOV4' in cfg:
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
         ckpt = torch.load(cfg.YOLOV4.WEIGHT, map_location=device)  # load checkpoint
         cfgr=cfg.YOLOV4.CFG
         hyp=cfg.YOLOV4.HYP
@@ -41,7 +41,7 @@ def build_detector(cfg, use_cuda):
         if isinstance(hyp, str):
             with open(hyp, errors='ignore') as f:
                 hyp = yaml.safe_load(f) 
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
         model = YOLOv5(cfgr or ckpt['model'].yaml, ch=3, nc=8, anchors=hyp.get('anchors')).to(device)  # create
         exclude = ['anchor'] if (cfgr or hyp.get('anchors')) else []  # exclude keys
         csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
