@@ -149,6 +149,7 @@ class VideoTracker(object):
                 # do detection
                 im0=im.copy()
                 im=cv2.resize(im,(640,640))
+                kk=im.copy()
                 device = torch.device("cuda:2" if self.use_cuda else "cpu")
                 im = torch.from_numpy(im).to(device).permute(2,0, 1).float()
 
@@ -179,7 +180,7 @@ class VideoTracker(object):
                     bbox_xywh.append(xywh)
                     cls_conf.append(conf)
                     cls_ids.append(cls)
-                    cv2.rectangle(im, (xywh[0], xywh[1]), (xywh[0]+xywh[2], xywh[1]+xywh[3]), (0,255,0), 2)
+                    cv2.rectangle(kk, (xywh[0], xywh[1]), (xywh[0]+xywh[2], xywh[1]+xywh[3]), (0,255,0), 2)
 
                 bbox_xywh, cls_conf, cls_ids = np.array(bbox_xywh), np.array(cls_conf), np.array(cls_ids)
                 #bbox_xywh, cls_conf, cls_ids = self.detector(im)
@@ -204,7 +205,7 @@ class VideoTracker(object):
                 #    results.append((idx_frame - 1, bbox_tlwh, identities))
                 end = time.time()
                 if self.args.display:
-                    cv2.imshow("test", im)#ori_im)
+                    cv2.imshow("test", kk)#ori_im)
                     cv2.waitKey(1)
 
                 if self.args.save_path:
