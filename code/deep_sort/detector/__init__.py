@@ -17,12 +17,13 @@ def build_detector(cfg, use_cuda):
         ckpt = torch.load(cfg.YOLOV3.WEIGHT, map_location='cpu')
         cfgr=cfg.YOLOV3.CFG
         hyp=cfg.YOLOV3.HYP
+        
         if isinstance(hyp, str):
             with open(hyp, errors='ignore') as f:
                 hyp = yaml.safe_load(f) 
         device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
 
-        model = YOLOv3(cfgr or ckpt['model'].yaml, dnn=False,device=device,data="/data/cwleungar/comp4901v-finalproject/code/yolov3/data/dataset.yaml")
+        model = YOLOv3(cfg.YOLOV3.WEIGHT, dnn=False,device=device,data="/data/cwleungar/comp4901v-finalproject/code/yolov3/data/dataset.yaml")
         
         return model,getname(cfg.YOLOV3.CLASS_NAMES)
     elif 'YOLOV4' in cfg:
