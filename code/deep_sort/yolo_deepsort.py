@@ -158,7 +158,7 @@ class VideoTracker(object):
 
                 screen=0
                 model=self.detector
-                stride, names, pt = self.detector.stride, self.detector.names, self.detector.pt
+                stride, pt = self.detector.stride if 'stride' in self.detector else 32, self.detector.pt
                 imgsz = check_img_size(imgsz, s=stride) 
                 bs = 1  # batch_size
                 dataset = LoadImages('./temp.png' , img_size=imgsz, stride=stride, auto=pt, vid_stride=1)
