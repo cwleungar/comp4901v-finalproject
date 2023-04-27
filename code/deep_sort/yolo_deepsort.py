@@ -151,7 +151,6 @@ class VideoTracker(object):
                         #bbox = np.array(xywh, dtype=np.float32).reshape(1, 4)
                         #bbox_xywh[int(cls)] = np.concatenate([bbox_xywh[int(cls)], bbox], axis=0)
                         #cls_conf[int(cls)] = np.concatenate([cls_conf[int(cls)], np.array([conf], dtype=np.float32)], axis=0)
-                        print(xywh)
                         bbox_xywh.append(xywh)
                         cls_conf.append(conf)
                         cls_ids.append(cls)
@@ -196,8 +195,8 @@ class VideoTracker(object):
                 write_results(self.save_results_path, results, 'mot')
 
                 # logging
-                #self.logger.info("time: {:.03f}s, fps: {:.03f}, detection numbers: {}, tracking numbers: {}" \
-                #                 .format(end - start, 1 / (end - start), bbox_xywh.shape[0], len(outputs)))
+                self.logger.info("time: {:.03f}s, fps: {:.03f}, detection numbers: {}, tracking numbers: {}" \
+                                 .format(end - start, 1 / (end - start), bbox_xywh.shape[0], len(outputs)))
 
 
 def parse_args():
