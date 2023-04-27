@@ -190,9 +190,12 @@ class VideoTracker(object):
                 cls_ids=[]
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
+                    print("xyxy ",xyxy)
                     conf=conf.cpu().detach().numpy()
                     cls=cls.cpu().detach().numpy()
                     xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) ).view(-1).tolist()  # normalized xywh
+                    line = (cls, *xywh, conf) 
+
                     #bbox = np.array(xywh, dtype=np.float32).reshape(1, 4)
                     #bbox_xywh[int(cls)] = np.concatenate([bbox_xywh[int(cls)], bbox], axis=0)
                     #cls_conf[int(cls)] = np.concatenate([cls_conf[int(cls)], np.array([conf], dtype=np.float32)], axis=0)
@@ -215,8 +218,7 @@ class VideoTracker(object):
                 # bbox dilation just in case bbox too small, delete this line if using a better pedestrian detector
                 #bbox_xywh[:, 3:] *= 1.2
                 cls_conf = cls_conf[mask]
-                print(bbox_xyxy)
-                print(cls_conf.shape)
+
             
                 # do tracking
                 #outputs = self.deepsort.update(bbox_xyxy, cls_conf, im0)
