@@ -167,6 +167,7 @@ class VideoTracker(object):
                 #bbox_xywh = [np.empty((0, 4), dtype=np.float32) for _ in range(9)]
                 #cls_conf = [np.empty(0, dtype=np.float32) for _ in range(9)]
                 bbox_xywh=[]
+                bbox_xyxy=[]
                 cls_conf=[]
                 cls_ids=[]
                 # Write results
@@ -181,9 +182,12 @@ class VideoTracker(object):
                     cls_conf.append(conf)
                     cls_ids.append(cls)
                     x1,y1,x2,y2=xyxy
+                    bbox_xyxy.append([int(x1),int(y1),int(x2),int(y2)])
+
                     #cv2.rectangle(kk,(int(x1),int(y1)),(int(x2),int(y2)),(0,0,255),2)
 
                 bbox_xywh, cls_conf, cls_ids = np.array(bbox_xywh), np.array(cls_conf), np.array(cls_ids)
+                bbox_xyxy=np.array(bbox_xyxy)
                 #bbox_xywh, cls_conf, cls_ids = self.detector(im)
                 # select person class
                 
