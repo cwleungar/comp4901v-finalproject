@@ -192,15 +192,16 @@ class VideoTracker(object):
                 # select person class
                 
                 mask = np.ones_like(cls_ids, dtype=bool)
-                bbox_xywh = bbox_xywh[mask]
+                #bbox_xywh = bbox_xywh[mask]
+                bbox_xyxy = bbox_xyxy[mask]
                 # bbox dilation just in case bbox too small, delete this line if using a better pedestrian detector
                 #bbox_xywh[:, 3:] *= 1.2
                 cls_conf = cls_conf[mask]
-                print(bbox_xywh)
+                print(bbox_xyxy)
                 print(cls_conf.shape)
             
                 # do tracking
-                outputs = self.deepsort.update(bbox_xywh, cls_conf, im0)
+                outputs = self.deepsort.update(bbox_xyxy, cls_conf, im0)
                 # draw boxes for visualization
 
                 if len(outputs) > 0:
