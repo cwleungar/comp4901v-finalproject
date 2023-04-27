@@ -118,7 +118,7 @@ class VideoTracker(object):
                 for batch in dataset:
                     path, im, im0s, vid_cap=batch[0],batch[1],batch[2],batch[3]
                     with dt[0]:
-                        im = torch.from_numpy(im).to(model.device)
+                        im = torch.from_numpy(im).to(device)
                         im = im.half() if model.fp16 else im.float()  # uint8 to fp16/32
                         im /= 255  # 0 - 255 to 0.0 - 1.0
                         if len(im.shape) == 3:
