@@ -169,6 +169,7 @@ class VideoTracker(object):
                     im /= 255  # 0 - 255 to 0.0 - 1.0
                     if len(im.shape) == 3:
                         im = im[None]  # expand for batch dim
+                    im=im.permute(0,3,1,2)
 
                 # Inference
                 with dt[1]:
