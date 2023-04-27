@@ -62,6 +62,7 @@ class DeepSort(object):
     @staticmethod
     def _xywh_to_tlwh(bbox_xywh):
         if isinstance(bbox_xywh, np.ndarray):
+            bbox_xywh = bbox_xywh.reshape(-1, 4)
             bbox_tlwh = bbox_xywh.copy()
         elif isinstance(bbox_xywh, torch.Tensor):
             bbox_xywh = bbox_xywh.reshape(-1, 4)
