@@ -192,7 +192,7 @@ class VideoTracker(object):
                 # bbox dilation just in case bbox too small, delete this line if using a better pedestrian detector
                 #bbox_xywh[:, 3:] *= 1.2
                 cls_conf = cls_conf[mask]
-                print(bbox_xywh.shape)
+                print(bbox_xywh)
                 print(cls_conf.shape)
             
                 # do tracking
