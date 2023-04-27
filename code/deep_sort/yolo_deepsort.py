@@ -143,7 +143,6 @@ class VideoTracker(object):
                     cls_ids=[]
                     # Write results
                     for *xyxy, conf, cls in reversed(det):
-                        print("xyxy ",xyxy)
                         conf=conf.cpu().detach().numpy()
                         cls=cls.cpu().detach().numpy()
                         xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) ).view(-1).tolist()  # normalized xywh
