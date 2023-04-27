@@ -150,6 +150,7 @@ class VideoTracker(object):
                 im = cv2.cvtColor(ori_im, cv2.COLOR_BGR2RGB)
                 _, buffer = cv2.imencode(".png", im)
                 file = io.BytesIO(buffer)
+                file = file.getvalue()
 
                 # do detection
                 im0=im.copy()
