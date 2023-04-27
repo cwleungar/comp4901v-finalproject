@@ -29,12 +29,12 @@ def build_detector(cfg, use_cuda):
     elif 'YOLOV4' in cfg:
         device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
 
-        model = YOLOv4(cfg.YOLOV3.WEIGHT, dnn=False,device=device,data="/data/cwleungar/comp4901v-finalproject/code/yolov3/data/dataset.yaml",fp16=False)
+        model = YOLOv4(cfg.YOLOV4.WEIGHT, dnn=False,device=device,data="/data/cwleungar/comp4901v-finalproject/code/yolov3/data/dataset.yaml",fp16=False)
 
         return model,getname(cfg.YOLOV4.CLASS_NAMES)
     elif 'YOLOV5' in cfg:
         device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
 
-        model = YOLOv5(cfg.YOLOV3.WEIGHT, dnn=False,device=device,data="/data/cwleungar/comp4901v-finalproject/code/yolov3/data/dataset.yaml",fp16=False)
+        model = YOLOv5(cfg.YOLOV5.WEIGHT, dnn=False,device=device,data="/data/cwleungar/comp4901v-finalproject/code/yolov3/data/dataset.yaml",fp16=False)
 
         return model,getname(cfg.YOLOV5.CLASS_NAMES)
