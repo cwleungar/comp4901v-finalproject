@@ -8,7 +8,8 @@ import numpy as np
 
 from detector import build_detector
 from deep_sort import build_tracker
-from detector.YOLOv3.utils.general import non_max_suppression, scale_boxes, xyxy2xywh
+from detector.YOLOv3.utils.general import Profile, check_img_size, non_max_suppression, scale_boxes, xyxy2xywh
+from detector.YOLOv3.utils.torch_utils import profile
 from utils.draw import draw_boxes
 from utils.parser import get_config
 from utils.log import get_logger
@@ -154,12 +155,30 @@ class VideoTracker(object):
                 im = torch.from_numpy(im).to(device).permute(2,0, 1).float()
 
                 im=im/255
-                im=im.unsqueeze(0)
                 gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
-
+                imgsz=(640, 640)
                 screen=0
-                pred= self.detector(im)
-                pred = non_max_suppression(pred, 0.4, 0.2, None, False, max_det=1000)
+                model=self.detector
+                stride, names, pt = self.detector.stride, self.detector.names, self.detector.pt
+                imgsz = check_img_size(imgsz, s=stride) 
+                bs = 1  # batch_size
+
+                model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
+                seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
+                with dt[0]:
+                    im = torch.from_numpy(im).to(model.device)
+                    im = im.half() if model.fp16 else im.float()  # uint8 to fp16/32
+                    im /= 255  # 0 - 255 to 0.0 - 1.0
+                    if len(im.shape) == 3:
+                        im = im[None]  # expand for batch dim
+
+                # Inference
+                with dt[1]:
+                    pred = model(im)
+
+                # NMS
+                with dt[2]:
+                    pred = non_max_suppression(pred, 0.25, 0.45, None, False, max_det=1000)
                 det=pred[0]
                 det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
 

@@ -1,4 +1,5 @@
-from .YOLOv3.models.yolo import Model as YOLOv3
+from detector.YOLOv3.utils.torch_utils import smart_inference_mode
+from .YOLOv3.models.yolo import DetectMultiBackend as YOLOv3
 from .YOLOv3.utils.general import intersect_dicts
 from .YOLOv4.models.models import Darknet as YOLOv4
 from .YOLOv5.models.yolo import Model as YOLOv5
@@ -10,6 +11,7 @@ def getname(path):
     with open(path, 'r') as f:
         name = f.readline().strip()
     return name
+@smart_inference_mode()
 def build_detector(cfg, use_cuda):
     if 'YOLOV3' in cfg:
         ckpt = torch.load(cfg.YOLOV3.WEIGHT, map_location='cpu')
@@ -19,12 +21,9 @@ def build_detector(cfg, use_cuda):
             with open(hyp, errors='ignore') as f:
                 hyp = yaml.safe_load(f) 
         device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
-        model = YOLOv3(cfgr or ckpt['model'].yaml, ch=3, nc=9, anchors=hyp.get('anchors')).to(device)  # create
-        exclude = ['anchor'] if (cfgr or hyp.get('anchors')) else []  # exclude keys
-        csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
-        csd = intersect_dicts(csd, model.state_dict(), exclude=exclude)  # intersect
-        model.load_state_dict(csd, strict=False)  # load
-        model=model.eval()
+
+        model = YOLOv3(cfgr or ckpt['model'].yaml, dnn=False,device=device,data="/data/cwleungar/comp4901v-finalproject/code/yolov3/data/dataset.yaml")
+        
         return model,getname(cfg.YOLOV3.CLASS_NAMES)
     elif 'YOLOV4' in cfg:
         device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
