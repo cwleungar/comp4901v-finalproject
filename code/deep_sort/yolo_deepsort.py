@@ -148,10 +148,7 @@ class VideoTracker(object):
                 start = time.time()
                 _, ori_im = self.vdo.retrieve()
                 im = cv2.cvtColor(ori_im, cv2.COLOR_BGR2RGB)
-                _, buffer = cv2.imencode(".png", im)
-                file = io.BytesIO(buffer)
-                file = file.getvalue()
-
+                cv2.imwrite("temp.png", im)
                 # do detection
                 im0=im.copy()
                 device = torch.device("cuda:2" if self.use_cuda else "cpu")
@@ -164,7 +161,7 @@ class VideoTracker(object):
                 stride, names, pt = self.detector.stride, self.detector.names, self.detector.pt
                 imgsz = check_img_size(imgsz, s=stride) 
                 bs = 1  # batch_size
-                dataset = LoadImages(file , img_size=imgsz, stride=stride, auto=pt, vid_stride=1)
+                dataset = LoadImages('./temp.png' , img_size=imgsz, stride=stride, auto=pt, vid_stride=1)
                 model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
                 seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
                 for path, im, im0s, vid_cap, s in dataset:
