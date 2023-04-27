@@ -161,6 +161,7 @@ def run(
 
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
+                    print(xyxy)
                     if save_txt:  # Write to file
                         xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
                         line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
@@ -173,7 +174,7 @@ def run(
                         annotator.box_label(xyxy, label, color=colors(c, True))
                     if save_crop:
                         save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
-
+            raise Exception("stop")
             # Stream results
             im0 = annotator.result()
             if view_img:

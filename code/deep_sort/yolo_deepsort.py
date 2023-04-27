@@ -206,7 +206,7 @@ class VideoTracker(object):
                     bbox_xyxy.append([int(x1),int(y1),int(x2),int(y2)])
 
                     cv2.rectangle(im0,(int(x1),int(y1)),(int(x2),int(y2)),(0,0,255),2)
-
+                raise Exception("stop")
                 bbox_xywh, cls_conf, cls_ids = np.array(bbox_xywh), np.array(cls_conf), np.array(cls_ids)
                 bbox_xyxy=np.array(bbox_xyxy)
                 #bbox_xywh, cls_conf, cls_ids = self.detector(im)
