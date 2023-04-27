@@ -1,1 +1,5 @@
 image size 640
+
+
+batch size of 4
+yolov4 : gpu ram 11.2GB
