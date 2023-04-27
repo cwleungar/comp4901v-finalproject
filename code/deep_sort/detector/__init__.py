@@ -27,13 +27,13 @@ def build_detector(cfg, use_cuda):
         
         return model,getname(cfg.YOLOV3.CLASS_NAMES)
     elif 'YOLOV4' in cfg:
+        device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
+
         cfgr=cfg.YOLOV4.CFG
         ckpt = torch.load(cfg.YOLOV4.WEIGHT, map_location=device)
-        device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
         model = YOLOv4(cfgr,640).to(device)  # create
         state_dict=ckpt['model'].state_dict()
         model.load_state_dict(state_dict, strict=False)
-        model = YOLOv4(cfgr, 640)
 
         return model,getname(cfg.YOLOV4.CLASS_NAMES)
     elif 'YOLOV5' in cfg:
