@@ -207,7 +207,7 @@ class VideoTracker(object):
                         x1,y1,x2,y2=xyxy
                         bbox_xyxy.append([int(x1),int(y1),int(x2),int(y2)])
 
-                        cv2.rectangle(im0,(int(x1),int(y1)),(int(x2),int(y2)),(0,0,255),2)
+                        #cv2.rectangle(im0,(int(x1),int(y1)),(int(x2),int(y2)),(0,0,255),2)
                 bbox_xywh, cls_conf, cls_ids = np.array(bbox_xywh), np.array(cls_conf), np.array(cls_ids)
                 bbox_xyxy=np.array(bbox_xyxy)
                 #bbox_xywh, cls_conf, cls_ids = self.detector(im)
@@ -222,21 +222,21 @@ class VideoTracker(object):
 
             
                 # do tracking
-                #outputs = self.deepsort.update(bbox_xyxy, cls_conf, im0)
-                ## draw boxes for visualization
-#
-                #if len(outputs) > 0:
-                #    bbox_tlwh = []
-                #    bbox_xyxy = outputs[:, :4]
-                #    identities = outputs[:, -1]
-                #    ori_im = draw_boxes(ori_im, bbox_xyxy, identities)
-                #    for bb_xyxy in bbox_xyxy:
-                #        bbox_tlwh.append(self.deepsort._xyxy_to_tlwh(bb_xyxy))
-                #    results.append((idx_frame - 1, bbox_tlwh, identities))
-                #end = time.time()
+                outputs = self.deepsort.update(bbox_xyxy, cls_conf, im0)
+                # draw boxes for visualization
+
+                if len(outputs) > 0:
+                    bbox_tlwh = []
+                    bbox_xyxy = outputs[:, :4]
+                    identities = outputs[:, -1]
+                    ori_im = draw_boxes(ori_im, bbox_xyxy, identities)
+                    for bb_xyxy in bbox_xyxy:
+                        bbox_tlwh.append(self.deepsort._xyxy_to_tlwh(bb_xyxy))
+                    results.append((idx_frame - 1, bbox_tlwh, identities))
+                end = time.time()
                 if self.args.display:
-                    #cv2.imshow("test", ori_im)
-                    cv2.imshow("test", im0)
+                    cv2.imshow("test", ori_im)
+                    #cv2.imshow("test", im0)
                     cv2.waitKey(1)
 
                 if self.args.save_path:
