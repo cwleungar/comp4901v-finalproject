@@ -113,7 +113,7 @@ class VideoTracker(object):
                 else:
                     dataset = LoadImagesv4('./temp.png', img_size=imgsz, auto_size=64)
                     img = torch.zeros((1, 3, int(imgsz[0]), int(imgsz[1])), device=device)  # init img
-                    _ = model(img.half())
+                    _ = model(img)
 
                 for path, im, im0s, vid_cap, s in dataset:
 
