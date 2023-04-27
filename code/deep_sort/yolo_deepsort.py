@@ -8,6 +8,7 @@ import numpy as np
 
 from detector import build_detector
 from deep_sort import build_tracker
+from detector.YOLOv3.utils.dataloaders import LoadImages
 from detector.YOLOv3.utils.general import Profile, check_img_size, non_max_suppression, scale_boxes, xyxy2xywh
 from detector.YOLOv3.utils.torch_utils import profile
 from utils.draw import draw_boxes
@@ -155,12 +156,14 @@ class VideoTracker(object):
 
                 gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
                 imgsz=(640, 640)
+
                 screen=0
                 model=self.detector
                 stride, names, pt = self.detector.stride, self.detector.names, self.detector.pt
                 imgsz = check_img_size(imgsz, s=stride) 
                 bs = 1  # batch_size
-
+                dataset = LoadImages("/data/cwleungar/comp4901v-finalproject/small_video/data/0000/000000.png" , img_size=imgsz, stride=stride, auto=pt, vid_stride=1)
+                path, im, im0s, vid_cap, s=dataset[0]
                 model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
                 seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
                 with dt[0]:
@@ -169,7 +172,6 @@ class VideoTracker(object):
                     im /= 255  # 0 - 255 to 0.0 - 1.0
                     if len(im.shape) == 3:
                         im = im[None]  # expand for batch dim
-                    im=im.permute(0,3,1,2)
 
                 # Inference
                 with dt[1]:
@@ -177,9 +179,9 @@ class VideoTracker(object):
 
                 # NMS
                 with dt[2]:
-                    pred = non_max_suppression(pred, 0.25, 0.45, None, False, max_det=1000)
+                    pred = non_max_suppression(pred, 0.6, 0.45, None, False, max_det=1000)
                 det=pred[0]
-                det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
+                det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0s.shape).round()
 
                 #cls_ids = []
                 #bbox_xywh = [np.empty((0, 4), dtype=np.float32) for _ in range(9)]
