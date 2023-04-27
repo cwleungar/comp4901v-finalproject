@@ -163,51 +163,52 @@ class VideoTracker(object):
                 imgsz = check_img_size(imgsz, s=stride) 
                 bs = 1  # batch_size
                 dataset = LoadImages("/data/cwleungar/comp4901v-finalproject/small_video/data/0000/000000.png" , img_size=imgsz, stride=stride, auto=pt, vid_stride=1)
-                path, im, im0s, vid_cap, s=dataset[0]
                 model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
                 seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
-                with dt[0]:
-                    im = torch.from_numpy(im).to(model.device)
-                    im = im.half() if model.fp16 else im.float()  # uint8 to fp16/32
-                    im /= 255  # 0 - 255 to 0.0 - 1.0
-                    if len(im.shape) == 3:
-                        im = im[None]  # expand for batch dim
+                for path, im, im0s, vid_cap, s in dataset:
 
-                # Inference
-                with dt[1]:
-                    pred = model(im)
+                    with dt[0]:
+                        im = torch.from_numpy(im).to(model.device)
+                        im = im.half() if model.fp16 else im.float()  # uint8 to fp16/32
+                        im /= 255  # 0 - 255 to 0.0 - 1.0
+                        if len(im.shape) == 3:
+                            im = im[None]  # expand for batch dim
 
-                # NMS
-                with dt[2]:
-                    pred = non_max_suppression(pred, 0.6, 0.45, None, False, max_det=1000)
-                det=pred[0]
-                det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0s.shape).round()
+                    # Inference
+                    with dt[1]:
+                        pred = model(im)
 
-                #cls_ids = []
-                #bbox_xywh = [np.empty((0, 4), dtype=np.float32) for _ in range(9)]
-                #cls_conf = [np.empty(0, dtype=np.float32) for _ in range(9)]
-                bbox_xywh=[]
-                bbox_xyxy=[]
-                cls_conf=[]
-                cls_ids=[]
-                # Write results
-                for *xyxy, conf, cls in reversed(det):
-                    print("xyxy ",xyxy)
-                    conf=conf.cpu().detach().numpy()
-                    cls=cls.cpu().detach().numpy()
-                    xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) ).view(-1).tolist()  # normalized xywh
-                    line = (cls, *xywh, conf) 
+                    # NMS
+                    with dt[2]:
+                        pred = non_max_suppression(pred, 0.6, 0.45, None, False, max_det=1000)
+                    det=pred[0]
+                    det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0s.shape).round()
 
-                    #bbox = np.array(xywh, dtype=np.float32).reshape(1, 4)
-                    #bbox_xywh[int(cls)] = np.concatenate([bbox_xywh[int(cls)], bbox], axis=0)
-                    #cls_conf[int(cls)] = np.concatenate([cls_conf[int(cls)], np.array([conf], dtype=np.float32)], axis=0)
-                    bbox_xywh.append(xywh)
-                    cls_conf.append(conf)
-                    cls_ids.append(cls)
-                    x1,y1,x2,y2=xyxy
-                    bbox_xyxy.append([int(x1),int(y1),int(x2),int(y2)])
+                    #cls_ids = []
+                    #bbox_xywh = [np.empty((0, 4), dtype=np.float32) for _ in range(9)]
+                    #cls_conf = [np.empty(0, dtype=np.float32) for _ in range(9)]
+                    bbox_xywh=[]
+                    bbox_xyxy=[]
+                    cls_conf=[]
+                    cls_ids=[]
+                    # Write results
+                    for *xyxy, conf, cls in reversed(det):
+                        print("xyxy ",xyxy)
+                        conf=conf.cpu().detach().numpy()
+                        cls=cls.cpu().detach().numpy()
+                        xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) ).view(-1).tolist()  # normalized xywh
+                        line = (cls, *xywh, conf) 
 
-                    cv2.rectangle(im0,(int(x1),int(y1)),(int(x2),int(y2)),(0,0,255),2)
+                        #bbox = np.array(xywh, dtype=np.float32).reshape(1, 4)
+                        #bbox_xywh[int(cls)] = np.concatenate([bbox_xywh[int(cls)], bbox], axis=0)
+                        #cls_conf[int(cls)] = np.concatenate([cls_conf[int(cls)], np.array([conf], dtype=np.float32)], axis=0)
+                        bbox_xywh.append(xywh)
+                        cls_conf.append(conf)
+                        cls_ids.append(cls)
+                        x1,y1,x2,y2=xyxy
+                        bbox_xyxy.append([int(x1),int(y1),int(x2),int(y2)])
+
+                        cv2.rectangle(im0,(int(x1),int(y1)),(int(x2),int(y2)),(0,0,255),2)
                 raise Exception("stop")
                 bbox_xywh, cls_conf, cls_ids = np.array(bbox_xywh), np.array(cls_conf), np.array(cls_ids)
                 bbox_xyxy=np.array(bbox_xyxy)
