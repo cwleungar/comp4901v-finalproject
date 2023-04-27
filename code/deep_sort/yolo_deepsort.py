@@ -104,7 +104,7 @@ class VideoTracker(object):
                 stride=0
                 pt=0 
                 if 'YOLOV3' in cfg or 'YOLOV5' in cfg :
-                    stride,pt= self.detector.stride if 'stride' in self.detector else 32, self.detector.pt
+                    stride,pt= self.detector.stride , self.detector.pt
                     imgsz = check_img_size(imgsz, s=stride) 
                     dataset = LoadImages('./temp.png' , img_size=imgsz, stride=stride, auto=pt, vid_stride=1)
                     bs = 1  # batch_size
