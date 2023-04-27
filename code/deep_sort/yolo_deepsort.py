@@ -161,7 +161,7 @@ class VideoTracker(object):
                 pred= self.detector(im)
                 pred = non_max_suppression(pred, 0.4, 0.2, None, False, max_det=1000)
                 det=pred[0]
-                #det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
+                det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
 
                 #cls_ids = []
                 #bbox_xywh = [np.empty((0, 4), dtype=np.float32) for _ in range(9)]
@@ -201,7 +201,7 @@ class VideoTracker(object):
                 print(cls_conf.shape)
             
                 # do tracking
-                outputs = self.deepsort.update(bbox_xyxy, cls_conf, kk)
+                outputs = self.deepsort.update(bbox_xyxy, cls_conf, im0)
                 # draw boxes for visualization
 
                 if len(outputs) > 0:
