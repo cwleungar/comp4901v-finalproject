@@ -1,8 +1,8 @@
 from detector.YOLOv3.utils.torch_utils import smart_inference_mode
 from .YOLOv3.models.yolo import DetectMultiBackend as YOLOv3
 from .YOLOv3.utils.general import intersect_dicts
-from .YOLOv4.models.models import DetectMultiBackend as YOLOv4
-from .YOLOv5.models.yolo import DetectMultiBackend as YOLOv5
+from .YOLOv4.models.common import DetectMultiBackend as YOLOv4
+from .YOLOv5.models.common import DetectMultiBackend as YOLOv5
 import torch
 import yaml
 
