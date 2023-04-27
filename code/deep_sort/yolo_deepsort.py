@@ -10,6 +10,8 @@ import io
 from detector import build_detector
 from deep_sort import build_tracker
 from detector.YOLOv3.utils.dataloaders import LoadImages
+from detector.YOLOv4.utils.datasets import LoadImages as LoadImagesv4
+
 from detector.YOLOv3.utils.general import Profile, check_img_size, non_max_suppression, scale_boxes, xyxy2xywh
 from detector.YOLOv3.utils.torch_utils import profile
 from utils.draw import draw_boxes
@@ -158,10 +160,16 @@ class VideoTracker(object):
 
                 screen=0
                 model=self.detector
-                stride, pt = self.detector.stride if 'stride' in self.detector else 32, self.detector.pt
-                imgsz = check_img_size(imgsz, s=stride) 
+                stride=0
+                pt=0 
+                if 'YOLOV3' in cfg or 'YOLOV5' in cfg :
+                    stride,pt= self.detector.stride if 'stride' in self.detector else 32, self.detector.pt
+                    imgsz = check_img_size(imgsz, s=stride) 
+                    dataset = LoadImages('./temp.png' , img_size=imgsz, stride=stride, auto=pt, vid_stride=1)
+                else:
+                    dataset = LoadImagesv4('./temp.png', img_size=imgsz, auto_size=64)
+
                 bs = 1  # batch_size
-                dataset = LoadImages('./temp.png' , img_size=imgsz, stride=stride, auto=pt, vid_stride=1)
                 model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
                 seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
                 for path, im, im0s, vid_cap, s in dataset:
