@@ -107,12 +107,14 @@ class VideoTracker(object):
                     stride,pt= self.detector.stride if 'stride' in self.detector else 32, self.detector.pt
                     imgsz = check_img_size(imgsz, s=stride) 
                     dataset = LoadImages('./temp.png' , img_size=imgsz, stride=stride, auto=pt, vid_stride=1)
+                    bs = 1  # batch_size
+                    model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
+                    seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
                 else:
                     dataset = LoadImagesv4('./temp.png', img_size=imgsz, auto_size=64)
+                    img = torch.zeros((1, 3, imgsz, imgsz), device=device)  # init img
+                    _ = model(img.half())
 
-                bs = 1  # batch_size
-                model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
-                seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
                 for path, im, im0s, vid_cap, s in dataset:
 
                     with dt[0]:
@@ -156,6 +158,10 @@ class VideoTracker(object):
                         cls_ids.append(cls)
                         x1,y1,x2,y2=xyxy
                         bbox_xyxy.append([int(x1),int(y1),int(x2),int(y2)])
+                else:
+
+
+                
 
                         #cv2.rectangle(im0,(int(x1),int(y1)),(int(x2),int(y2)),(0,0,255),2)
                 bbox_xywh, cls_conf, cls_ids = np.array(bbox_xywh), np.array(cls_conf), np.array(cls_ids)
