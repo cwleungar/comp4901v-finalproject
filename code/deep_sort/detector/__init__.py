@@ -14,9 +14,9 @@ def getname(path):
 @smart_inference_mode()
 def build_detector(cfg, use_cuda):
     if 'YOLOV3' in cfg:
-        ckpt = torch.load(cfg.YOLOV3.WEIGHT, map_location='cpu')
-        cfgr=cfg.YOLOV3.CFG
-        hyp=cfg.YOLOV3.HYP
+        #ckpt = torch.load(cfg.YOLOV3.WEIGHT, map_location='cpu')
+        #cfgr=cfg.YOLOV3.CFG
+        #hyp=cfg.YOLOV3.HYP
         
         if isinstance(hyp, str):
             with open(hyp, errors='ignore') as f:
