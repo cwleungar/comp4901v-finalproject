@@ -180,7 +180,8 @@ class VideoTracker(object):
                     bbox_xywh.append(xywh)
                     cls_conf.append(conf)
                     cls_ids.append(cls)
-                    cv2.rectangle(kk, (xywh[0], xywh[1]), (xywh[0]+xywh[2], xywh[1]+xywh[3]), (0,255,0), 2)
+                    x1,y1,x2,y2=xyxy
+                    cv2.rectangle(kk,(int(x1),int(y1)),(int(x2),int(y2)),(0,0,255),2)
 
                 bbox_xywh, cls_conf, cls_ids = np.array(bbox_xywh), np.array(cls_conf), np.array(cls_ids)
                 #bbox_xywh, cls_conf, cls_ids = self.detector(im)
