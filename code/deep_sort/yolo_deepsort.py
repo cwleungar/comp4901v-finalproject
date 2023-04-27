@@ -158,11 +158,6 @@ class VideoTracker(object):
                         cls_ids.append(cls)
                         x1,y1,x2,y2=xyxy
                         bbox_xyxy.append([int(x1),int(y1),int(x2),int(y2)])
-                else:
-
-
-                
-
                         #cv2.rectangle(im0,(int(x1),int(y1)),(int(x2),int(y2)),(0,0,255),2)
                 bbox_xywh, cls_conf, cls_ids = np.array(bbox_xywh), np.array(cls_conf), np.array(cls_ids)
                 bbox_xyxy=np.array(bbox_xyxy)
