@@ -5,6 +5,7 @@ import argparse
 import torch
 import warnings
 import numpy as np
+import io
 
 from detector import build_detector
 from deep_sort import build_tracker
@@ -147,11 +148,11 @@ class VideoTracker(object):
                 start = time.time()
                 _, ori_im = self.vdo.retrieve()
                 im = cv2.cvtColor(ori_im, cv2.COLOR_BGR2RGB)
+                _, buffer = cv2.imencode(".png", im)
+                file = io.BytesIO(buffer)
 
                 # do detection
                 im0=im.copy()
-                im=cv2.resize(im,(640,640))
-                kk=im.copy()
                 device = torch.device("cuda:2" if self.use_cuda else "cpu")
 
                 gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
@@ -162,7 +163,7 @@ class VideoTracker(object):
                 stride, names, pt = self.detector.stride, self.detector.names, self.detector.pt
                 imgsz = check_img_size(imgsz, s=stride) 
                 bs = 1  # batch_size
-                dataset = LoadImages("/data/cwleungar/comp4901v-finalproject/small_video/data/0000/000000.png" , img_size=imgsz, stride=stride, auto=pt, vid_stride=1)
+                dataset = LoadImages(file , img_size=imgsz, stride=stride, auto=pt, vid_stride=1)
                 model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
                 seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
                 for path, im, im0s, vid_cap, s in dataset:
@@ -209,7 +210,6 @@ class VideoTracker(object):
                         bbox_xyxy.append([int(x1),int(y1),int(x2),int(y2)])
 
                         cv2.rectangle(im0,(int(x1),int(y1)),(int(x2),int(y2)),(0,0,255),2)
-                raise Exception("stop")
                 bbox_xywh, cls_conf, cls_ids = np.array(bbox_xywh), np.array(cls_conf), np.array(cls_ids)
                 bbox_xyxy=np.array(bbox_xyxy)
                 #bbox_xywh, cls_conf, cls_ids = self.detector(im)
