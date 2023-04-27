@@ -103,7 +103,7 @@ class DeepSort(object):
     def _get_features(self, bbox_xywh, ori_img):
         im_crops = []
         for box in bbox_xywh:
-            x1,y1,x2,y2 = box#self._xywh_to_xyxy(box)
+            x1,y1,x2,y2 = self._xywh_to_xyxy(box)
             x1,y1,x2,y2 = int(x1),int(y1),int(x2),int(y2)
             im = ori_img[y1:y2,x1:x2]
             im_crops.append(im)
