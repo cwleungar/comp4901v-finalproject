@@ -193,7 +193,7 @@ class VideoTracker(object):
                 #bbox_xywh[:, 3:] *= 1.2
                 cls_conf = cls_conf[mask]
                 # do tracking
-                outputs = self.deepsort.update(bbox_xywh, cls_conf, im0)
+                #outputs = self.deepsort.update(bbox_xywh, cls_conf, im0)
                 # draw boxes for visualization
 
                 #if len(outputs) > 0:
