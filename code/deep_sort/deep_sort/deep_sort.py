@@ -64,6 +64,7 @@ class DeepSort(object):
         if isinstance(bbox_xywh, np.ndarray):
             bbox_tlwh = bbox_xywh.copy()
         elif isinstance(bbox_xywh, torch.Tensor):
+            bbox_xywh = bbox_xywh.reshape(-1, 4)
             bbox_tlwh = bbox_xywh.clone()
         bbox_tlwh[:,0] = bbox_xywh[:,0] - bbox_xywh[:,2]/2.
         bbox_tlwh[:,1] = bbox_xywh[:,1] - bbox_xywh[:,3]/2.
