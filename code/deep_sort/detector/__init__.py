@@ -18,9 +18,9 @@ def build_detector(cfg, use_cuda):
         #cfgr=cfg.YOLOV3.CFG
         #hyp=cfg.YOLOV3.HYP
         
-        if isinstance(hyp, str):
-            with open(hyp, errors='ignore') as f:
-                hyp = yaml.safe_load(f) 
+        #if isinstance(hyp, str):
+        #    with open(hyp, errors='ignore') as f:
+        #        hyp = yaml.safe_load(f) 
         device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
 
         model = YOLOv3(cfg.YOLOV3.WEIGHT, dnn=False,device=device,data="/data/cwleungar/comp4901v-finalproject/code/yolov3/data/dataset.yaml")
