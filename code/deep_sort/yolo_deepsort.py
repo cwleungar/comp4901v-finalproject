@@ -152,9 +152,7 @@ class VideoTracker(object):
                 im=cv2.resize(im,(640,640))
                 kk=im.copy()
                 device = torch.device("cuda:2" if self.use_cuda else "cpu")
-                im = torch.from_numpy(im).to(device).permute(2,0, 1).float()
 
-                im=im/255
                 gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
                 imgsz=(640, 640)
                 screen=0
