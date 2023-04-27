@@ -2,4 +2,10 @@ image size 640
 
 
 batch size of 4
+yolov3 summary: 
+    262 layers, 61566814 parameters, 61566814 gradients
+    6.43GB
 yolov4 : gpu ram 11.2GB
+yolov5l summary: 
+    368 layers, 46181374 parameters, 46181374 gradients
+    5.05GB

@@ -82,6 +82,7 @@ class VideoTracker(object):
     def run(self):
         results = []
         idx_frame = 0
+
         with torch.no_grad():
             while self.vdo.grab():
                 idx_frame += 1
