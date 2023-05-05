@@ -33,7 +33,7 @@ def main(data_root='', args=""):
     # get summary
     metrics = mm.metrics.motchallenge_metrics
     mh = mm.metrics.create()
-    summary = Evaluator.get_summary(accs, ["video"], metrics)
+    summary = Evaluator.get_summary([acc], ["video"], metrics)
     strsummary = mm.io.render_summary(
         summary,
         formatters=mh.formatters,
