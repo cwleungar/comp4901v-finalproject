@@ -213,7 +213,7 @@ def parse_args():
     parser.add_argument("--save_path", type=str, default="./output/")
     parser.add_argument("--cpu", dest="use_cuda", action="store_false", default=True)
     parser.add_argument("--camera", action="store", dest="cam", type=int, default="-1")
-    
+
     return parser.parse_args()
 
 
