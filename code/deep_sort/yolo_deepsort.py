@@ -109,7 +109,7 @@ class VideoTracker(object):
                     imgsz = check_img_size(imgsz, s=stride) 
                     dataset = LoadImages('./temp.png' , img_size=imgsz, stride=stride, auto=pt, vid_stride=1)
                     bs = 1  # batch_size
-                    model.warmup(imgsz=(1 if pt or model.triton else bs, 3, imgsz))  # warmup
+                    model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
                 else:
                     dataset = LoadImagesv4('./temp.png', img_size=imgsz, auto_size=64)
                     img = torch.zeros((1, 3, int(imgsz[0]), int(imgsz[1])), device=device)  # init img
