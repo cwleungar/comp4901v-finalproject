@@ -8,9 +8,8 @@ from utils.io import read_results, unzip_objs
 
 class Evaluator(object):
 
-    def __init__(self, data_root, seq_name, data_type):
-        self.data_root = data_root
-        self.seq_name = seq_name
+    def __init__(self, gt_path, data_type):
+        self.gt_path = gt_path
         self.data_type = data_type
 
         self.load_annotations()
@@ -19,7 +18,7 @@ class Evaluator(object):
     def load_annotations(self):
         assert self.data_type == 'mot'
 
-        gt_filename = os.path.join(self.data_root, self.seq_name, 'gt', 'gt.txt')
+        gt_filename =self.gt_path
         self.gt_frame_dict = read_results(gt_filename, self.data_type, is_gt=True)
         self.gt_ignore_frame_dict = read_results(gt_filename, self.data_type, is_ignore=True)
 
