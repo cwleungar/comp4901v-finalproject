@@ -40,7 +40,7 @@ def main(data_root='', args=""):
         namemap=mm.io.motchallenge_metric_names
     )
     print(strsummary)
-    Evaluator.save_summary(summary, os.path.join('summary_global.xlsx'))
+    #Evaluator.save_summary(summary, os.path.join('summary_global.xlsx'))
 
 
 def parse_args():
