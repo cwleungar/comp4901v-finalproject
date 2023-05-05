@@ -22,8 +22,8 @@ def main(data_root='', args=""):
     cfg = get_config()
     cfg.merge_from_file(args.config_detection)
     cfg.merge_from_file(args.config_deepsort)
-    gt_path=cfg.label_file
-    result_file=cfg.output_file
+    gt_path=args.label_file
+    result_file=args.output_file
     # run tracking
     accs = []
     evaluator = Evaluator(gt_path, data_type)
