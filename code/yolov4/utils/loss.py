@@ -417,8 +417,6 @@ class YOLOLoss(nn.Module):
             if len(targets[b])==0:
                 continue
             batch_target = torch.zeros_like(targets[b])
-            batch_target = batch_target.unsqueeze(1)
-
             batch_target[:, [0,2]] = targets[b][:, [0,2]] * in_w
             batch_target[:, [1,3]] = targets[b][:, [1,3]] * in_h
             batch_target[:, 4] = targets[b][:, 4]

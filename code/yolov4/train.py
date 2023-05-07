@@ -29,7 +29,7 @@ from utils.general import labels_to_class_weights, increment_path, labels_to_ima
     fitness, fitness_p, fitness_r, fitness_ap50, fitness_ap, fitness_f, strip_optimizer, get_latest_run,\
     check_dataset, check_file, check_git_status, check_img_size, print_mutation, set_logging
 from utils.google_utils import attempt_download
-from utils.loss import YOLOLoss  
+from utils.loss import ComputeLoss  
 
 from utils.plots import plot_images, plot_labels, plot_results, plot_evolution
 from utils.torch_utils import ModelEMA, select_device, intersect_dicts, torch_distributed_zero_first
@@ -235,7 +235,8 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
                 'Starting training for %g epochs...' % (imgsz, imgsz_test, dataloader.num_workers, save_dir, epochs))
     
     torch.save(model, wdir / 'init.pt')
-    yolo_loss = YOLOLoss(anchors, model.nc, [640,640], True, anchors, 0, True, 0.25, 2, 'ciou')
+    #yolo_loss = YOLOLoss(anchors, model.nc, [640,640], True, anchors, 0, True, 0.25, 2, 'ciou')
+    compute_loss=ComputeLoss(model) 
 
     for epoch in range(start_epoch, epochs):  # epoch ------------------------------------------------------------------
         model.train()
@@ -276,17 +277,17 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
             with amp.autocast(enabled=cuda):
 
                 pred = model(imgs)  # forward
-                #loss, loss_items = yolo_loss(pred, targets.to(device))  # loss scaled by batch_size
-                loss_value_all  = 0
-                #----------------------#
-                #   计算损失
-                #----------------------#
-                loss_items = torch.zeros(3, device=device)
-                for l in range(len(pred)):
-                    value,loss_item = yolo_loss(l, pred[l], targets)
-                    loss_value_all  += value
-                    loss_items += loss_item
-                loss = loss_value_all
+                loss, loss_items = yolo_loss(pred, targets.to(device))  # loss scaled by batch_size
+                #loss_value_all  = 0
+                ##----------------------#
+                ##   计算损失
+                ##----------------------#
+                #loss_items = torch.zeros(3, device=device)
+                #for l in range(len(pred)):
+                #    value,loss_item = yolo_loss(l, pred[l], targets)
+                #    loss_value_all  += value
+                #    loss_items += loss_item
+                #loss = loss_value_all
 
                 if rank != -1:
                     loss *= opt.world_size  # gradient averaged between devices in DDP mode
