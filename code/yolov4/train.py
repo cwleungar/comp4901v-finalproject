@@ -277,7 +277,7 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
             with amp.autocast(enabled=cuda):
 
                 pred = model(imgs)  # forward
-                loss, loss_items = yolo_loss(pred, targets.to(device))  # loss scaled by batch_size
+                loss, loss_items = compute_loss(pred, targets.to(device))  # loss scaled by batch_size
                 #loss_value_all  = 0
                 ##----------------------#
                 ##   计算损失
