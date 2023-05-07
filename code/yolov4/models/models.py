@@ -220,7 +220,8 @@ class YoloBody(nn.Module):
 
 
     def forward(self, x):
-        x=x.float()
+        x=x.type(torch.FloatTensor).cuda()
+        
         #  backbone
         x2, x1, x0 = self.backbone(x)
 
