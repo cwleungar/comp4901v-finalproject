@@ -252,7 +252,7 @@ class YoloBody(nn.Module):
         return out0, out1, out2
     
 def get_yolo_layers(model):
-    return [i for i, m in enumerate(model.module_list) if m.__class__.__name__ in ['YOLOLayer', 'JDELayer']]  # [89, 101, 113]
+    return [i for i, m in enumerate(model.module_list) if m.__class__.__name__ in ['yolo_head', 'JDELayer']]  # [89, 101, 113]
 
 
 def load_darknet_weights(self, weights, cutoff=-1):
