@@ -78,12 +78,12 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
         with torch_distributed_zero_first(rank):
             attempt_download(weights)  # download if not found locally
         ckpt = torch.load(weights, map_location=device)  # load checkpoint
-        model = Darknet(opt.cfg).to(device)  # create
+        model = YoloBody(9,9) #Darknet(opt.cfg).to(device)  # create
         state_dict = {k: v for k, v in ckpt['model'].items() if model.state_dict()[k].numel() == v.numel()}
         model.load_state_dict(state_dict, strict=False)
         print('Transferred %g/%g items from %s' % (len(state_dict), len(model.state_dict()), weights))  # report
     else:
-        model = Darknet(opt.cfg).to(device) # create
+        model = YoloBody(9,9) #Darknet(opt.cfg).to(device) # create
 
     # Optimizer
     nbs = 64  # nominal batch size
