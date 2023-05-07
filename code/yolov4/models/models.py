@@ -218,7 +218,6 @@ class YoloBody(nn.Module):
         final_out_filter0 =  num_anchors * (5 + num_classes)
         self.yolo_head1 = yolo_head([1024, final_out_filter0],512)
 
-
     def forward(self, x):
         
         #  backbone
