@@ -13,7 +13,7 @@ from utils.google_utils import attempt_load
 from utils.datasets import create_dataloader
 from utils.general import coco80_to_coco91_class, check_dataset, check_file, check_img_size, box_iou, \
     non_max_suppression, scale_coords, xyxy2xywh, xywh2xyxy, clip_coords, set_logging, increment_path
-from utils.loss import compute_loss
+from utils.loss import ComputeLoss
 from utils.metrics import ap_per_class
 from utils.plots import plot_images, output_to_target
 from utils.torch_utils import select_device, time_synchronized
@@ -44,7 +44,7 @@ def test(data,
          save_conf=False,
          plots=True,
          log_imgs=0):  # number of logged images
-
+    compute_loss=ComputeLoss(model)  # init loss class
     # Initialize/load model and set device
     training = model is not None
     if training:  # called by train.py
