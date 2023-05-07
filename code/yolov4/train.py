@@ -86,7 +86,6 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
     else:
         model = YoloBody(len(anchors),9).to(device) #Darknet(opt.cfg).to(device) # create
     anchors = torch.tensor(anchors).float().to(device)
-    anchors = anchors.unsqueeze(0).unsqueeze(-1)
 
     # Optimizer
     nbs = 64  # nominal batch size
