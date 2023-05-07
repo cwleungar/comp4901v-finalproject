@@ -219,6 +219,8 @@ class YoloBody(nn.Module):
         self.yolo_head1 = yolo_head([1024, final_out_filter0],512)
 
         self.nl=3
+        self.na=num_anchors
+        self.nc=num_classes
 
     def forward(self, x):
         
