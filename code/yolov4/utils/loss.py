@@ -380,7 +380,7 @@ class YOLOLoss(nn.Module):
         loss        += loss_conf * self.balance[l] * self.obj_ratio
         # if n != 0:
         #     print(loss_loc * self.box_ratio, loss_cls * self.cls_ratio, loss_conf * self.balance[l] * self.obj_ratio)
-        return loss
+        return loss,torch.cat((loss_loc, loss_conf, loss_cls)).detach()
 
     def calculate_iou(self, _box_a, _box_b):
         b1_x1, b1_x2 = _box_a[:, 0] - _box_a[:, 2] / 2, _box_a[:, 0] + _box_a[:, 2] / 2

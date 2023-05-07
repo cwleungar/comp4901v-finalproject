@@ -235,7 +235,7 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
                 'Starting training for %g epochs...' % (imgsz, imgsz_test, dataloader.num_workers, save_dir, epochs))
     
     torch.save(model, wdir / 'init.pt')
-    yolo_loss    = YOLOLoss(anchors, model.nc, [640,640], True, anchors, 0, False, 0.25, 2, 'ciou')
+    yolo_loss = YOLOLoss(anchors, model.nc, [640,640], True, anchors, 0, True, 0.25, 2, 'ciou')
 
     for epoch in range(start_epoch, epochs):  # epoch ------------------------------------------------------------------
         model.train()
@@ -276,7 +276,18 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
             with amp.autocast(enabled=cuda):
 
                 pred = model(imgs)  # forward
-                loss, loss_items = yolo_loss(pred, targets.to(device))  # loss scaled by batch_size
+                #loss, loss_items = yolo_loss(pred, targets.to(device))  # loss scaled by batch_size
+                loss_value_all  = 0
+                #----------------------#
+                #   计算损失
+                #----------------------#
+                loss_items = torch.zeros(3, device=device)
+                for l in range(len(pred)):
+                    value,loss_item = yolo_loss(l, pred[l], targets)
+                    loss_value_all  += value
+                    loss_items += loss_item
+                loss = loss_value_all
+
                 if rank != -1:
                     loss *= opt.world_size  # gradient averaged between devices in DDP mode
 
