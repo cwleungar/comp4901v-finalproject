@@ -72,7 +72,7 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
     test_path = data_dict['val']
     nc, names = (1, ['item']) if opt.single_cls else (int(data_dict['nc']), data_dict['names'])  # number classes, names
     assert len(names) == nc, '%g names found for nc=%g dataset in %s' % (len(names), nc, opt.data)  # check
-    anchors=[[10,13, 16,30, 33,23],[30,61, 62,45, 59,119],[116,90, 156,198, 373,326]]
+    anchors=[[[10,13], [16,30], [33,23]],[[30,61], [62,45], [59,119]],[[116,90], [156,198], [373,326]]]
     # Model
     pretrained = weights.endswith('.pt')
     if pretrained:
