@@ -269,6 +269,7 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
 
             # Forward
             with amp.autocast(enabled=cuda):
+                print(device)
                 imgs=imgs.to(device)
                 model=model.to(device)
                 pred = model(imgs)  # forward
