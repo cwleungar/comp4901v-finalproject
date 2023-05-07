@@ -500,7 +500,7 @@ if __name__ == '__main__':
         dist.init_process_group(backend='nccl', init_method='env://')  # distributed backend
         assert opt.batch_size % opt.world_size == 0, '--batch-size must be multiple of CUDA device count'
         opt.batch_size = opt.total_batch_size // opt.world_size
-    device = torch.device('cuda:5')
+    device = torch.device('cuda:3')
 
     # Hyperparameters
     with open(opt.hyp) as f:
