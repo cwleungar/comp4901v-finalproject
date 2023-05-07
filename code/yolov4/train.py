@@ -161,22 +161,23 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
     gs = 64 #int(max(model.stride))  # grid size (max stride)
     imgsz, imgsz_test = [check_img_size(x, gs) for x in opt.img_size]  # verify imgsz are gs-multiples
 
-    # DP mode
-    if cuda and rank == -1 and torch.cuda.device_count() > 1:
-        model = torch.nn.DataParallel(model)
-
-    # SyncBatchNorm
-    if opt.sync_bn and cuda and rank != -1:
-        model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model).to(device)
-        logger.info('Using SyncBatchNorm()')
+    ## DP mode
+    #if cuda and rank == -1 and torch.cuda.device_count() > 1:
+    #    model = torch.nn.DataParallel(model)
+#
+    ## SyncBatchNorm
+    #if opt.sync_bn and cuda and rank != -1:
+    #    model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model).to(device)
+    #    logger.info('Using SyncBatchNorm()')
 
     # EMA
     ema = ModelEMA(model) if rank in [-1, 0] else None
 
     # DDP mode
-    if cuda and rank != -1:
-        model = DDP(model, device_ids=[opt.local_rank], output_device=opt.local_rank)
+    #if cuda and rank != -1:
+    #    model = DDP(model, device_ids=[opt.local_rank], output_device=opt.local_rank)
 
+    model= model.to(device)
     # Trainloader
     dataloader, dataset = create_dataloader(train_path, imgsz, batch_size, gs, opt,
                                             hyp=hyp, augment=True, cache=opt.cache_images, rect=opt.rect,
@@ -497,12 +498,12 @@ if __name__ == '__main__':
     if opt.local_rank != -1:
         assert torch.cuda.device_count() > opt.local_rank
         torch.cuda.set_device(opt.local_rank)
-        device = torch.device('cuda', opt.local_rank)
+        
 
         dist.init_process_group(backend='nccl', init_method='env://')  # distributed backend
         assert opt.batch_size % opt.world_size == 0, '--batch-size must be multiple of CUDA device count'
         opt.batch_size = opt.total_batch_size // opt.world_size
-
+    device = torch.device('cuda:5')
     # Hyperparameters
     with open(opt.hyp) as f:
         hyp = yaml.load(f, Loader=yaml.FullLoader)  # load hyps
