@@ -173,8 +173,9 @@ class ComputeLoss:
             t = targets * gain  # shape(3,n,7)
             if nt:
                 # Matches
-                print(t[..., 4:6].shape, anchors.shape)
-                r = t[..., 4:6] / anchors[:, None]  # wh ratio
+                r = t[..., 4:6] / anchors.view(1, -1, 2)
+
+                #r = t[..., 4:6] / anchors[:, None]  # wh ratio
                 j = torch.max(r, 1 / r).max(2)[0] < self.hyp['anchor_t']  # compare
                 # j = wh_iou(anchors, t[:, 4:6]) > model.hyp['iou_t']  # iou(3,n)=wh_iou(anchors(3,2), gwh(n,2))
                 t = t[j]  # filter
