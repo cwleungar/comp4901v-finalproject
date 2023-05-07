@@ -362,7 +362,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             if fi > best_fitness:
                 best_fitness = fi
             log_vals = list(mloss) + list(results) + lr
-        
+            print(f'train;;mp, mr, map50, map: {results[0]}, {results[1]}, {results[2]}, {results[3]}')
             callbacks.run('on_fit_epoch_end', log_vals, epoch, best_fitness, fi)
             raise Exception('stop')
             # Save model
