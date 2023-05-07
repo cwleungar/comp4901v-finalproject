@@ -72,19 +72,19 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
     test_path = data_dict['val']
     nc, names = (1, ['item']) if opt.single_cls else (int(data_dict['nc']), data_dict['names'])  # number classes, names
     assert len(names) == nc, '%g names found for nc=%g dataset in %s' % (len(names), nc, opt.data)  # check
-
+    anchors=[[10,13, 16,30, 33,23],[30,61, 62,45, 59,119],[116,90, 156,198, 373,326]]
     # Model
     pretrained = weights.endswith('.pt')
     if pretrained:
         with torch_distributed_zero_first(rank):
             attempt_download(weights)  # download if not found locally
         ckpt = torch.load(weights, map_location=device)  # load checkpoint
-        model = YoloBody(9,9).to(device) #Darknet(opt.cfg).to(device)  # create
+        model = YoloBody(len(anchors),9).to(device) #Darknet(opt.cfg).to(device)  # create
         state_dict = {k: v for k, v in ckpt['model'].items() if model.state_dict()[k].numel() == v.numel()}
         model.load_state_dict(state_dict, strict=False)
         print('Transferred %g/%g items from %s' % (len(state_dict), len(model.state_dict()), weights))  # report
     else:
-        model = YoloBody(9,9).to(device) #Darknet(opt.cfg).to(device) # create
+        model = YoloBody(len(anchors),9).to(device) #Darknet(opt.cfg).to(device) # create
 
     # Optimizer
     nbs = 64  # nominal batch size
@@ -218,6 +218,7 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
     model.gr = 1.0  # iou loss ratio (obj_loss = 1.0 or iou)
     model.class_weights = labels_to_class_weights(dataset.labels, nc).to(device)  # attach class weights
     model.names = names
+    model.anchors=anchors
     model=model.to(device)
     # Start training
     t0 = time.time()
