@@ -5,7 +5,7 @@ import torch.nn as nn
 
 from utils.general import bbox_iou
 from utils.torch_utils import is_parallel
-
+import math
 
 def smooth_BCE(eps=0.1):  # https://github.com/ultralytics/yolov3/issues/238#issuecomment-598028441
     # return positive, negative label smoothing BCE targets
@@ -339,8 +339,8 @@ class YOLOLoss(nn.Module):
 
         stride_h = self.input_shape[0] / in_h
         stride_w = self.input_shape[1] / in_w
-
-        scaled_anchors  = [(a_w / stride_w, a_h / stride_h) for a_w, a_h in self.anchors]
+        anchors=self.anchors[l]
+        scaled_anchors  = [(a_w / stride_w, a_h / stride_h) for a_w, a_h in anchors]
 
         prediction = input.view(bs, len(self.anchors_mask[l]), self.bbox_attrs, in_h, in_w).permute(0, 1, 3, 4, 2).contiguous()
         x = torch.sigmoid(prediction[..., 0])
