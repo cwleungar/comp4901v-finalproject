@@ -121,11 +121,6 @@ class CSPDarkNet(nn.Module):
 
 def darknet53(pretrained, **kwargs):
     model = CSPDarkNet([1, 2, 8, 8, 4])
-    if pretrained:
-        if isinstance(pretrained, str):
-            model.load_state_dict(torch.load(pretrained))
-        else:
-            raise Exception("darknet request a pretrained path. got [{}]".format(pretrained))
     return model
 
 def conv2d(filter_in, filter_out, kernel_size, stride=1):
@@ -225,6 +220,7 @@ class YoloBody(nn.Module):
 
 
     def forward(self, x):
+        x=x.half()
         #  backbone
         x2, x1, x0 = self.backbone(x)
 
