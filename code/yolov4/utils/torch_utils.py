@@ -62,7 +62,7 @@ def select_device(device='', batch_size=None):
         logger.info(f'Using torch {torch.__version__} CPU')
 
     logger.info('')  # skip a line
-    return torch.device('cuda:0' if cuda else 'cpu')
+    return torch.device('cuda:5' if cuda else 'cpu')
 
 
 def time_synchronized():
