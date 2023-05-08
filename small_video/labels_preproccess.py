@@ -17,7 +17,8 @@ def convert_kitti_to_mot(kitti_dir, mot_dir):
                     obj_id = int(line[1])
                     if obj_id == -1:
                         continue
-                    x, y, w, h = map(float, line[6:10])
+                    x, y, x2, y2 = map(float, line[6:10])
+                    w,h= x2-x, y2-y
                     conf = -1  # KITTI does not provide detection confidence scores
                     cls = -1   # KITTI does not provide object class labels
                     visibility = -1  # KITTI does not provide object visibility information
