@@ -43,6 +43,7 @@ def detect(save_img=False):
     model = Darknet(cfg, imgsz).cuda()
     
     ckpt = torch.load(weights[0], map_location=device)
+    print(ckpt.keys())
     state_dict=ckpt['state_dict']
     model.load_state_dict(state_dict, strict=False)
     #model.load_state_dict(torch.load(weights[0], map_location=device)['model'])
