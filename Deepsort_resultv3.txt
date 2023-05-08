@@ -1,3 +1,0 @@
-         IDF1   IDP   IDR Rcll Prcn GT MT PT ML  FP   FN IDs  FM   MOTA MOTP IDt IDa IDm
-video   30.4% 36.7% 20.6% 0.0% 0.0% 16  0  0 16 385 1084   0   0 -35.5%  NaN   0   0   0
-OVERALL 30.4% 36.7% 20.6% 0.0% 0.0% 16  0  0 16 385 1084   0   0 -35.5%  NaN   0   0   0
