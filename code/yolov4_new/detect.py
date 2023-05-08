@@ -14,13 +14,12 @@ from utils.google_utils import attempt_load
 from utils.datasets import LoadStreams, LoadImages
 from utils.general import (
     check_img_size, non_max_suppression, apply_classifier, scale_boxes, xyxy2xywh, strip_optimizer)
-from utils.plots import plot_one_box
 from utils.torch_utils import select_device
 
 from models.models import *
 from utils.datasets import *
 from utils.general import *
-from yolov4_new.utils.plots import Annotator
+from utils.plots import Annotator
 
 def load_classes(path):
     # Loads *.names file at 'path'
