@@ -33,6 +33,7 @@ def build_detector(cfg, use_cuda):
         cfgr=cfg.YOLOV4.CFG
         with torch.no_grad():
             model = YOLOv4(cfgr,640).to(device)  # create
+            print(cfg.YOLOV4.WEIGHT)
             ckpt = torch.load(cfg.YOLOV4.WEIGHT, map_location=device)
 
             state_dict=ckpt['state_dict']
