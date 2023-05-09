@@ -7,7 +7,7 @@ https://github.com/WongKinYiu/PyTorch_YOLOv4
 https://github.com/ZQPei/deep_sort_pytorch
 
 download the model:
-
+https://hkustconnect-my.sharepoint.com/:f:/g/personal/cwleungar_connect_ust_hk/EpUmQsYwIVlMqONA-WLeIwYBtHZs1rbpIIvmFkDGvGE9yg?e=rhhypb
 move ckpt.t7 to code/deep_sort/deep_sort/deep/checkpoint/ckpt.t7
 move yolov3_best.pt to code/yolov3/runs/train/yolov3_saved/weights/best.pt
 move yolov4_me.pt to code/yolov4/runs/train/yolov4_saved/weights/me.pt
